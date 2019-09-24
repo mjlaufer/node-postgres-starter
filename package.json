@@ -8,7 +8,14 @@
     "dev": "nodemon --exec \"ts-node\" src/server.ts",
     "debug": "nodemon --exec \"node --inspect -r ts-node/register\" src/server.ts",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --runInBand",
+    "coverage-report": "node ./scripts/open-coverage-report",
+    "lint": "eslint --ext **/**.ts",
+    "prettier": "prettier --write --only-changed **/**.ts",
+    "prettier:check": "prettier --check **/**.ts",
+    "ci-check": "run-s prettier:check lint test:ci"
   },
   "author": "Matthew Laufer",
   "license": "MIT",
@@ -17,8 +24,19 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.1",
+    "@types/jest": "^24.0.18",
     "@types/node": "^12.7.5",
+    "@typescript-eslint/eslint-plugin": "^2.3.1",
+    "@typescript-eslint/parser": "^2.3.1",
+    "eslint": "^6.4.0",
+    "eslint-config-prettier": "^6.3.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "jest": "^24.9.0",
     "nodemon": "^1.19.2",
+    "npm-run-all": "^4.1.5",
+    "open": "^6.4.0",
+    "prettier": "^1.18.2",
+    "ts-jest": "^24.1.0",
     "ts-node": "^8.4.1",
     "typescript": "^3.6.3"
   }
