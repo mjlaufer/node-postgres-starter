@@ -24,5 +24,6 @@ export function errorHandler(app: Express) {
             res.status(err.status);
             res.send({ message: err.message });
         }
+        next();
     };
 }

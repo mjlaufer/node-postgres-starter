@@ -2,11 +2,9 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
-    "lib": ["esnext"],
     "sourceMap": true,
     "outDir": "./dist",
     "removeComments": true,
-    "noEmit": true,
     "strict": true,
     "noUnusedLocals": true,
     "noImplicitReturns": true,
@@ -16,5 +14,7 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["src/**/*.test.ts"]
 }

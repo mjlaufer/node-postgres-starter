@@ -10,7 +10,7 @@
     "build": "tsc",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
-    "test:ci": "jest --runInBand",
+    "test:ci": "jest --ci --runInBand",
     "coverage-report": "node ./scripts/open-coverage-report",
     "lint": "eslint --ext **/**.ts",
     "prettier": "prettier --write --only-changed **/**.ts",

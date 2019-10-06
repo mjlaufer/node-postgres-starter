@@ -1,0 +1,10 @@
+.dockerignore
+.git
+docker-compose.yml
+docker-compose.override.yml
+docker-compose.ci.yml
+node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+coverage
