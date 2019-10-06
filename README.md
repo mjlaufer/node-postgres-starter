@@ -1,5 +1,7 @@
 # ts-express-api-starter
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/mjlaufer/ts-express-api-starter.svg)](https://greenkeeper.io/)
+
 ## Useful Scripts
 
 `docker-compose up -d` : Runs the production build of the Node application.
