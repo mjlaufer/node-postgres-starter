@@ -1,7 +1,7 @@
 import { Express, Request, Response, NextFunction } from 'express';
 
 export class CustomError extends Error {
-    constructor(message: string, public status: number = 500) {
+    constructor(message = 'Internal Server Error', public status: number = 500) {
         super(message);
         this.name = 'CustomError';
     }
