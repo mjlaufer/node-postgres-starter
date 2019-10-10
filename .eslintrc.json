@@ -3,7 +3,7 @@
   "extends": ["plugin:@typescript-eslint/recommended", "prettier", "prettier/@typescript-eslint"],
   "parserOptions": {
     "ecmaVersion": 2019,
-    "project": "./tsconfig.json",
+    "project": "./tsconfig.test.json",
     "sourceType": "module"
   },
   "rules": {
@@ -12,7 +12,6 @@
     "@typescript-eslint/no-use-before-define": ["error", { "functions": false }],
     "@typescript-eslint/no-floating-promises": "error",
     "@typescript-eslint/no-useless-constructor": "error",
-    "@typescript-eslint/prefer-for-of": "error",
-    "@typescript-eslint/promise-function-async": "error"
+    "@typescript-eslint/prefer-for-of": "error"
   }
 }

@@ -8,7 +8,7 @@ export function generateSqlQuery(dirname: string, file: string): QueryFile {
         minify: true,
     };
 
-    const qf: QueryFile = new QueryFile(destination, options);
+    const qf = new QueryFile(destination, options);
 
     if (qf.error) {
         console.error(qf.error);

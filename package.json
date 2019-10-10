@@ -15,7 +15,7 @@
     "lint": "eslint --ext **/**.ts",
     "prettier": "prettier --write --only-changed **/**.ts",
     "prettier:check": "prettier --check **/**.ts",
-    "ci-check": "run-s prettier:check lint test:ci"
+    "ci:check": "run-s prettier:check lint test:ci"
   },
   "author": "Matthew Laufer",
   "license": "MIT",
