@@ -39,7 +39,7 @@ describe('User model', () => {
 
             expect.assertions(2);
 
-            const newUser = await User.create(user);
+            const newUser = await User.create({ email: 'test@test.com' });
 
             expect(db.oneOrNone).toHaveBeenCalled();
             expect(newUser).toEqual(user);

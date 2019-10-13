@@ -5,13 +5,13 @@ const router = express.Router();
 
 router
     .route('/')
-    .get(userController.findAll)
-    .post(userController.create);
+    .get(userController.fetchUsers)
+    .post(userController.createUser);
 
 router
     .route('/:id')
-    .get(userController.findById)
-    .put(userController.update)
-    .delete(userController.destroy);
+    .get(userController.fetchUser)
+    .put(userController.updateUser)
+    .delete(userController.deleteUser);
 
 export default router;

@@ -3,7 +3,7 @@ import { db } from '../../db';
 import sql from './sql';
 
 interface UserProfile {
-    id: number;
+    id?: number;
     email: string;
 }
 
