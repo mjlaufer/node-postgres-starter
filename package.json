@@ -1,7 +1,7 @@
 {
-  "name": "ts-express-api-starter",
+  "name": "ts-node-pgp-starter",
   "version": "1.0.0",
-  "description": "TypeScript-Express starter project",
+  "description": "TypeScript-Node API starter project",
   "main": "index.js",
   "scripts": {
     "start": "node dist/server.js",

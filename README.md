@@ -1,96 +1,77 @@
-# ts-express-api-starter
+# ts-node-pgp-starter
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/mjlaufer/ts-express-api-starter.svg)](https://greenkeeper.io/)
+[![Greenkeeper badge](https://badges.greenkeeper.io/mjlaufer/ts-node-pgp-starter.svg)](https://greenkeeper.io/)
 
-## Useful Scripts
+## About
 
-`docker-compose up -d` : Runs the production build of the Node application.
+This is an opinionated template for creating and deploying containerized web APIs with Node, TypeScript, and PostgreSQL. To that end, this project uses the following technologies and packages:
 
-`docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d` : Runs CI checks.
+-   Node.js v12
+-   TypeScript v3.6
+-   Express.js
+-   PostgreSQL v11
+-   pg-promise
+-   Docker
+-   Kubernetes
+-   CircleCI
 
 ---
 
-## Docker Compose Reference
+## Useful Scripts
 
-### `docker-compose up [OPTIONS]`
+`yarn install` : Install dependencies.
 
-Builds, (re)creates, starts, and attaches to containers for a service.
+### Local Development:
 
-Options:
+`yarn run dev` : Run the application in development mode.
 
-`--detach, -d` : Detached mode: Run containers in the background, print new container names.
+`yarn run ci:check` : Run CI checks.
 
-`--build` : Build images before starting containers.
+### Using Docker:
 
-### `docker-compose down [OPTIONS]`
+`docker-compose up -d` : Run the application in development mode.
 
-Stops containers and removes containers, networks, volumes, and images created by `up`.
+`docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d` : Run CI checks.
 
 ---
 
 ## Docker Reference
 
-### `docker build [OPTIONS] PATH`
+`docker build PATH` : Build an image from a Dockerfile.
 
-Build an image from a Dockerfile.
+`docker exec -it CONTAINER COMMAND` : Run a command in the running container.
 
-Options:
+`docker logs -f CONTAINER` : Fetch the logs of a container; follow log output.
 
-`--no-cache` : Do not use cache when building the image
+`docker ps` : List containers.
 
-`--tag, -t` : Name and optionally a tag in the ‘name:tag’ format
+`docker run -p 5000:80 IMAGE [COMMAND]` : Run a command in a new container; publish the container’s port(s) to the host (i.e., bind port 80 of
+the container to port 5000 of the host).
 
-### `docker exec [OPTIONS] CONTAINER COMMAND [ARG...]`
+---
 
-Runs a command in the running container.
+## Docker Compose Reference
 
-Options:
+`docker-compose up -d` : Build and start containers in detached mode (i.e., in the background).
 
-`--interactive, -i` : Keep STDIN open even if not attached
+`docker-compose up --build` : Build images, and then start containers.
 
-`--tty, -t` : Allocate a pseudo-TTY
-
-### `docker logs [OPTIONS] CONTAINER`
-
-Fetches the logs of a container.
-
-Options:
-
-`--follow, -f` : Follow log output
-
-### `docker ps [OPTIONS]`
-
-Lists containers.
-
-### `docker run [OPTIONS] IMAGE [COMMAND] [ARG...]`
-
-Runs a command in a new container.
-
-Options:
-
-`--publish , -p` : Publish a container’s port(s) to the host (e.g., `-p 8080:80` to bind port 80 of
-the container (Nginx's default port) to port 8080 of the host machine)
+`docker-compose down` : Stop containers; remove containers, networks, volumes, and images created by `up`.
 
 ---
 
 ## Kubernetes (kubectl) Reference
 
-### `kubectl apply -f FILENAME`
+`kubectl apply -f FILENAME` : Apply a configuration to a resource (e.g., pod or deployment object). The resource will be created if it doesn't exist yet.
 
-Apply a configuration to a resource (e.g., pod or deployment object). The resource will be created if it doesn't exist yet.
+`kubectl get RESOURCE_TYPE [-o wide]` : Display resources (e.g., pods, deployments, or services).
 
-### `kubectl get RESOURCE_TYPE [-o wide]`
+`kubectl delete [-f FILENAME] | RESOURCE_TYPE [NAME | --all]` : Delete resources
 
-Display resources (e.g., pods, deployments, or services).
-
-### `kubectl delete [-f FILENAME] | RESOURCE_TYPE [NAME | --all]`
-
-Delete resources
-
-### `kubectl set image RESOURCE_TYPE/NAME CONTAINER_NAME=NEW_IMAGE`
-
-Update existing container image(s) of resources
+`kubectl set image RESOURCE_TYPE/NAME CONTAINER_NAME=NEW_IMAGE` : Update existing container image(s) of resources
 
 ---
 
 ## Deployment
+
+Coming soon.
