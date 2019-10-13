@@ -1,4 +1,4 @@
-# ts-express-api-starter
+# ts-node-postgres-starter
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/mjlaufer/ts-express-api-starter.svg)](https://greenkeeper.io/)
 
