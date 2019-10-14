@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  api:
+    build:
+      context: .
+      target: builder-dev
+    env_file:
+      - .env
+    ports:
+      - '8080:8080'
+    command: ['yarn', 'run', 'dev']
+
+  db:
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data

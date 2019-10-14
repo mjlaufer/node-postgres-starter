@@ -61,6 +61,8 @@ describe('errorHandler', () => {
             status: jest.fn(),
         };
 
+        app.set('env', 'production');
+
         middleware(error, {} as Request, res as Response, next);
 
         expect(res.status).toHaveBeenCalledWith(error.status);

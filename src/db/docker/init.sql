@@ -1,0 +1,2 @@
+CREATE DATABASE starter;
+CREATE DATABASE starter_test;

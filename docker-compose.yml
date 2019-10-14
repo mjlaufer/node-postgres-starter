@@ -3,7 +3,23 @@ version: '3.7'
 services:
   api:
     build: .
+    links:
+      - db
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - db
     environment:
-      - NODE_ENV=production
-    ports:
-      - '8080:8080'
+      DB_HOST: db
+      DB_NAME: starter
+      DB_NAME_TEST: starter_test
+    restart: always
+
+  db:
+    image: 'postgres:11-alpine'
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    volumes:
+      - ./db/docker:/docker-entrypoint-initdb.d
+    restart: always
