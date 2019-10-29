@@ -10,7 +10,11 @@ jest.mock('../../db', () => ({
 }));
 
 describe('User model', () => {
-    const user = { id: 1, email: 'test@test.com' };
+    const user = {
+        id: 1,
+        email: 'test@test.com',
+        username: 'test_user',
+    };
 
     describe('#findAll', () => {
         test('returns a list of all users', async () => {
@@ -39,7 +43,10 @@ describe('User model', () => {
 
             expect.assertions(2);
 
-            const newUser = await User.create({ email: 'test@test.com' });
+            const newUser = await User.create({
+                email: 'test@test.com',
+                username: 'test_user',
+            });
 
             expect(db.oneOrNone).toHaveBeenCalled();
             expect(newUser).toEqual(user);

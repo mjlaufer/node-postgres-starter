@@ -5,6 +5,7 @@ import sql from './sql';
 interface UserProfile {
     id?: number;
     email: string;
+    username: string;
 }
 
 export default class User {

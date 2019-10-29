@@ -1,6 +1,6 @@
 /*
     Inserts a new User record.
 */
-INSERT INTO users(email)
-VALUES(${email})
+INSERT INTO users(email, username)
+VALUES(${email}, ${username})
 RETURNING *

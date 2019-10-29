@@ -11,7 +11,11 @@ jest.mock('../models/User', () => ({
 }));
 
 describe('user controller', () => {
-    const user = { id: 1, email: 'test@test.com' };
+    const user = {
+        id: 1,
+        email: 'test@test.com',
+        username: 'test_user',
+    };
     let req: Request;
     let res: Response;
     const next = jest.fn();
@@ -49,7 +53,10 @@ describe('user controller', () => {
     describe('#createUser', () => {
         test('creates and sends a new user', async () => {
             User.create = jest.fn().mockResolvedValue(user);
-            const newUser = { email: 'test@test.com' };
+            const newUser = {
+                email: 'test@test.com',
+                username: 'test_user',
+            };
             req.body = newUser;
 
             expect.assertions(2);

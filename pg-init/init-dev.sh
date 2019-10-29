@@ -10,7 +10,8 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
     CREATE TABLE users
     (
         id SERIAL PRIMARY KEY,
-        email VARCHAR NOT NULL
+        email VARCHAR NOT NULL,
+        username VARCHAR NOT NULL
     );
 
 EOSQL
