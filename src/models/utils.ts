@@ -1,14 +1,11 @@
 import { QueryFile, IQueryFileOptions } from 'pg-promise';
-import path from 'path';
 
-export function generateSqlQuery(dirname: string, file: string): QueryFile {
-    const destination: string = path.join(dirname, file);
-
+export function generateSqlQuery(path: string): QueryFile {
     const options: IQueryFileOptions = {
         minify: true,
     };
 
-    const qf = new QueryFile(destination, options);
+    const qf = new QueryFile(path, options);
 
     if (qf.error) {
         console.error(qf.error);

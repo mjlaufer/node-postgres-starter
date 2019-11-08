@@ -1,45 +1,40 @@
-import express, { Request, Response } from 'express';
-import { CustomError, notFound, errorHandler } from './errors';
+import express, { Express, Request, Response, NextFunction } from 'express';
+import { HttpError, HttpErrorMessages } from '../helpers/errors';
+import { notFoundHandler, errorHandler } from './errors';
 
-describe('CustomError', () => {
-    test('can create CustomError objects', () => {
-        const error = new CustomError('Not Found', 404);
+type ErrorHandler = (err: HttpError, req: Request, res: Response, next: NextFunction) => void;
 
-        expect(error instanceof CustomError).toBe(true);
-        expect(error.message).toBe('Not Found');
-        expect(error.status).toBe(404);
-    });
-});
-
-describe('notFound', () => {
+describe('notFoundHandler', () => {
     test('calls next with a `Not Found` error', () => {
         const next = jest.fn();
-        const notFoundError = new CustomError('Not Found', 404);
+        const notFoundError = new HttpError(HttpErrorMessages.NOT_FOUND, 404);
 
-        notFound({} as Request, {} as Response, next);
+        notFoundHandler({} as Request, {} as Response, next);
 
         expect(next).toHaveBeenCalledWith(notFoundError);
     });
 });
 
 describe('errorHandler', () => {
-    const error = new CustomError('error');
+    const error = new HttpError('error');
+    let app: Express;
+    let middleware: ErrorHandler;
+    let res: Response;
     const next = jest.fn();
 
+    beforeEach(() => {
+        app = express();
+        middleware = errorHandler(app);
+        res = {} as Response;
+        res.send = jest.fn();
+        res.status = jest.fn(() => res);
+    });
+
     test('returns a middleware function', () => {
-        const app = express();
-        const middleware = errorHandler(app);
         expect(typeof middleware).toBe('function');
     });
 
     test('sends stack trace in development', () => {
-        const app = express();
-        const middleware = errorHandler(app);
-        const res: any = {
-            send: jest.fn(),
-            status: jest.fn(),
-        };
-
         app.set('env', 'development');
 
         middleware(error, {} as Request, res as Response, next);
@@ -54,13 +49,6 @@ describe('errorHandler', () => {
     });
 
     test('does not send stack trace in production', () => {
-        const app = express();
-        const middleware = errorHandler(app);
-        const res: any = {
-            send: jest.fn(),
-            status: jest.fn(),
-        };
-
         app.set('env', 'production');
 
         middleware(error, {} as Request, res as Response, next);
@@ -68,7 +56,7 @@ describe('errorHandler', () => {
         expect(res.status).toHaveBeenCalledWith(error.status);
         expect(res.send).toHaveBeenCalledWith(
             expect.objectContaining({
-                message: error.message,
+                message: HttpErrorMessages.INTERNAL_SERVER_ERROR,
             }),
         );
         expect(res.send).not.toHaveBeenCalledWith(

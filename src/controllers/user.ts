@@ -10,23 +10,38 @@ export async function fetchUsers(req: Request, res: Response, next: NextFunction
     }
 }
 
-export async function createUser(req: Request, res: Response, next: NextFunction) {
+export async function fetchUser(req: Request, res: Response, next: NextFunction) {
     try {
-        const user = await User.create(req.body);
+        const user = await User.findById(+req.params.id);
         res.send(user);
     } catch (err) {
         next(err);
     }
 }
 
-export function fetchUser(req: Request, res: Response) {
-    res.send(`Find user with ID ${req.params.id}`);
+export async function createUser(req: Request, res: Response, next: NextFunction) {
+    try {
+        const user = await User.create(req.body);
+        res.status(201).send(user);
+    } catch (err) {
+        next(err);
+    }
 }
 
-export function updateUser(req: Request, res: Response) {
-    res.send(`Update user with ID ${req.params.id}`);
+export async function updateUser(req: Request, res: Response, next: NextFunction) {
+    try {
+        const user = await User.update(req.body);
+        res.send(user);
+    } catch (err) {
+        next(err);
+    }
 }
 
-export function deleteUser(req: Request, res: Response) {
-    res.send(`Delete user with ID ${req.params.id}`);
+export async function deleteUser(req: Request, res: Response, next: NextFunction) {
+    try {
+        await User.destroy(+req.params.id);
+        res.status(204).end();
+    } catch (err) {
+        next(err);
+    }
 }

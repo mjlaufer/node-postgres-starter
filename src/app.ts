@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import compression from 'compression';
 import morgan from 'morgan';
 import { users } from './routes';
-import { errorHandler, notFound } from './middleware/errors';
+import { errorHandler, notFoundHandler } from './middleware/errors';
 
 dotenv.config();
 
@@ -19,7 +19,7 @@ app.use(morgan(app.get('env') === 'development' ? 'dev' : 'common'));
 
 app.use('/users', users);
 
-app.use(notFound);
+app.use(notFoundHandler);
 app.use(errorHandler(app));
 
 export default app;

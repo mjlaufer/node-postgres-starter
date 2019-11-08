@@ -1,29 +1,32 @@
 import { Express, Request, Response, NextFunction } from 'express';
+import { HttpError, HttpErrorMessages } from '../helpers/errors';
 
-export class CustomError extends Error {
-    constructor(message = 'Internal Server Error', public status: number = 500) {
-        super(message);
-        this.name = 'CustomError';
-    }
-}
-
-export function notFound(req: Request, res: Response, next: NextFunction) {
-    const err = new CustomError('Not Found', 404);
+export function notFoundHandler(req: Request, res: Response, next: NextFunction) {
+    const err = new HttpError(HttpErrorMessages.NOT_FOUND, 404);
     next(err);
 }
 
 export function errorHandler(app: Express) {
-    return (err: CustomError, req: Request, res: Response, next: NextFunction) => {
+    return (err: HttpError, req: Request, res: Response, next: NextFunction) => {
         if (app.get('env') === 'development') {
-            res.status(err.status);
-            res.send({
+            res.status(err.status).send({
                 message: err.message,
                 stack: err.stack,
             });
         } else {
-            res.status(err.status);
-            res.send({ message: err.message });
+            let message;
+
+            switch (err.status) {
+                case 404:
+                    message = HttpErrorMessages.NOT_FOUND;
+                    break;
+                default:
+                    message = HttpErrorMessages.INTERNAL_SERVER_ERROR;
+            }
+
+            res.status(err.status).send({ message });
         }
+
         next();
     };
 }
