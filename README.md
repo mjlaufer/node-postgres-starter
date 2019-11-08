@@ -7,7 +7,7 @@
 This is an opinionated template for creating and deploying containerized web APIs with Node, TypeScript, and PostgreSQL. To that end, this project uses the following technologies and packages:
 
 -   Node.js v12
--   TypeScript v3.6
+-   TypeScript v3.7
 -   Express.js
 -   PostgreSQL v11
 -   pg-promise
