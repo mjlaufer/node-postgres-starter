@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import User from '../models/User';
+import { pick } from 'lodash';
+import User, { UserIdentity } from '../models/User';
+import { SignupCredentials } from './auth';
 
-export async function fetchUsers(req: Request, res: Response, next: NextFunction) {
+export async function fetchUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
         const users = await User.findAll();
         res.send({ users });
@@ -10,7 +12,7 @@ export async function fetchUsers(req: Request, res: Response, next: NextFunction
     }
 }
 
-export async function fetchUser(req: Request, res: Response, next: NextFunction) {
+export async function fetchUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
         const user = await User.findById(+req.params.id);
         res.send(user);
@@ -19,25 +21,31 @@ export async function fetchUser(req: Request, res: Response, next: NextFunction)
     }
 }
 
-export async function createUser(req: Request, res: Response, next: NextFunction) {
+export async function createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        const user = await User.create(req.body);
+        const credentials: SignupCredentials = pick(req.body, ['email', 'username', 'password']);
+
+        const user = await User.create(credentials);
+
         res.status(201).send(user);
     } catch (err) {
         next(err);
     }
 }
 
-export async function updateUser(req: Request, res: Response, next: NextFunction) {
+export async function updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        const user = await User.update(req.body);
-        res.send(user);
+        const currentUser: UserIdentity = pick(req.body, ['id', 'email', 'username', 'password']);
+
+        const updatedUser = await User.update(currentUser);
+
+        res.send(updatedUser);
     } catch (err) {
         next(err);
     }
 }
 
-export async function deleteUser(req: Request, res: Response, next: NextFunction) {
+export async function deleteUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
         await User.destroy(+req.params.id);
         res.status(204).end();

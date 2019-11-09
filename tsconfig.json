@@ -13,7 +13,8 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "typeRoots": ["./node_modules/@types", "./src/typings"]
   },
   "include": ["src/**/*"],
   "exclude": ["src/**/*.test.ts"]

@@ -6,7 +6,10 @@ jest.mock('../models/User', () => ({
     __esModule: true,
     default: {
         findAll: jest.fn(),
+        findById: jest.fn(),
         create: jest.fn(),
+        update: jest.fn(),
+        destroy: jest.fn(),
     },
 }));
 
@@ -15,6 +18,7 @@ describe('user controller', () => {
         id: 1,
         email: 'test@test.com',
         username: 'test_user',
+        password: 'test',
     };
     let req: Request;
     let res: Response;

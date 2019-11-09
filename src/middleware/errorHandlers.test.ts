@@ -1,8 +1,6 @@
-import express, { Express, Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { HttpError, HttpErrorMessages } from '../helpers/errors';
-import { notFoundHandler, errorHandler } from './errors';
-
-type ErrorHandler = (err: HttpError, req: Request, res: Response, next: NextFunction) => void;
+import { notFoundHandler, errorHandler } from './errorHandlers';
 
 describe('notFoundHandler', () => {
     test('calls next with a `Not Found` error', () => {
@@ -17,27 +15,21 @@ describe('notFoundHandler', () => {
 
 describe('errorHandler', () => {
     const error = new HttpError('error');
-    let app: Express;
-    let middleware: ErrorHandler;
     let res: Response;
     const next = jest.fn();
 
     beforeEach(() => {
-        app = express();
-        middleware = errorHandler(app);
         res = {} as Response;
         res.send = jest.fn();
         res.status = jest.fn(() => res);
     });
 
-    test('returns a middleware function', () => {
-        expect(typeof middleware).toBe('function');
+    afterEach(() => {
+        delete process.env.NODE_ENV;
     });
 
-    test('sends stack trace in development', () => {
-        app.set('env', 'development');
-
-        middleware(error, {} as Request, res as Response, next);
+    test('sends stack trace in non-production environments', () => {
+        errorHandler(error, {} as Request, res as Response, next);
 
         expect(res.status).toHaveBeenCalledWith(error.status);
         expect(res.send).toHaveBeenCalledWith(
@@ -49,9 +41,9 @@ describe('errorHandler', () => {
     });
 
     test('does not send stack trace in production', () => {
-        app.set('env', 'production');
+        process.env.NODE_ENV = 'production';
 
-        middleware(error, {} as Request, res as Response, next);
+        errorHandler(error, {} as Request, res as Response, next);
 
         expect(res.status).toHaveBeenCalledWith(error.status);
         expect(res.send).toHaveBeenCalledWith(
