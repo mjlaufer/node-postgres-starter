@@ -1,14 +1,13 @@
 import dotenv from 'dotenv';
-import { pickBy, toNumber } from 'lodash';
 
 dotenv.config();
 
 interface ConnectionConfig {
-    host?: string;
-    port?: number;
-    database?: string;
-    user?: string;
-    password?: string;
+    host: string;
+    port: number;
+    database: string;
+    user: string;
+    password: string;
 }
 
 const {
@@ -22,16 +21,14 @@ const {
     POSTGRES_PASSWORD,
 } = process.env;
 
-const connectionConfig: ConnectionConfig = pickBy({
+const connectionConfig: ConnectionConfig = {
     host: DB_HOST,
-    port: toNumber(DB_PORT),
+    port: DB_PORT,
     database: NODE_ENV === 'test' ? DB_NAME_TEST : DB_NAME,
     user: POSTGRES_USER,
     password: POSTGRES_PASSWORD,
-});
+};
 
-const connectionString = DATABASE_URL || '';
-
-const connection = NODE_ENV === 'production' ? connectionString : connectionConfig;
+const connection = NODE_ENV === 'production' ? DATABASE_URL : connectionConfig;
 
 export default connection;

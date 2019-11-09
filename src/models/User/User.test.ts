@@ -7,14 +7,22 @@ jest.mock('../../db', () => ({
         any: jest.fn(),
         none: jest.fn(),
         one: jest.fn(),
+        oneOrNone: jest.fn(),
     },
 }));
 
 describe('User model', () => {
-    const mockUser = {
-        id: 1,
+    const testCredentials = {
         email: 'test@test.com',
         username: 'test_user',
+        password: 'test',
+    };
+
+    const mockUser = {
+        id: 1,
+        email: testCredentials.email,
+        username: testCredentials.username,
+        password: '$2a$10$37xEfpMwqmfSCAfYlaMzS.trfLiJEqpk4gk.OegKglZRQNw3LIUWG',
     };
 
     describe('#findAll', () => {
@@ -61,16 +69,47 @@ describe('User model', () => {
         });
     });
 
+    describe('#findOne', () => {
+        test('can find a user by email', async () => {
+            db.oneOrNone = jest.fn().mockResolvedValue(mockUser);
+
+            expect.assertions(2);
+
+            const user = await User.findOne({ email: mockUser.email });
+
+            expect(db.oneOrNone).toHaveBeenCalled();
+            expect(user).toEqual(mockUser);
+        });
+
+        test('can find a user by username', async () => {
+            db.oneOrNone = jest.fn().mockResolvedValue(mockUser);
+
+            expect.assertions(2);
+
+            const user = await User.findOne({ username: mockUser.username });
+
+            expect(db.oneOrNone).toHaveBeenCalled();
+            expect(user).toEqual(mockUser);
+        });
+
+        test('throws a HttpError if unsuccessful', async () => {
+            db.oneOrNone = jest.fn().mockRejectedValue('Database error');
+
+            expect.assertions(1);
+
+            await expect(User.findOne({ email: mockUser.email })).rejects.toThrow(
+                new HttpError('Database error'),
+            );
+        });
+    });
+
     describe('#create', () => {
         test('inserts and returns a new user', async () => {
             db.one = jest.fn().mockResolvedValue(mockUser);
 
             expect.assertions(2);
 
-            const newUser = await User.create({
-                email: mockUser.email,
-                username: mockUser.username,
-            });
+            const newUser = await User.create(testCredentials);
 
             expect(db.one).toHaveBeenCalled();
             expect(newUser).toEqual(mockUser);
@@ -87,8 +126,7 @@ describe('User model', () => {
 
     describe('#update', () => {
         const updatedUser = {
-            id: mockUser.id,
-            email: mockUser.email,
+            ...mockUser,
             username: 'updated_user',
         };
 
@@ -98,8 +136,7 @@ describe('User model', () => {
             expect.assertions(2);
 
             const user = await User.update({
-                id: mockUser.id,
-                email: mockUser.email,
+                ...mockUser,
                 username: 'updated_user',
             });
 
@@ -112,7 +149,7 @@ describe('User model', () => {
 
             expect.assertions(1);
 
-            await expect(User.update(updatedUser)).rejects.toThrow(new HttpError('Database error'));
+            await expect(User.update(mockUser)).rejects.toThrow(new HttpError('Database error'));
         });
     });
 

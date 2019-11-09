@@ -1,4 +1,5 @@
 export enum HttpErrorMessages {
+    BAD_REQUEST = 'Bad Request',
     INTERNAL_SERVER_ERROR = 'Internal Server Error',
     NOT_FOUND = 'Not Found',
 }

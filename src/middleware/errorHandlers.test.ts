@@ -1,6 +1,6 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import { HttpError, HttpErrorMessages } from '../helpers/errors';
-import { notFoundHandler, errorHandler } from './errors';
+import { notFoundHandler, errorHandler } from './errorHandlers';
 
 type ErrorHandler = (err: HttpError, req: Request, res: Response, next: NextFunction) => void;
 
@@ -24,20 +24,15 @@ describe('errorHandler', () => {
 
     beforeEach(() => {
         app = express();
-        middleware = errorHandler(app);
         res = {} as Response;
         res.send = jest.fn();
         res.status = jest.fn(() => res);
     });
 
-    test('returns a middleware function', () => {
-        expect(typeof middleware).toBe('function');
-    });
-
     test('sends stack trace in development', () => {
         app.set('env', 'development');
 
-        middleware(error, {} as Request, res as Response, next);
+        errorHandler(error, {} as Request, res as Response, next);
 
         expect(res.status).toHaveBeenCalledWith(error.status);
         expect(res.send).toHaveBeenCalledWith(
