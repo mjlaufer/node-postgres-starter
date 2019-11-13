@@ -339,10 +339,10 @@
   dependencies:
     "@types/express" "*"
 
-"@types/connect-redis@^0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@types/connect-redis/-/connect-redis-0.0.11.tgz#8d29cc44315a5ec05b6159551145f94cdf481e5b"
-  integrity sha512-uFCQr385lMl/7l7G+SYzt/SKliesx7mR8osbwshElrIgHo26knJ957QL+A8xHNtKa+ukgp6d4FCoN4TNFFBcUQ==
+"@types/connect-redis@^0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@types/connect-redis/-/connect-redis-0.0.12.tgz#c156ff18766c6d4003e972e8aca3a32b78571ea8"
+  integrity sha512-flwDJkfvuNMIDSonS6C3mIIUNB8ynI9qHjpsDFv7q2yf+fWCeQxEeqJHeqcu7/wMJYxVerCY2KbvhUSYUyu/3w==
   dependencies:
     "@types/express" "*"
     "@types/express-session" "*"
