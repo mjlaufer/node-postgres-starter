@@ -6,7 +6,6 @@
     "outDir": "./dist",
     "removeComments": true,
     "strict": true,
-    "noUnusedLocals": true,
     "noImplicitReturns": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,

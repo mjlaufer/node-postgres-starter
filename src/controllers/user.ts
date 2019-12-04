@@ -1,55 +1,41 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { pick } from 'lodash';
-import User, { UserIdentity } from '../models/User';
-import { SignupCredentials } from './auth';
+import { SignupCredentials, UserData } from '../types';
+import UserService, { User } from '../model/services/user';
 
-export async function fetchUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-        const users = await User.findAll();
+export default class UserController {
+    static async fetchUsers(req: Request, res: Response): Promise<void> {
+        const users: User[] = await UserService.findAllUsers();
         res.send({ users });
-    } catch (err) {
-        next(err);
     }
-}
 
-export async function fetchUser(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-        const user = await User.findById(+req.params.id);
+    static async fetchUser(req: Request, res: Response): Promise<void> {
+        const user: User = await UserService.findUser(+req.params.id);
         res.send(user);
-    } catch (err) {
-        next(err);
     }
-}
 
-export async function createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
+    static async createUser(req: Request, res: Response): Promise<void> {
         const credentials: SignupCredentials = pick(req.body, ['email', 'username', 'password']);
 
-        const user = await User.create(credentials);
+        const user: User = await UserService.createUser(credentials);
 
         res.status(201).send(user);
-    } catch (err) {
-        next(err);
     }
-}
 
-export async function updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-        const currentUser: UserIdentity = pick(req.body, ['id', 'email', 'username', 'password']);
+    static async updateUser(req: Request, res: Response): Promise<void> {
+        const id = +req.params.id;
+        const updatedUserData: UserData = {
+            id,
+            ...pick(req.body, ['email', 'username', 'password']),
+        };
 
-        const updatedUser = await User.update(currentUser);
+        const updatedUser: User = await UserService.updateUser(updatedUserData);
 
         res.send(updatedUser);
-    } catch (err) {
-        next(err);
     }
-}
 
-export async function deleteUser(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-        await User.destroy(+req.params.id);
+    static async deleteUser(req: Request, res: Response): Promise<void> {
+        await UserService.deleteUser(+req.params.id);
         res.status(204).end();
-    } catch (err) {
-        next(err);
     }
 }

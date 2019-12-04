@@ -1,49 +1,35 @@
-import { Request, Response, NextFunction } from 'express';
-import { compact, isEmpty, pick } from 'lodash';
+import { Request, Response } from 'express';
+import { pick } from 'lodash';
 import { HttpError } from '../helpers/errors';
-import User from '../models/User';
+import AuthService, { SignupResponse } from '../model/services/auth';
+import { SignupCredentials } from '../types';
 
-export const SignupErrors = {
-    missingCredential: new HttpError('You must provide an email, username, and password', 400),
-    accountExists: new HttpError('An account for this email or username already exists', 400),
-};
+export const INVALID_CREDENTIALS_MESSAGE = 'You must provide an email, username, and password';
 
-export interface SignupCredentials {
-    email: string;
-    username: string;
-    password: string;
-}
-
-export async function signup(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
+export default class AuthController {
+    static async signup(req: Request, res: Response): Promise<void> {
         const credentials: SignupCredentials = pick(req.body, ['email', 'username', 'password']);
+
         validateCredentials(credentials);
-        await checkForExistingUsers(credentials);
 
-        const user = await User.create(credentials);
+        const { message, user }: SignupResponse = await AuthService.signup(credentials);
 
-        return req.login(user, err => {
-            if (err) {
-                throw new HttpError(err);
-            }
+        if (user) {
+            return req.login(user, err => {
+                if (err) {
+                    throw new HttpError(err);
+                }
 
-            return res.send({ isAuthenticated: !!req.user });
-        });
-    } catch (err) {
-        next(err);
+                return res.send({ isAuthenticated: true });
+            });
+        }
+
+        res.send({ isAuthenticated: false, message });
     }
 }
 
 function validateCredentials({ email, username, password }: SignupCredentials): void {
     if (!email || !username || !password) {
-        throw SignupErrors.missingCredential;
-    }
-}
-
-async function checkForExistingUsers({ email, username }: SignupCredentials): Promise<void> {
-    const users = await Promise.all([User.findOne({ email }), User.findOne({ username })]);
-
-    if (!isEmpty(compact(users))) {
-        throw SignupErrors.accountExists;
+        throw new HttpError(INVALID_CREDENTIALS_MESSAGE, 400);
     }
 }

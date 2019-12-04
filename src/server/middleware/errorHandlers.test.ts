@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { HttpError, HttpErrorMessages } from '../helpers/errors';
+import { HttpError, HttpErrorMessages } from '../../helpers/errors';
 import { notFoundHandler, errorHandler } from './errorHandlers';
 
 describe('notFoundHandler', () => {

@@ -1,28 +1,17 @@
 import { Request, Response } from 'express';
-import User from '../models/User';
-import { fetchUsers, fetchUser, createUser, updateUser, deleteUser } from './user';
+import UserService, { User } from '../model/services/user';
+import UserController from './user';
 
-jest.mock('../models/User', () => ({
-    __esModule: true,
-    default: {
-        findAll: jest.fn(),
-        findById: jest.fn(),
-        create: jest.fn(),
-        update: jest.fn(),
-        destroy: jest.fn(),
-    },
-}));
+jest.mock('../model/services/user');
 
 describe('user controller', () => {
-    const mockUser = {
+    const mockUser: User = {
         id: 1,
         email: 'test@test.com',
-        username: 'test_user',
-        password: 'test',
+        username: 'username',
     };
     let req: Request;
     let res: Response;
-    const next = jest.fn();
 
     beforeEach(() => {
         req = {} as Request;
@@ -34,140 +23,85 @@ describe('user controller', () => {
 
     describe('#fetchUsers', () => {
         test('retrieves a list of users', async () => {
-            User.findAll = jest.fn().mockResolvedValue([mockUser]);
+            UserService.findAllUsers = jest.fn().mockResolvedValue([mockUser]);
 
             expect.assertions(2);
 
-            await fetchUsers(req, res, next);
+            await UserController.fetchUsers(req, res);
 
-            expect(User.findAll).toHaveBeenCalled();
+            expect(UserService.findAllUsers).toHaveBeenCalled();
             expect(res.send).toHaveBeenCalledWith({ users: [mockUser] });
-        });
-
-        test('passes error to next() if unsuccessful', async () => {
-            const err = new Error('Database error');
-            User.findAll = jest.fn().mockRejectedValue(err);
-
-            expect.assertions(1);
-
-            await fetchUsers(req, res, next);
-
-            expect(next).toHaveBeenCalledWith(err);
         });
     });
 
     describe('#fetchUser', () => {
         test('retrieves the correct user', async () => {
-            User.findById = jest.fn().mockResolvedValue(mockUser);
+            UserService.findUser = jest.fn().mockResolvedValue(mockUser);
             req.params = { id: '1' };
 
             expect.assertions(2);
 
-            await fetchUser(req, res, next);
+            await UserController.fetchUser(req, res);
 
-            expect(User.findById).toHaveBeenCalledWith(mockUser.id);
+            expect(UserService.findUser).toHaveBeenCalledWith(mockUser.id);
             expect(res.send).toHaveBeenCalledWith(mockUser);
-        });
-
-        test('passes error to next() if unsuccessful', async () => {
-            const err = new Error('Database error');
-            User.findById = jest.fn().mockRejectedValue(err);
-            req.params = { id: '1' };
-
-            expect.assertions(1);
-
-            await fetchUser(req, res, next);
-
-            expect(next).toHaveBeenCalledWith(err);
         });
     });
 
     describe('#createUser', () => {
-        const newUser = {
+        const data = {
             email: 'test@test.com',
-            username: 'test_user',
+            username: 'username',
         };
 
         test('creates a new user', async () => {
-            User.create = jest.fn().mockResolvedValue(mockUser);
-            req.body = newUser;
+            UserService.createUser = jest.fn().mockResolvedValue(mockUser);
+            req.body = data;
 
             expect.assertions(2);
 
-            await createUser(req, res, next);
+            await UserController.createUser(req, res);
 
-            expect(User.create).toHaveBeenCalledWith(newUser);
+            expect(UserService.createUser).toHaveBeenCalledWith(data);
             expect(res.send).toHaveBeenCalledWith(mockUser);
-        });
-
-        test('passes error to next() if unsuccessful', async () => {
-            const err = new Error('Database error');
-            User.create = jest.fn().mockRejectedValue(err);
-            req.body = newUser;
-
-            expect.assertions(1);
-
-            await createUser(req, res, next);
-
-            expect(next).toHaveBeenCalledWith(err);
         });
     });
 
     describe('#updateUser', () => {
-        const updatedUser = {
-            id: 1,
-            email: 'test@test.com',
+        const data = {
             username: 'updated_user',
         };
 
         test('updates a user', async () => {
-            User.update = jest.fn().mockResolvedValue(updatedUser);
-            req.body = updatedUser;
+            UserService.updateUser = jest
+                .fn()
+                .mockResolvedValue({ ...mockUser, username: data.username });
+            req.params = { id: '1' };
+            req.body = data;
 
             expect.assertions(2);
 
-            await updateUser(req, res, next);
+            await UserController.updateUser(req, res);
 
-            expect(User.update).toHaveBeenCalledWith(updatedUser);
-            expect(res.send).toHaveBeenCalledWith(updatedUser);
-        });
-
-        test('passes error to next() if unsuccessful', async () => {
-            const err = new Error('Database error');
-            User.update = jest.fn().mockRejectedValue(err);
-            req.body = updatedUser;
-
-            expect.assertions(1);
-
-            await updateUser(req, res, next);
-
-            expect(next).toHaveBeenCalledWith(err);
+            expect(UserService.updateUser).toHaveBeenCalledWith({
+                id: 1,
+                username: data.username,
+            });
+            expect(res.send).toHaveBeenCalledWith({ ...mockUser, username: data.username });
         });
     });
 
     describe('#deleteUser', () => {
         test('deletes a user', async () => {
-            User.destroy = jest.fn();
+            UserService.deleteUser = jest.fn();
             req.params = { id: '1' };
 
             expect.assertions(2);
 
-            await deleteUser(req, res, next);
+            await UserController.deleteUser(req, res);
 
-            expect(User.destroy).toHaveBeenCalledWith(mockUser.id);
+            expect(UserService.deleteUser).toHaveBeenCalledWith(mockUser.id);
             expect(res.end).toHaveBeenCalled();
-        });
-
-        test('passes error to next() if unsuccessful', async () => {
-            const err = new Error('Database error');
-            User.destroy = jest.fn().mockRejectedValue(err);
-            req.params = { id: '1' };
-
-            expect.assertions(1);
-
-            await deleteUser(req, res, next);
-
-            expect(next).toHaveBeenCalledWith(err);
         });
     });
 });

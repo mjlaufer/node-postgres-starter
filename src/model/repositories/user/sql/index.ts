@@ -1,5 +1,5 @@
 import path from 'path';
-import { generateSqlQuery } from '../../utils';
+import { generateSqlQuery } from '../../../utils';
 
 const sql = {
     findAll: generateSqlQuery(path.join(__dirname, 'findAll.sql')),
