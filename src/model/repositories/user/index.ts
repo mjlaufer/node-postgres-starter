@@ -1,5 +1,6 @@
 import { db } from '../../../db';
 import { LoginCredentials, SignupCredentials } from '../../../types';
+import { generateWhereClause } from '../../utils';
 import sql from './sql';
 
 export interface UserEntity {
@@ -20,22 +21,11 @@ export default class UserRepository {
         return user;
     }
 
-    static async findOne(credentials: LoginCredentials): Promise<UserEntity> {
-        let query = 'SELECT * FROM users ';
-        const columns: string[] = [];
-        const values: any[] = [];
-
-        Object.keys(credentials).forEach((key, i) => {
-            columns.push(`WHERE ${key} = $${i + 1}`);
-            values.push(credentials[key]);
-        });
-
-        const where = columns.join(' AND ');
-
-        query += where;
-
-        const user = await db.oneOrNone(query, values);
-
+    static async findOne(credentials: LoginCredentials): Promise<UserEntity | null> {
+        const user: UserEntity | null = await db.oneOrNone(
+            sql.findOne,
+            generateWhereClause(credentials),
+        );
         return user;
     }
 

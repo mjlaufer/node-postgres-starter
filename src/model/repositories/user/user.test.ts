@@ -1,3 +1,4 @@
+import pgPromise from 'pg-promise';
 import { db } from '../../../db';
 import { SignupCredentials } from '../../../types';
 import UserRepository, { UserEntity } from './index';
@@ -9,6 +10,7 @@ jest.mock('../../../db', () => ({
         one: jest.fn(),
         oneOrNone: jest.fn(),
     },
+    pgp: pgPromise(),
 }));
 
 describe('UserRepository', () => {
@@ -57,7 +59,7 @@ describe('UserRepository', () => {
 
             expect.assertions(2);
 
-            const userEntity: UserEntity = await UserRepository.findOne({
+            const userEntity = await UserRepository.findOne({
                 email: mockUserEntity.email,
             });
 
@@ -70,7 +72,21 @@ describe('UserRepository', () => {
 
             expect.assertions(2);
 
-            const userEntity: UserEntity = await UserRepository.findOne({
+            const userEntity = await UserRepository.findOne({
+                username: mockUserEntity.username,
+            });
+
+            expect(db.oneOrNone).toHaveBeenCalled();
+            expect(userEntity).toEqual(mockUserEntity);
+        });
+
+        test('can find a user by email and username', async () => {
+            db.oneOrNone = jest.fn().mockResolvedValue(mockUserEntity);
+
+            expect.assertions(2);
+
+            const userEntity = await UserRepository.findOne({
+                email: mockUserEntity.email,
                 username: mockUserEntity.username,
             });
 
