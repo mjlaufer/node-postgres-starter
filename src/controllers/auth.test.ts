@@ -1,9 +1,8 @@
 import { Request, Response } from 'express';
-import { HttpError } from '../helpers/errors';
 import AuthService from '../model/services/auth';
 import { User } from '../model/services/user';
 import { SignupCredentials } from '../types';
-import AuthController, { INVALID_CREDENTIALS_MESSAGE } from './auth';
+import AuthController from './auth';
 
 jest.mock('../model/services/auth');
 
@@ -53,16 +52,6 @@ describe('AuthController', () => {
             expect(AuthService.signup).toHaveBeenCalledWith(signupCredentials);
             expect(req.login).not.toHaveBeenCalled();
             expect(res.send).toHaveBeenCalledWith({ isAuthenticated: false, message: 'message' });
-        });
-
-        test('throws error if signup credentials are invalid', async () => {
-            req.body = { username: signupCredentials.username };
-
-            expect.assertions(1);
-
-            await expect(AuthController.signup(req, res)).rejects.toThrow(
-                new HttpError(INVALID_CREDENTIALS_MESSAGE),
-            );
         });
     });
 });

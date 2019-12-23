@@ -1,4 +1,4 @@
-import { HttpError } from '../../helpers/errors';
+import { HttpError } from '../../errors';
 import { SignupCredentials } from '../../types';
 import UserRepository, { UserEntity } from '../repositories/user';
 import AuthService, { USER_EXISTS_MESSAGE } from '../services/auth';
