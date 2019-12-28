@@ -1,8 +1,9 @@
 import { PassportStatic } from 'passport';
 import { Strategy } from 'passport-local';
 import bcrypt from 'bcryptjs';
-import UserRepository, { UserEntity } from '../model/repositories/user';
-import { User } from '../model/services/user';
+import { UserEntity } from '../types';
+import { db } from '../model/db';
+import User from '../model/User';
 import { emailValidator } from '../schemas';
 
 export default function configurePassport(passport: PassportStatic): void {
@@ -14,8 +15,8 @@ export default function configurePassport(passport: PassportStatic): void {
                     const { error } = emailValidator.validate(emailOrUsername);
 
                     const userEntity: UserEntity | null = error
-                        ? await UserRepository.findOne({ username: emailOrUsername })
-                        : await UserRepository.findOne({ email: emailOrUsername });
+                        ? await db.users.findOne({ username: emailOrUsername })
+                        : await db.users.findOne({ email: emailOrUsername });
 
                     if (!userEntity) {
                         return done(null, false);
@@ -43,7 +44,7 @@ export default function configurePassport(passport: PassportStatic): void {
 
     passport.deserializeUser(async (id: number, done) => {
         try {
-            const userEntity: UserEntity = await UserRepository.findById(id);
+            const userEntity: UserEntity = await db.users.findById(id);
             const user: User = new User(userEntity);
             return done(null, user);
         } catch {

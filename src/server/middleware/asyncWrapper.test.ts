@@ -4,7 +4,7 @@ import asyncWrapper from './asyncWrapper';
 describe('asyncWrapper', () => {
     const req = {} as Request;
     const res = {} as Response;
-    res.send = jest.fn();
+    res.json = jest.fn();
     const next = jest.fn();
     const asyncFn = jest.fn();
 

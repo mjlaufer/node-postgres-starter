@@ -3,7 +3,7 @@ import helmet from 'helmet';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import passport from 'passport';
-import { root, auth, users } from './routes';
+import * as router from './router';
 import { errorHandler, notFoundHandler } from './middleware/errorHandlers';
 import createSessionMiddleware from './middleware/session';
 import configurePassport from './configurePassport';
@@ -21,9 +21,10 @@ configurePassport(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/', root);
-app.use('/', auth);
-app.use('/users', users);
+app.use('/', router.root);
+app.use('/', router.auth);
+app.use('/users', router.users);
+app.use('/posts', router.posts);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

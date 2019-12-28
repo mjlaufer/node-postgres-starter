@@ -20,7 +20,7 @@ describe('errorHandler', () => {
 
     beforeEach(() => {
         res = {} as Response;
-        res.send = jest.fn();
+        res.json = jest.fn();
         res.status = jest.fn(() => res);
     });
 
@@ -32,7 +32,7 @@ describe('errorHandler', () => {
         errorHandler(error, {} as Request, res as Response, next);
 
         expect(res.status).toHaveBeenCalledWith(error.status);
-        expect(res.send).toHaveBeenCalledWith(
+        expect(res.json).toHaveBeenCalledWith(
             expect.objectContaining({
                 message: error.message,
                 stack: error.stack,
@@ -46,12 +46,12 @@ describe('errorHandler', () => {
         errorHandler(error, {} as Request, res as Response, next);
 
         expect(res.status).toHaveBeenCalledWith(error.status);
-        expect(res.send).toHaveBeenCalledWith(
+        expect(res.json).toHaveBeenCalledWith(
             expect.objectContaining({
                 message: HttpErrorMessages.INTERNAL_SERVER_ERROR,
             }),
         );
-        expect(res.send).not.toHaveBeenCalledWith(
+        expect(res.json).not.toHaveBeenCalledWith(
             expect.objectContaining({
                 stack: error.stack,
             }),

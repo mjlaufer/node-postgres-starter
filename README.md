@@ -1,18 +1,17 @@
-# ts-node-pgp-starter
+# ts-node-postgres-starter
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/mjlaufer/ts-node-pgp-starter.svg)](https://greenkeeper.io/)
+[![Greenkeeper badge](https://badges.greenkeeper.io/mjlaufer/ts-node-postgres-starter.svg)](https://greenkeeper.io/)
 
 ## About
 
-This is an opinionated template for creating and deploying containerized web APIs with Node, TypeScript, and PostgreSQL. To that end, this project uses the following technologies and packages:
+This is an opinionated template for developing containerized web APIs with Node, TypeScript, and PostgreSQL. To that end, this project uses the following technologies and packages:
 
--   Node.js v12
+-   Node.js v13
 -   TypeScript v3.7
 -   Express.js
--   PostgreSQL v11
+-   PostgreSQL v12
 -   pg-promise
 -   Docker
--   Kubernetes
 -   CircleCI
 
 ---
@@ -26,6 +25,10 @@ This is an opinionated template for creating and deploying containerized web API
 `yarn run dev` : Run the application in development mode.
 
 `yarn run ci:check` : Run CI checks.
+
+`yarn run knex migrate:latest` : Run database migrations.
+
+`yarn run knex seed:run` : Run seed files.
 
 ### Using Docker:
 
@@ -57,21 +60,3 @@ the container to port 5000 of the host).
 `docker-compose up --build` : Build images, and then start containers.
 
 `docker-compose down` : Stop containers; remove containers, networks, volumes, and images created by `up`.
-
----
-
-## Kubernetes (kubectl) Reference
-
-`kubectl apply -f FILENAME` : Apply a configuration to a resource (e.g., pod or deployment object). The resource will be created if it doesn't exist yet.
-
-`kubectl get RESOURCE_TYPE [-o wide]` : Display resources (e.g., pods, deployments, or services).
-
-`kubectl delete [-f FILENAME] | RESOURCE_TYPE [NAME | --all]` : Delete resources
-
-`kubectl set image RESOURCE_TYPE/NAME CONTAINER_NAME=NEW_IMAGE` : Update existing container image(s) of resources
-
----
-
-## Deployment
-
-Coming soon.

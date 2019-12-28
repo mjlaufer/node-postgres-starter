@@ -1,3 +1,5 @@
 coverage/*
+db/*
 scripts/*
 jest.config.js
+knexfile.js

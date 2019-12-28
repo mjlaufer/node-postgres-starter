@@ -1,0 +1,17 @@
+[
+  {
+    "username": "matthewjustin",
+    "email": "test1@test.com",
+    "password": "$2a$10$37xEfpMwqmfSCAfYlaMzS.trfLiJEqpk4gk.OegKglZRQNw3LIUWG"
+  },
+  {
+    "username": "kaylamariko",
+    "email": "test2@test.com",
+    "password": "$2a$10$37xEfpMwqmfSCAfYlaMzS.trfLiJEqpk4gk.OegKglZRQNw3LIUWG"
+  },
+  {
+    "username": "jessicaemiko",
+    "email": "test3@test.com",
+    "password": "$2a$10$37xEfpMwqmfSCAfYlaMzS.trfLiJEqpk4gk.OegKglZRQNw3LIUWG"
+  }
+]

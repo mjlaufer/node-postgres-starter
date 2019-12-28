@@ -8,7 +8,7 @@ export function notFoundHandler(req: Request, res: Response, next: NextFunction)
 
 export function errorHandler(err: HttpError, req: Request, res: Response, next: NextFunction) {
     if (process.env.NODE_ENV !== 'production') {
-        res.status(err.status).send({
+        res.status(err.status).json({
             message: err.message,
             stack: err.stack,
         });
@@ -26,7 +26,7 @@ export function errorHandler(err: HttpError, req: Request, res: Response, next: 
                 message = HttpErrorMessages.INTERNAL_SERVER_ERROR;
         }
 
-        res.status(err.status).send({ message });
+        res.status(err.status).json({ message });
     }
 
     next();
