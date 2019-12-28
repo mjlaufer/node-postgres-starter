@@ -13,7 +13,7 @@ let redisClient: RedisClient;
 if (NODE_ENV === 'production') {
     redisClient = redis.createClient(REDIS_URL);
 } else {
-    redisClient = redis.createClient({ host: REDIS_HOST, port: REDIS_PORT });
+    redisClient = redis.createClient({ host: REDIS_HOST, port: Number(REDIS_PORT) });
 }
 
 redisClient.on('error', err => {

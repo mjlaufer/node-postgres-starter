@@ -16,7 +16,8 @@
     "lint": "eslint --ext .ts src/",
     "prettier": "prettier --write **/*.ts",
     "prettier:check": "prettier --check **/*.ts",
-    "ci:check": "run-s prettier:check lint test:ci"
+    "ci:check": "run-s prettier:check lint test:ci",
+    "knex": "knex"
   },
   "author": "Matthew Laufer",
   "license": "MIT",
@@ -57,6 +58,7 @@
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-prettier": "^3.1.2",
     "jest": "^24.9.0",
+    "knex": "^0.20.4",
     "nodemon": "^2.0.2",
     "npm-run-all": "^4.1.5",
     "open": "^7.0.0",

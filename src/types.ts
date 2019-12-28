@@ -16,3 +16,9 @@ export interface UserData {
     username?: string;
     password?: string;
 }
+
+export interface PostData {
+    title: string;
+    body: string;
+    userId: number;
+}

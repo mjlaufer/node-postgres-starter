@@ -1,9 +1,9 @@
 import { HttpError } from '../../errors';
 import { SignupCredentials, UserData } from '../../types';
-import UserRepository, { UserEntity } from '../repositories/user';
+import UserRepository, { UserEntity } from '../repositories/UserRepository';
 import UserService, { User } from './user';
 
-jest.mock('../repositories/user');
+jest.mock('../repositories/UserRepository');
 
 describe('UserService', () => {
     const mockSignupCredentials: SignupCredentials = {

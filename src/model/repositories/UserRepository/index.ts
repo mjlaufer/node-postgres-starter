@@ -1,5 +1,5 @@
-import { db } from '../../../db';
 import { LoginCredentials, SignupCredentials } from '../../../types';
+import { db } from '../../db';
 import { generateWhereClause } from '../../utils';
 import sql from './sql';
 

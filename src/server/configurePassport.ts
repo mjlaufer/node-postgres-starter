@@ -1,7 +1,7 @@
 import { PassportStatic } from 'passport';
 import { Strategy } from 'passport-local';
 import bcrypt from 'bcryptjs';
-import UserRepository, { UserEntity } from '../model/repositories/user';
+import UserRepository, { UserEntity } from '../model/repositories/UserRepository';
 import { User } from '../model/services/user';
 import { emailValidator } from '../schemas';
 

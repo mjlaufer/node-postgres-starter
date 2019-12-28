@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import pgPromise from 'pg-promise';
 
 dotenv.config();
 
@@ -23,7 +24,7 @@ const {
 
 const connectionConfig: ConnectionConfig = {
     host: DB_HOST,
-    port: DB_PORT,
+    port: Number(DB_PORT),
     database: NODE_ENV === 'test' ? DB_NAME_TEST : DB_NAME,
     user: POSTGRES_USER,
     password: POSTGRES_PASSWORD,
@@ -31,4 +32,5 @@ const connectionConfig: ConnectionConfig = {
 
 const connection = NODE_ENV === 'production' ? DATABASE_URL : connectionConfig;
 
-export default connection;
+export const pgp = pgPromise();
+export const db = pgp(connection);

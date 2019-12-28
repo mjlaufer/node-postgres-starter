@@ -1,5 +1,5 @@
 import { QueryFile, IQueryFileOptions } from 'pg-promise';
-import { pgp } from '../db';
+import { pgp } from './db';
 
 export function generateSqlQuery(path: string): QueryFile {
     const options: IQueryFileOptions = {
