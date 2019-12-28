@@ -1,7 +1,6 @@
 import express from 'express';
 import helmet from 'helmet';
 import bodyParser from 'body-parser';
-import compression from 'compression';
 import morgan from 'morgan';
 import passport from 'passport';
 import { root, auth, users } from './routes';
@@ -14,7 +13,6 @@ const app = express();
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(compression());
 app.use(morgan(process.env.NODE_ENV !== 'production' ? 'dev' : 'common'));
 
 app.use(createSessionMiddleware());
