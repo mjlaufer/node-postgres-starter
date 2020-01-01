@@ -2,7 +2,7 @@ import { compact, isEmpty } from 'lodash';
 import { HttpError } from '../../errors';
 import { SignupCredentials } from '../../types';
 import UserRepository, { UserEntity } from '../repositories/UserRepository';
-import UserService, { User } from '../services/user';
+import UserService, { User } from './UserService';
 
 export const USER_EXISTS_MESSAGE = 'An account for this email or username already exists';
 

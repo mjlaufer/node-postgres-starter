@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import UserService, { User } from '../model/services/user';
-import UserController from './user';
+import UserService, { User } from '../model/services/UserService';
+import UserController from './UserController';
 
-jest.mock('../model/services/user');
+jest.mock('../model/services/UserService');
 
 describe('user controller', () => {
     const mockUser: User = {

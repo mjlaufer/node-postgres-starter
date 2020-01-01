@@ -1,6 +1,6 @@
-import { db } from '../../db';
-import { generateWhereClause } from '../../utils';
-import BaseRepository from '../BaseRepository';
+import { db } from './db';
+import { generateWhereClause } from './db-utils';
+import BaseRepository from './BaseRepository';
 
 export interface UserEntity {
     id: number;

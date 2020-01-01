@@ -1,14 +1,14 @@
 import { HttpError } from '../../errors';
 import { SignupCredentials } from '../../types';
 import UserRepository, { UserEntity } from '../repositories/UserRepository';
-import AuthService, { USER_EXISTS_MESSAGE } from '../services/auth';
-import UserService, { User } from './user';
+import AuthService, { USER_EXISTS_MESSAGE } from './AuthService';
+import UserService, { User } from './UserService';
 
 jest.mock('../repositories/UserRepository', () => ({
     findOne: jest.fn().mockResolvedValue(null),
 }));
 
-jest.mock('../services/user');
+jest.mock('./UserService');
 
 describe('AuthService', () => {
     const mockSignupCredentials: SignupCredentials = {

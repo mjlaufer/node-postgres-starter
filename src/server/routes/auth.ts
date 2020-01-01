@@ -1,6 +1,6 @@
 import express from 'express';
 import passport from 'passport';
-import AuthController from '../../controllers/auth';
+import AuthController from '../../controllers/AuthController';
 import asyncWrapper from '../middleware/asyncWrapper';
 import schemaValidator from '../middleware/schemaValidator';
 

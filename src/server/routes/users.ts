@@ -1,5 +1,5 @@
 import express from 'express';
-import UserController from '../../controllers/user';
+import UserController from '../../controllers/UserController';
 import asyncWrapper from '../middleware/asyncWrapper';
 
 const router = express.Router();

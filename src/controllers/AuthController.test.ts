@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import AuthService from '../model/services/auth';
-import { User } from '../model/services/user';
+import AuthService from '../model/services/AuthService';
+import { User } from '../model/services/UserService';
 import { SignupCredentials } from '../types';
-import AuthController from './auth';
+import AuthController from './AuthController';
 
-jest.mock('../model/services/auth');
+jest.mock('../model/services/AuthService');
 
 describe('AuthController', () => {
     const mockUser: User = {

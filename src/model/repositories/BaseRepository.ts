@@ -1,4 +1,4 @@
-import { db } from '../db';
+import { db } from './db';
 import sql from './sql';
 
 export default abstract class Repository<T> {

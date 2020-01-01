@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { pick } from 'lodash';
 import { SignupCredentials, UserData } from '../types';
-import UserService, { User } from '../model/services/user';
+import UserService, { User } from '../model/services/UserService';
 
 export default class UserController {
     static async fetchUsers(req: Request, res: Response): Promise<void> {

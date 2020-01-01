@@ -1,4 +1,4 @@
-import PostRepository from './index';
+import PostRepository from './PostRepository';
 
 describe('PostRepository', () => {
     test('is an instance of class PostRepository', () => {

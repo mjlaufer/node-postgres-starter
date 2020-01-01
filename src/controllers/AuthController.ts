@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { pick } from 'lodash';
 import { HttpError } from '../errors';
-import AuthService, { SignupResponse } from '../model/services/auth';
+import AuthService, { SignupResponse } from '../model/services/AuthService';
 import { SignupCredentials } from '../types';
 
 export default class AuthController {

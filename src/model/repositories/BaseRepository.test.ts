@@ -1,8 +1,8 @@
 import pgPromise from 'pg-promise';
-import { db } from '../db';
+import { db } from './db';
 import BaseRepository from './BaseRepository';
 
-jest.mock('../db', () => ({
+jest.mock('./db', () => ({
     db: {
         any: jest.fn(),
         none: jest.fn(),

@@ -2,7 +2,7 @@ import { PassportStatic } from 'passport';
 import { Strategy } from 'passport-local';
 import bcrypt from 'bcryptjs';
 import UserRepository, { UserEntity } from '../model/repositories/UserRepository';
-import { User } from '../model/services/user';
+import { User } from '../model/services/UserService';
 import { emailValidator } from '../schemas';
 
 export default function configurePassport(passport: PassportStatic): void {

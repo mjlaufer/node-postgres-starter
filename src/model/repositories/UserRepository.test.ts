@@ -1,9 +1,9 @@
 import pgPromise from 'pg-promise';
-import { SignupCredentials } from '../../../types';
-import { db } from '../../db';
-import UserRepository, { UserEntity } from './index';
+import { SignupCredentials } from '../../types';
+import { db } from './db';
+import UserRepository, { UserEntity } from './UserRepository';
 
-jest.mock('../../db', () => ({
+jest.mock('./db', () => ({
     db: {
         oneOrNone: jest.fn(),
     },
