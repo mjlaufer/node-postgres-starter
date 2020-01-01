@@ -1,7 +1,4 @@
-/*
-    Updates a User record.
-*/
-UPDATE users
+UPDATE ${table:name}
 SET email = ${email},
 username = ${username}
 WHERE id = ${id}

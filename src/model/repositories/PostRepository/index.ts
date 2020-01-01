@@ -1,7 +1,4 @@
-import { snakeCaseKeys } from '../../../helpers/object';
-import { PostData } from '../../../types';
-import { db } from '../../db';
-import sql from './sql';
+import BaseRepository from '../BaseRepository';
 
 export interface PostEntity {
     id: number;
@@ -10,9 +7,10 @@ export interface PostEntity {
     user_id: number;
 }
 
-export default class PostRepository {
-    static async create(postData: PostData): Promise<PostEntity> {
-        const post: PostEntity = await db.one(sql.create, snakeCaseKeys(postData));
-        return post;
+class PostRepository extends BaseRepository<PostEntity> {
+    constructor() {
+        super('posts');
     }
 }
+
+export default new PostRepository();
