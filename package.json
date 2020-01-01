@@ -1,7 +1,7 @@
 {
-  "name": "ts-node-pgp-starter",
+  "name": "ts-node-postgres-starter",
   "version": "1.0.0",
-  "description": "TypeScript-Node API starter project",
+  "description": "RESTful web service template using Node, TypeScript, and PostgreSQL",
   "main": "index.js",
   "scripts": {
     "start": "node dist/server/index.ts",
