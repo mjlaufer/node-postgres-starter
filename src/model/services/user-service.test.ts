@@ -24,9 +24,9 @@ describe('userService', () => {
         email: mockSignupCredentials.email,
         username: mockSignupCredentials.username,
         password: '$2a$10$37xEfpMwqmfSCAfYlaMzS.trfLiJEqpk4gk.OegKglZRQNw3LIUWG',
-        created_at: '',
-        modified_at: '',
-        deleted_at: null,
+        createdAt: '',
+        modifiedAt: '',
+        deletedAt: null,
     };
 
     const mockUser = new User(mockUserEntity);

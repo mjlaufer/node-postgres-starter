@@ -18,9 +18,9 @@ describe('postService', () => {
         title: 'title',
         body: 'body',
         username: 'username',
-        created_at: '',
-        modified_at: '',
-        deleted_at: null,
+        createdAt: '',
+        modifiedAt: '',
+        deletedAt: null,
     };
 
     const mockPost = new Post(mockPostEntity);

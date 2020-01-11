@@ -29,9 +29,9 @@ export interface UserEntity {
     email: string;
     username: string;
     password: string;
-    created_at: string;
-    modified_at: string;
-    deleted_at: string | null;
+    createdAt: string;
+    modifiedAt: string;
+    deletedAt: string | null;
 }
 
 export interface PostEntity {
@@ -39,7 +39,7 @@ export interface PostEntity {
     title: string;
     body: string;
     username: string;
-    created_at: string;
-    modified_at: string;
-    deleted_at: string | null;
+    createdAt: string;
+    modifiedAt: string;
+    deletedAt: string | null;
 }
