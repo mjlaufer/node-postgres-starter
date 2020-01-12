@@ -11,8 +11,8 @@ exports.seed = function(knex) {
         const postInserts = [];
 
         for (const post of postsData) {
-            const { author_username } = post;
-            postInserts.push(insertPostRecord(knex, author_username, post));
+            const { author } = post;
+            postInserts.push(insertPostRecord(knex, author, post));
         }
 
         await Promise.all(postInserts);

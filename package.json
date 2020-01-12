@@ -34,7 +34,7 @@
     "morgan": "^1.9.1",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
-    "pg-promise": "^10.3.3",
+    "pg-promise": "^10.3.5",
     "redis": "^2.8.0",
     "uuid": "^3.3.3"
   },

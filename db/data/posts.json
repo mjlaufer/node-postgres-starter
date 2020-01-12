@@ -2,16 +2,16 @@
   {
     "title": "title1",
     "body": "body1",
-    "author_username": "matthewjustin"
+    "author": "matthewjustin"
   },
   {
     "title": "title2",
     "body": "body2",
-    "author_username": "kaylamariko"
+    "author": "kaylamariko"
   },
   {
     "title": "title3",
     "body": "body3",
-    "author_username": "jessicaemiko"
+    "author": "jessicaemiko"
   }
 ]

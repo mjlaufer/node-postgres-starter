@@ -1,13 +1,13 @@
-import * as utils from './helpers';
+import * as helpers from './helpers';
 
-describe('db utils', () => {
+describe('db helpers', () => {
     test('#generateWhereClause', () => {
         const params = {
             email: 'user@test.com',
             username: 'username',
         };
 
-        expect(utils.generateWhereClause(params)).toBe(
+        expect(helpers.generateWhereClause(params)).toBe(
             "WHERE email = 'user@test.com' AND WHERE username = 'username'",
         );
     });
