@@ -1,5 +1,5 @@
 import pgPromise from 'pg-promise';
-import { HttpError } from '../../errors';
+import { HttpError } from '../../helpers/errors';
 import { SignupCredentials, UserEntity } from '../../types';
 import User from '../User';
 import * as userService from './user-service';

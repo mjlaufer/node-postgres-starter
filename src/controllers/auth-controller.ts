@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { pick } from 'lodash';
-import { HttpError } from '../errors';
+import { HttpError } from '../helpers/errors';
 import * as authService from '../model/services/auth-service';
 import { SignupCredentials, SignupResponse } from '../types';
 

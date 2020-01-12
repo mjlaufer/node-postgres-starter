@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import { UserEntity } from '../types';
 import { db } from '../model/db';
 import User from '../model/User';
-import { emailValidator } from '../schemas';
+import { emailValidator } from '../helpers/validators';
 
 export default function configurePassport(passport: PassportStatic): void {
     passport.use(

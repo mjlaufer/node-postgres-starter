@@ -1,5 +1,5 @@
 import pgPromise from 'pg-promise';
-import { HttpError } from '../../errors';
+import { HttpError } from '../../helpers/errors';
 import { PostEntity } from '../../types';
 import { db } from '../db';
 import Post from '../Post';

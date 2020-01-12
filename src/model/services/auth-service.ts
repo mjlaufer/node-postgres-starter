@@ -1,5 +1,5 @@
 import { compact, isEmpty } from 'lodash';
-import { HttpError } from '../../errors';
+import { HttpError } from '../../helpers/errors';
 import { SignupCredentials, SignupResponse, UserEntity } from '../../types';
 import { db } from '../db';
 import User from '../User';

@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { HttpError } from '../../errors';
+import { HttpError } from '../../helpers/errors';
 import { SignupCredentials, UserEntity, UserData } from '../../types';
 import { db } from '../db';
 import User from '../User';
