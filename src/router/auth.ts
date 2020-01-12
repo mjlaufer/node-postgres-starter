@@ -1,7 +1,7 @@
 import express from 'express';
 import passport from 'passport';
-import * as authController from '../../controllers/auth-controller';
-import { signupSchema, loginSchema } from '../../helpers/schemas';
+import * as authController from '../controllers/auth-controller';
+import { signupSchema, loginSchema } from '../helpers/schemas';
 import asyncWrapper from '../middleware/asyncWrapper';
 import { sanitizeSignupCredentials, sanitizeLoginCredentials } from '../middleware/sanitize';
 import validateSchema from '../middleware/validateSchema';

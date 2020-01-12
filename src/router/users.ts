@@ -1,6 +1,6 @@
 import express from 'express';
-import * as userController from '../../controllers/user-controller';
-import { signupSchema, updateUserSchema } from '../../helpers/schemas';
+import * as userController from '../controllers/user-controller';
+import { signupSchema, updateUserSchema } from '../helpers/schemas';
 import asyncWrapper from '../middleware/asyncWrapper';
 import {
     sanitizeId,

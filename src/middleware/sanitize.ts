@@ -1,5 +1,5 @@
 import { sanitizeBody, sanitizeParam } from 'express-validator';
-import { emailValidator } from '../../helpers/validators';
+import { emailValidator } from '../helpers/validators';
 
 export const sanitizeId = sanitizeParam('id').toInt();
 

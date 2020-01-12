@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { HttpError, HttpErrorMessages } from '../../helpers/errors';
+import { HttpError, HttpErrorMessages } from '../helpers/errors';
 
 export function notFoundHandler(req: Request, res: Response, next: NextFunction) {
     const err = new HttpError(HttpErrorMessages.NOT_FOUND, 404);

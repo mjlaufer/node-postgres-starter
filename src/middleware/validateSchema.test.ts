@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import Joi from '@hapi/joi';
-import { HttpError } from '../../helpers/errors';
+import { HttpError } from '../helpers/errors';
 import validateSchema from './validateSchema';
 
 describe('validateSchema', () => {
