@@ -23,7 +23,7 @@ describe('AuthService', () => {
     };
 
     const mockUserEntity: UserEntity = {
-        id: 1,
+        id: '00000000-0000-0000-0000-000000000000',
         email: mockSignupCredentials.email,
         username: mockSignupCredentials.username,
         password: '$2a$10$37xEfpMwqmfSCAfYlaMzS.trfLiJEqpk4gk.OegKglZRQNw3LIUWG',

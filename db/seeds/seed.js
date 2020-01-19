@@ -25,6 +25,7 @@ async function insertPostRecord(knex, username, post) {
         .first();
 
     await knex('posts').insert({
+        id: post.id,
         title: post.title,
         body: post.body,
         user_id: user.id,

@@ -1,6 +1,10 @@
 import Joi from '@hapi/joi';
 import * as validators from './validators';
 
+export const idSchema = Joi.object({
+    id: validators.uuidValidator,
+});
+
 export const signupSchema = Joi.object({
     username: validators.usernameValidator,
     email: validators.emailValidator,

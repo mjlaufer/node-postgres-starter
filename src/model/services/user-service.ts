@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { HttpError } from '../../helpers/errors';
+import { generateId } from '../../helpers/id';
 import { SignupCredentials, UserEntity, UserData } from '../../types';
 import { db } from '../db';
 import User from '../User';
@@ -13,7 +14,7 @@ export async function fetchUsers(): Promise<User[]> {
     }
 }
 
-export async function fetchUser(id: number): Promise<User> {
+export async function fetchUser(id: string): Promise<User> {
     try {
         const userEntity: UserEntity = await db.users.findById(id);
         return new User(userEntity);
@@ -27,6 +28,7 @@ export async function createUser(credentials: SignupCredentials): Promise<User> 
         const password = hash(credentials.password);
 
         const userEntity: UserEntity = await db.users.create({
+            id: generateId(),
             ...credentials,
             password,
         });
@@ -51,7 +53,7 @@ export async function updateUser(userData: UserData): Promise<User> {
     }
 }
 
-export async function deleteUser(id: number): Promise<void> {
+export async function deleteUser(id: string): Promise<void> {
     try {
         await db.users.destroy(id);
     } catch (err) {

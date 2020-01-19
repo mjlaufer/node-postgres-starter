@@ -3,9 +3,11 @@ import User from '../model/User';
 import * as userService from '../model/services/user-service';
 import * as userController from './user-controller';
 
+const mockUuid = '00000000-0000-0000-0000-000000000000';
+
 describe('userController', () => {
     const mockUser: User = {
-        id: 1,
+        id: mockUuid,
         email: 'test@test.com',
         username: 'username',
     };
@@ -36,7 +38,7 @@ describe('userController', () => {
     describe('#fetchUser', () => {
         test('retrieves the correct user', async () => {
             const fetchUser = jest.spyOn(userService, 'fetchUser').mockResolvedValue(mockUser);
-            req.params = { id: '1' };
+            req.params = { id: mockUuid };
 
             expect.assertions(2);
 
@@ -75,7 +77,7 @@ describe('userController', () => {
             const updateUser = jest
                 .spyOn(userService, 'updateUser')
                 .mockResolvedValue({ ...mockUser, username: data.username });
-            req.params = { id: '1' };
+            req.params = { id: mockUuid };
             req.body = data;
 
             expect.assertions(2);
@@ -83,7 +85,7 @@ describe('userController', () => {
             await userController.updateUser(req, res);
 
             expect(updateUser).toHaveBeenCalledWith({
-                id: 1,
+                id: mockUuid,
                 username: data.username,
             });
             expect(res.json).toHaveBeenCalledWith({ ...mockUser, username: data.username });
@@ -93,7 +95,7 @@ describe('userController', () => {
     describe('#deleteUser', () => {
         test('deletes a user', async () => {
             const deleteUser = jest.spyOn(userService, 'deleteUser').mockResolvedValue();
-            req.params = { id: '1' };
+            req.params = { id: mockUuid };
 
             expect.assertions(2);
 

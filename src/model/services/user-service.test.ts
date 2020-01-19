@@ -5,6 +5,8 @@ import { db } from '../db';
 import User from '../User';
 import * as userService from './user-service';
 
+const mockUuid = '00000000-0000-0000-0000-000000000000';
+
 jest.mock('../db', () => ({
     db: {
         users: {},
@@ -20,7 +22,7 @@ describe('userService', () => {
     };
 
     const mockUserEntity: UserEntity = {
-        id: 1,
+        id: mockUuid,
         email: mockSignupCredentials.email,
         username: mockSignupCredentials.username,
         password: '$2a$10$37xEfpMwqmfSCAfYlaMzS.trfLiJEqpk4gk.OegKglZRQNw3LIUWG',
@@ -102,7 +104,7 @@ describe('userService', () => {
 
     describe('#updateUser', () => {
         const updatedUserData: UserData = {
-            id: 1,
+            id: mockUuid,
             username: 'updated_user',
             password: 'updated_password',
         };

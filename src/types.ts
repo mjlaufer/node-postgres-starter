@@ -1,4 +1,11 @@
+import { Request, Response, NextFunction } from 'express';
 import User from './model/User';
+
+export type MiddlewareFunc = (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => void | Promise<void>;
 
 export interface LoginCredentials {
     [key: string]: string | undefined;
@@ -18,14 +25,14 @@ export interface SignupResponse {
 }
 
 export interface UserData {
-    id: number;
+    id: string;
     email?: string;
     username?: string;
     password?: string;
 }
 
 export interface UserEntity {
-    id: number;
+    id: string;
     email: string;
     username: string;
     password: string;
@@ -35,7 +42,7 @@ export interface UserEntity {
 }
 
 export interface PostEntity {
-    id: number;
+    id: string;
     title: string;
     body: string;
     username: string;

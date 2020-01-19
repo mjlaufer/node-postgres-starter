@@ -5,6 +5,8 @@ import { db } from '../db';
 import Post from '../Post';
 import * as postService from './post-service';
 
+const mockUuid = '00000000-0000-0000-0000-000000000000';
+
 jest.mock('../db', () => ({
     db: {
         posts: {},
@@ -14,7 +16,7 @@ jest.mock('../db', () => ({
 
 describe('postService', () => {
     const mockPostEntity: PostEntity = {
-        id: 1,
+        id: mockUuid,
         title: 'title',
         body: 'body',
         username: 'username',

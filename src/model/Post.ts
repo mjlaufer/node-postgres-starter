@@ -1,7 +1,7 @@
 import { PostEntity } from '../types';
 
 export default class Post {
-    id?: number;
+    id?: string;
     title: string;
     body: string;
     author?: string;

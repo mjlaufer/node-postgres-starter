@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import redis, { RedisClient } from 'redis';
 import createRedisStore from 'connect-redis';
 import session from 'express-session';
-import uuid from 'uuid';
+import { generateId } from '../helpers/id';
 
 dotenv.config();
 
@@ -29,7 +29,7 @@ const cookieOptions = {
 
 export default function createSessionMiddleware() {
     return session({
-        genid: () => uuid(),
+        genid: () => generateId(),
         store: new RedisStore({ client: redisClient }),
         name: 'sid',
         secret: SESSION_SECRET,

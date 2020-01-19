@@ -6,7 +6,7 @@ import * as authController from './auth-controller';
 
 describe('authController', () => {
     const mockUser: User = {
-        id: 1,
+        id: '00000000-0000-0000-0000-000000000000',
         email: 'test@test.com',
         username: 'test_user',
     };

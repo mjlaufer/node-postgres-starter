@@ -42,7 +42,7 @@ export default function configurePassport(passport: PassportStatic): void {
 
     passport.serializeUser((user: User, done) => done(null, user.id));
 
-    passport.deserializeUser(async (id: number, done) => {
+    passport.deserializeUser(async (id: string, done) => {
         try {
             const userEntity: UserEntity = await db.users.findById(id);
             const user: User = new User(userEntity);

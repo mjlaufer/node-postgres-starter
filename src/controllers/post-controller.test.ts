@@ -3,9 +3,11 @@ import Post from '../model/Post';
 import * as postService from '../model/services/post-service';
 import * as postController from './post-controller';
 
+const mockUuid = '00000000-0000-0000-0000-000000000000';
+
 describe('postController', () => {
     const mockPost: Post = {
-        id: 1,
+        id: mockUuid,
         title: 'title',
         body: 'body',
         author: 'author',

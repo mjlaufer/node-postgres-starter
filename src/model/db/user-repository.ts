@@ -2,6 +2,10 @@ import { IDatabase } from 'pg-promise';
 import { LoginCredentials, SignupCredentials, UserEntity } from '../../types';
 import { generateWhereClause } from './helpers';
 
+interface SignupCredentialsWithId extends SignupCredentials {
+    id: string;
+}
+
 export default class UserRepository {
     constructor(private db: IDatabase<any>) {}
 
@@ -10,7 +14,7 @@ export default class UserRepository {
         return users;
     }
 
-    async findById(id: number): Promise<UserEntity> {
+    async findById(id: string): Promise<UserEntity> {
         const user = await this.db.one<UserEntity>('SELECT * FROM users WHERE id = $1', id);
         return user;
     }
@@ -23,9 +27,9 @@ export default class UserRepository {
         return user;
     }
 
-    async create(credentials: SignupCredentials): Promise<UserEntity> {
+    async create(credentials: SignupCredentialsWithId): Promise<UserEntity> {
         const newUser = await this.db.one<UserEntity>(
-            'INSERT INTO users(email, username, password) VALUES(${email}, ${username}, ${password}) RETURNING *',
+            'INSERT INTO users(id, email, username, password) VALUES(${id}, ${email}, ${username}, ${password}) RETURNING *',
             credentials,
         );
         return newUser;
@@ -39,7 +43,7 @@ export default class UserRepository {
         return updatedUser;
     }
 
-    async destroy(id: number): Promise<void> {
+    async destroy(id: string): Promise<void> {
         await this.db.none('DELETE FROM users WHERE id = $1', id);
     }
 }

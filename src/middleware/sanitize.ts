@@ -1,7 +1,5 @@
-import { sanitizeBody, sanitizeParam } from 'express-validator';
+import { sanitizeBody } from 'express-validator';
 import { emailValidator } from '../helpers/validators';
-
-export const sanitizeId = sanitizeParam('id').toInt();
 
 export const sanitizeSignupCredentials = [
     sanitizeBody('email').normalizeEmail(),
@@ -16,7 +14,6 @@ export const sanitizeLoginCredentials = sanitizeBody('emailOrUsername').customSa
 });
 
 export const sanitizeUpdateUserInputs = [
-    sanitizeParam('id').toInt(),
     sanitizeBody('email').normalizeEmail(),
     sanitizeBody('username')
         .trim()

@@ -10,7 +10,7 @@ export async function fetchUsers(req: Request, res: Response): Promise<void> {
 }
 
 export async function fetchUser(req: Request, res: Response): Promise<void> {
-    const user: User = await userService.fetchUser(+req.params.id);
+    const user: User = await userService.fetchUser(req.params.id);
     res.json(user);
 }
 
@@ -23,9 +23,8 @@ export async function createUser(req: Request, res: Response): Promise<void> {
 }
 
 export async function updateUser(req: Request, res: Response): Promise<void> {
-    const id = +req.params.id;
     const updatedUserData: UserData = {
-        id,
+        id: req.params.id,
         ...pick(req.body, ['email', 'username', 'password']),
     };
 
@@ -35,6 +34,6 @@ export async function updateUser(req: Request, res: Response): Promise<void> {
 }
 
 export async function deleteUser(req: Request, res: Response): Promise<void> {
-    await userService.deleteUser(+req.params.id);
+    await userService.deleteUser(req.params.id);
     res.status(204).end();
 }

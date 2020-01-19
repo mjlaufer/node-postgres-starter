@@ -1,5 +1,7 @@
 import Joi from '@hapi/joi';
 
+export const uuidValidator = Joi.string().guid({ version: 'uuidv4' });
+
 export const usernameValidator = Joi.string()
     .alphanum()
     .min(3)

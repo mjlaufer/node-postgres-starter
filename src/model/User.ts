@@ -1,7 +1,7 @@
 import { UserEntity } from '../types';
 
 export default class User {
-    id?: number;
+    id?: string;
     email: string;
     username: string;
 
