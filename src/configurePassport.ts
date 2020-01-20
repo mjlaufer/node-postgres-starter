@@ -4,40 +4,32 @@ import bcrypt from 'bcryptjs';
 import { UserEntity } from './types';
 import { db } from './model/db';
 import User from './model/User';
-import { emailValidator } from './helpers/validators';
 
 export default function configurePassport(passport: PassportStatic): void {
     passport.use(
-        new Strategy(
-            { usernameField: 'emailOrUsername' },
-            async (emailOrUsername, password, done) => {
-                try {
-                    const { error } = emailValidator.validate(emailOrUsername);
+        new Strategy({ usernameField: 'email' }, async (email, password, done) => {
+            try {
+                const userEntity = await db.users.findOne({ email });
 
-                    const userEntity: UserEntity | null = error
-                        ? await db.users.findOne({ username: emailOrUsername })
-                        : await db.users.findOne({ email: emailOrUsername });
+                if (!userEntity) {
+                    return done(null, false);
+                }
 
-                    if (!userEntity) {
+                return bcrypt.compare(password, userEntity.password, (err, res) => {
+                    if (err) {
+                        return done(err, false);
+                    }
+
+                    if (!res) {
                         return done(null, false);
                     }
 
-                    return bcrypt.compare(password, userEntity.password, (err, res) => {
-                        if (err) {
-                            return done(err, false);
-                        }
-
-                        if (!res) {
-                            return done(null, false);
-                        }
-
-                        return done(null, new User(userEntity));
-                    });
-                } catch (err) {
-                    return done(err, false);
-                }
-            },
-        ),
+                    return done(null, new User(userEntity));
+                });
+            } catch (err) {
+                return done(err, false);
+            }
+        }),
     );
 
     passport.serializeUser((user: User, done) => done(null, user.id));

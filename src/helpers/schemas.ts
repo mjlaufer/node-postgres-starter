@@ -6,20 +6,17 @@ export const idSchema = Joi.object({
 });
 
 export const signupSchema = Joi.object({
-    username: validators.usernameValidator,
     email: validators.emailValidator,
+    username: validators.usernameValidator,
     password: validators.passwordValidator,
 }).and('username', 'email', 'password');
 
 export const loginSchema = Joi.object({
-    emailOrUsername: Joi.alternatives().try(
-        validators.usernameValidator,
-        validators.emailValidator,
-    ),
+    email: validators.emailValidator,
     password: validators.passwordValidator,
-}).and('emailOrUsername', 'password');
+}).and('email', 'password');
 
 export const updateUserSchema = Joi.object({
-    username: validators.usernameValidator,
     email: validators.emailValidator,
+    username: validators.usernameValidator,
 });

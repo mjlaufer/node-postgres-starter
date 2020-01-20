@@ -2,7 +2,7 @@ import express from 'express';
 import * as userController from '../controllers/user-controller';
 import { idSchema, signupSchema, updateUserSchema } from '../helpers/schemas';
 import asyncWrapper from '../middleware/asyncWrapper';
-import { sanitizeSignupCredentials, sanitizeUpdateUserInputs } from '../middleware/sanitize';
+import { sanitizeEmail, sanitizeUsername } from '../middleware/sanitizers';
 import { validateParams, validateBody } from '../middleware/validation';
 
 const router = express.Router();
@@ -11,7 +11,7 @@ router
     .route('/')
     .get(asyncWrapper(userController.fetchUsers))
     .post(
-        sanitizeSignupCredentials,
+        [sanitizeEmail, sanitizeUsername],
         validateBody(signupSchema),
         asyncWrapper(userController.createUser),
     );
@@ -20,7 +20,7 @@ router
     .route('/:id')
     .get(validateParams(idSchema), asyncWrapper(userController.fetchUser))
     .put(
-        sanitizeUpdateUserInputs,
+        [sanitizeEmail, sanitizeUsername],
         validateParams(idSchema),
         validateBody(updateUserSchema),
         asyncWrapper(userController.updateUser),
