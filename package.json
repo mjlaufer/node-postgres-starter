@@ -4,11 +4,12 @@
   "description": "RESTful web service template using Node, TypeScript, and PostgreSQL",
   "main": "server.js",
   "scripts": {
-    "start": "node dist/server.js",
+    "start": "NODE_ENV=production node dist/server.js",
     "dev": "nodemon --exec \"ts-node\" src/server.ts",
     "debug": "nodemon --exec \"node --inspect -r ts-node/register\" src/server.ts",
     "build": "tsc",
     "test": "jest",
+    "test:setup": "NODE_ENV=test run-s \"knex migrate:latest\" \"knex seed:run\"",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch",
     "test:ci": "jest --ci --runInBand",
@@ -16,7 +17,7 @@
     "lint": "eslint --ext .ts src/",
     "prettier": "prettier --write **/*.ts",
     "prettier:check": "prettier --check **/*.ts",
-    "ci:check": "run-s prettier:check lint test:ci",
+    "ci:check": "run-s prettier:check lint test:setup test:ci",
     "knex": "knex"
   },
   "author": "Matthew Laufer",
@@ -52,6 +53,7 @@
     "@types/passport": "^1.0.2",
     "@types/passport-local": "^1.0.33",
     "@types/redis": "^2.8.14",
+    "@types/supertest": "^2.0.8",
     "@types/uuid": "^3.4.6",
     "@typescript-eslint/eslint-plugin": "^2.15.0",
     "@typescript-eslint/parser": "^2.15.0",
@@ -64,6 +66,7 @@
     "npm-run-all": "^4.1.5",
     "open": "^7.0.0",
     "prettier": "^1.19.1",
+    "supertest": "^4.0.2",
     "ts-jest": "^24.3.0",
     "ts-node": "^8.6.1",
     "typescript": "^3.7.4"

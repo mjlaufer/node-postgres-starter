@@ -48,18 +48,18 @@ interface ConnectionConfig {
 const {
     NODE_ENV,
     DATABASE_URL,
-    DB_HOST,
-    DB_PORT,
-    DB_NAME,
-    DB_NAME_TEST,
+    PG_HOST,
+    PG_PORT,
+    POSTGRES_DB,
+    POSTGRES_DB_TEST,
     POSTGRES_USER,
     POSTGRES_PASSWORD,
 } = process.env;
 
 const connectionConfig: ConnectionConfig = {
-    host: DB_HOST,
-    port: Number(DB_PORT),
-    database: NODE_ENV === 'test' ? DB_NAME_TEST : DB_NAME,
+    host: PG_HOST,
+    port: Number(PG_PORT),
+    database: NODE_ENV === 'test' ? POSTGRES_DB_TEST : POSTGRES_DB,
     user: POSTGRES_USER,
     password: POSTGRES_PASSWORD,
 };

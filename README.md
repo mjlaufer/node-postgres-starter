@@ -11,6 +11,7 @@ This is an opinionated template for developing containerized web APIs with Node,
 -   Express.js
 -   PostgreSQL v12
 -   pg-promise
+-   Redis
 -   Docker
 -   CircleCI
 
@@ -23,8 +24,6 @@ This is an opinionated template for developing containerized web APIs with Node,
 ### Local Development:
 
 `yarn run dev` : Run the application in development mode.
-
-`yarn run ci:check` : Run CI checks.
 
 `yarn run knex migrate:latest` : Run database migrations.
 

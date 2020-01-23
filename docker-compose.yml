@@ -15,7 +15,7 @@ services:
     env_file:
       - .env
     environment:
-      DB_HOST: db
+      PG_HOST: db
     restart: always
 
   db:

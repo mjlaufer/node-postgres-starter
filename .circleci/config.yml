@@ -3,6 +3,12 @@ jobs:
   build:
     docker:
       - image: circleci/node:12.5.0
+        environment:
+          SESSION_SECRET: secret
+          POSTGRES_USER: postgres
+          POSTGRES_DB: circle_test
+      - image: circleci/postgres:12.0-alpine-ram
+      - image: circleci/redis:5.0.6-alpine
 
     working_directory: ~/repo
 
@@ -14,10 +20,12 @@ jobs:
             - dependency-cache-{{ checksum "package.json" }}
 
       - run: yarn install
+      - run: sudo apt-get update
+      - run: sudo apt-get install postgresql-client
 
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - node_modules
 
-      - run: yarn test:ci
+      - run: yarn ci:check

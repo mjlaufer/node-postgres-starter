@@ -8,7 +8,7 @@ dotenv.config();
 
 const { NODE_ENV, REDIS_HOST, REDIS_PORT, REDIS_URL, SESSION_SECRET } = process.env;
 
-let redisClient: RedisClient;
+export let redisClient: RedisClient;
 
 if (NODE_ENV === 'production') {
     redisClient = redis.createClient(REDIS_URL);

@@ -1,13 +1,20 @@
 require('dotenv').config();
 const path = require('path');
 
-const { DB_HOST, DB_NAME, POSTGRES_USER, POSTGRES_PASSWORD } = process.env;
+const {
+    PG_HOST,
+    POSTGRES_DB,
+    POSTGRES_DB_TEST,
+    NODE_ENV,
+    POSTGRES_USER,
+    POSTGRES_PASSWORD,
+} = process.env;
 
 module.exports = {
     client: 'pg',
     connection: {
-        host: DB_HOST,
-        database: DB_NAME,
+        host: PG_HOST,
+        database: NODE_ENV === 'test' ? POSTGRES_DB_TEST : POSTGRES_DB,
         user: POSTGRES_USER,
         password: POSTGRES_PASSWORD,
     },
