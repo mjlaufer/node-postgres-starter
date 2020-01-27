@@ -1,5 +1,7 @@
-require('dotenv').config();
-const path = require('path');
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config();
 
 const {
     PG_HOST,

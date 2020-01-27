@@ -1,5 +1,5 @@
 {
   "extends": "./tsconfig",
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "knexfile.ts"],
   "exclude": ["node_modules"]
 }
