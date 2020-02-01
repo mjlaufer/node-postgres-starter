@@ -7,13 +7,7 @@ export type MiddlewareFunc = (
     next: NextFunction,
 ) => void | Promise<void>;
 
-export interface LoginCredentials {
-    [key: string]: string | undefined;
-    email?: string;
-    username?: string;
-}
-
-export interface SignupCredentials {
+export interface SignupRequest {
     email: string;
     username: string;
     password: string;
@@ -39,6 +33,11 @@ export interface UserEntity {
     createdAt: string;
     modifiedAt: string;
     deletedAt: string | null;
+}
+
+export interface PostRequest {
+    title: string;
+    body: string;
 }
 
 export interface PostEntity {

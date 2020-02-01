@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { pick } from 'lodash';
-import { SignupCredentials, UserData } from '../types';
+import { SignupRequest, UserData } from '../types';
 import User from '../model/User';
 import * as userService from '../model/services/user-service';
 
@@ -15,9 +15,9 @@ export async function fetchUser(req: Request, res: Response): Promise<void> {
 }
 
 export async function createUser(req: Request, res: Response): Promise<void> {
-    const credentials: SignupCredentials = pick(req.body, ['email', 'username', 'password']);
+    const signupRequestData: SignupRequest = pick(req.body, ['email', 'username', 'password']);
 
-    const user: User = await userService.createUser(credentials);
+    const user: User = await userService.createUser(signupRequestData);
 
     res.status(201).json(user);
 }

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import User from '../model/User';
 import * as authService from '../model/services/auth-service';
-import { SignupCredentials } from '../types';
+import { SignupRequest } from '../types';
 import * as authController from './auth-controller';
 
 describe('authController', () => {
@@ -21,7 +21,7 @@ describe('authController', () => {
     });
 
     describe('#signup', () => {
-        const signupCredentials: SignupCredentials = {
+        const signupRequestData: SignupRequest = {
             email: 'test@test.com',
             username: 'username',
             password: 'password',
@@ -29,13 +29,13 @@ describe('authController', () => {
 
         test('authenticates a new user if authService.signup returns a user', async () => {
             const signup = jest.spyOn(authService, 'signup').mockResolvedValue({ user: mockUser });
-            req.body = signupCredentials;
+            req.body = signupRequestData;
 
             expect.assertions(2);
 
             await authController.signup(req, res);
 
-            expect(signup).toHaveBeenCalledWith(signupCredentials);
+            expect(signup).toHaveBeenCalledWith(signupRequestData);
             expect(req.login).toHaveBeenCalled();
         });
 
@@ -43,13 +43,13 @@ describe('authController', () => {
             const signup = jest
                 .spyOn(authService, 'signup')
                 .mockResolvedValue({ message: 'message' });
-            req.body = signupCredentials;
+            req.body = signupRequestData;
 
             expect.assertions(3);
 
             await authController.signup(req, res);
 
-            expect(signup).toHaveBeenCalledWith(signupCredentials);
+            expect(signup).toHaveBeenCalledWith(signupRequestData);
             expect(req.login).not.toHaveBeenCalled();
             expect(res.json).toHaveBeenCalledWith({ isAuthenticated: false, message: 'message' });
         });

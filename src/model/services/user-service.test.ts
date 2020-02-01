@@ -1,6 +1,6 @@
 import pgPromise from 'pg-promise';
 import { HttpError } from '../../helpers/errors';
-import { SignupCredentials, UserData, UserEntity } from '../../types';
+import { SignupRequest, UserData, UserEntity } from '../../types';
 import { db } from '../db';
 import User from '../User';
 import * as userService from './user-service';
@@ -15,7 +15,7 @@ jest.mock('../db', () => ({
 }));
 
 describe('userService', () => {
-    const mockSignupCredentials: SignupCredentials = {
+    const mockSignupRequest: SignupRequest = {
         email: 'user@test.com',
         username: 'username',
         password: 'password',
@@ -23,8 +23,8 @@ describe('userService', () => {
 
     const mockUserEntity: UserEntity = {
         id: mockUuid,
-        email: mockSignupCredentials.email,
-        username: mockSignupCredentials.username,
+        email: mockSignupRequest.email,
+        username: mockSignupRequest.username,
         password: '$2a$10$37xEfpMwqmfSCAfYlaMzS.trfLiJEqpk4gk.OegKglZRQNw3LIUWG',
         createdAt: '',
         modifiedAt: '',
@@ -85,7 +85,7 @@ describe('userService', () => {
 
             expect.assertions(2);
 
-            const newUser = await userService.createUser(mockSignupCredentials);
+            const newUser = await userService.createUser(mockSignupRequest);
 
             expect(db.users.create).toHaveBeenCalled();
             expect(newUser).toEqual(mockUser);
@@ -96,7 +96,7 @@ describe('userService', () => {
 
             expect.assertions(1);
 
-            await expect(userService.createUser(mockSignupCredentials)).rejects.toThrow(
+            await expect(userService.createUser(mockSignupRequest)).rejects.toThrow(
                 new HttpError('mock error message'),
             );
         });

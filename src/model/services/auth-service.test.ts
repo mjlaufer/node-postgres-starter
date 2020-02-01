@@ -1,6 +1,6 @@
 import pgPromise from 'pg-promise';
 import { HttpError } from '../../helpers/errors';
-import { SignupCredentials, UserEntity } from '../../types';
+import { SignupRequest, UserEntity } from '../../types';
 import User from '../User';
 import * as userService from './user-service';
 import * as authService from './auth-service';
@@ -16,7 +16,7 @@ jest.mock('../db', () => ({
 }));
 
 describe('AuthService', () => {
-    const mockSignupCredentials: SignupCredentials = {
+    const mockSignupRequest: SignupRequest = {
         email: 'user@test.com',
         username: 'username',
         password: 'password',
@@ -24,8 +24,8 @@ describe('AuthService', () => {
 
     const mockUserEntity: UserEntity = {
         id: '00000000-0000-0000-0000-000000000000',
-        email: mockSignupCredentials.email,
-        username: mockSignupCredentials.username,
+        email: mockSignupRequest.email,
+        username: mockSignupRequest.username,
         password: '$2a$10$37xEfpMwqmfSCAfYlaMzS.trfLiJEqpk4gk.OegKglZRQNw3LIUWG',
         createdAt: '',
         modifiedAt: '',
@@ -44,7 +44,7 @@ describe('AuthService', () => {
 
             expect.assertions(1);
 
-            await expect(authService.signup(mockSignupCredentials)).resolves.toEqual({
+            await expect(authService.signup(mockSignupRequest)).resolves.toEqual({
                 user: mockUser,
             });
         });
@@ -54,7 +54,7 @@ describe('AuthService', () => {
 
             expect.assertions(1);
 
-            await expect(authService.signup(mockSignupCredentials)).resolves.toEqual({
+            await expect(authService.signup(mockSignupRequest)).resolves.toEqual({
                 message: authService.USER_EXISTS_MESSAGE,
             });
         });
@@ -64,7 +64,7 @@ describe('AuthService', () => {
 
             expect.assertions(1);
 
-            await expect(authService.signup(mockSignupCredentials)).rejects.toThrow(
+            await expect(authService.signup(mockSignupRequest)).rejects.toThrow(
                 new HttpError('mock error message'),
             );
         });

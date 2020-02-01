@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { HttpError } from '../../helpers/errors';
 import { generateId } from '../../helpers/id';
-import { SignupCredentials, UserEntity, UserData } from '../../types';
+import { SignupRequest, UserEntity, UserData } from '../../types';
 import { db } from '../db';
 import User from '../User';
 
@@ -23,13 +23,13 @@ export async function fetchUser(id: string): Promise<User> {
     }
 }
 
-export async function createUser(credentials: SignupCredentials): Promise<User> {
+export async function createUser(signupRequestData: SignupRequest): Promise<User> {
     try {
-        const password = hash(credentials.password);
+        const password = hash(signupRequestData.password);
 
         const userEntity: UserEntity = await db.users.create({
             id: generateId(),
-            ...credentials,
+            ...signupRequestData,
             password,
         });
 

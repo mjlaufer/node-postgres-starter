@@ -1,8 +1,8 @@
 import { IDatabase } from 'pg-promise';
-import { LoginCredentials, SignupCredentials, UserEntity } from '../../types';
+import { SignupRequest, UserEntity } from '../../types';
 import { generateWhereClause } from './helpers';
 
-interface SignupCredentialsWithId extends SignupCredentials {
+interface SignupRequestWithId extends SignupRequest {
     id: string;
 }
 
@@ -19,18 +19,18 @@ export default class UserRepository {
         return user;
     }
 
-    async findOne(credentials: LoginCredentials): Promise<UserEntity | null> {
+    async findOne(data: { email: string }): Promise<UserEntity | null> {
         const user = await this.db.oneOrNone<UserEntity>(
             'SELECT * FROM users $1:raw',
-            generateWhereClause(credentials),
+            generateWhereClause(data),
         );
         return user;
     }
 
-    async create(credentials: SignupCredentialsWithId): Promise<UserEntity> {
+    async create(signupRequestData: SignupRequestWithId): Promise<UserEntity> {
         const newUser = await this.db.one<UserEntity>(
             'INSERT INTO users(id, email, username, password) VALUES(${id}, ${email}, ${username}, ${password}) RETURNING *',
-            credentials,
+            signupRequestData,
         );
         return newUser;
     }
