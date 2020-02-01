@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { pick } from 'lodash';
-import { SignupRequest, UserData } from '../types';
+import { SignupRequest, UserUpdateRequest } from '../types';
 import User from '../model/User';
 import * as userService from '../model/services/user-service';
 
@@ -23,7 +23,7 @@ export async function createUser(req: Request, res: Response): Promise<void> {
 }
 
 export async function updateUser(req: Request, res: Response): Promise<void> {
-    const updatedUserData: UserData = {
+    const updatedUserData: UserUpdateRequest = {
         id: req.params.id,
         ...pick(req.body, ['email', 'username', 'password']),
     };

@@ -1,7 +1,7 @@
 import { IDatabase } from 'pg-promise';
-import { PostRequest, PostEntity } from '../../types';
+import { PostCreateRequest, PostEntity } from '../../types';
 
-interface PostRequestWithId extends PostRequest {
+interface PostCreateRequestWithId extends PostCreateRequest {
     id: string;
 }
 
@@ -20,7 +20,7 @@ export default class PostRepository {
         return post;
     }
 
-    async create(postRequestData: PostRequestWithId): Promise<PostEntity> {
+    async create(postRequestData: PostCreateRequestWithId): Promise<PostEntity> {
         const newPost = await this.db.one<PostEntity>(
             'INSERT INTO posts(id, title, body) VALUES(${id}, ${title}, ${body} RETURNING *',
             postRequestData,

@@ -1,6 +1,6 @@
 import pgPromise from 'pg-promise';
 import { HttpError } from '../../helpers/errors';
-import { SignupRequest, UserData, UserEntity } from '../../types';
+import { SignupRequest, UserUpdateRequest, UserEntity } from '../../types';
 import { db } from '../db';
 import User from '../User';
 import * as userService from './user-service';
@@ -103,7 +103,7 @@ describe('userService', () => {
     });
 
     describe('#updateUser', () => {
-        const updatedUserData: UserData = {
+        const updatedUserData: UserUpdateRequest = {
             id: mockUuid,
             username: 'updated_user',
             password: 'updated_password',

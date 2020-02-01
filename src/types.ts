@@ -18,7 +18,7 @@ export interface SignupResponse {
     user?: User;
 }
 
-export interface UserData {
+export interface UserUpdateRequest {
     id: string;
     email?: string;
     username?: string;
@@ -35,9 +35,15 @@ export interface UserEntity {
     deletedAt: string | null;
 }
 
-export interface PostRequest {
+export interface PostCreateRequest {
     title: string;
     body: string;
+}
+
+export interface PostUpdateRequest {
+    id: string;
+    title?: string;
+    body?: string;
 }
 
 export interface PostEntity {
