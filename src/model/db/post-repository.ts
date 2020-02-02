@@ -16,13 +16,16 @@ export default class PostRepository {
     }
 
     async findById(id: string): Promise<PostEntity> {
-        const post = await this.db.one<PostEntity>('SELECT * FROM posts WHERE id = $1', id);
+        const post = await this.db.one<PostEntity>(
+            'SELECT p.id, p.body, p.title, u.username FROM posts p INNER JOIN users u ON u.id = p.user_id WHERE p.id = $1',
+            id,
+        );
         return post;
     }
 
     async create(postRequestData: PostCreateRequestWithId): Promise<PostEntity> {
         const newPost = await this.db.one<PostEntity>(
-            'INSERT INTO posts(id, title, body) VALUES(${id}, ${title}, ${body} RETURNING *',
+            'INSERT INTO posts(id, title, body, user_id) VALUES(${id}, ${title}, ${body}, ${userId}) RETURNING *',
             postRequestData,
         );
         return newPost;

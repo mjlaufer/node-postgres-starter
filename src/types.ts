@@ -38,6 +38,7 @@ export interface UserEntity {
 export interface PostCreateRequest {
     title: string;
     body: string;
+    userId: string;
 }
 
 export interface PostUpdateRequest {

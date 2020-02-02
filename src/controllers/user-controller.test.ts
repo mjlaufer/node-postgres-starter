@@ -76,7 +76,7 @@ describe('userController', () => {
         test('updates a user', async () => {
             const updateUser = jest
                 .spyOn(userService, 'updateUser')
-                .mockResolvedValue({ ...mockUser, username: data.username });
+                .mockResolvedValue({ ...mockUser, ...data });
             req.params = { id: mockUuid };
             req.body = data;
 
@@ -86,9 +86,9 @@ describe('userController', () => {
 
             expect(updateUser).toHaveBeenCalledWith({
                 id: mockUuid,
-                username: data.username,
+                ...data,
             });
-            expect(res.json).toHaveBeenCalledWith({ ...mockUser, username: data.username });
+            expect(res.json).toHaveBeenCalledWith({ ...mockUser, ...data });
         });
     });
 

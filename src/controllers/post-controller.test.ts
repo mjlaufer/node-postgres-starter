@@ -35,4 +35,76 @@ describe('postController', () => {
             expect(res.json).toHaveBeenCalledWith({ posts: [mockPost] });
         });
     });
+
+    describe('#fetchPost', () => {
+        test('retrieves the correct post', async () => {
+            const fetchPost = jest.spyOn(postService, 'fetchPost').mockResolvedValue(mockPost);
+            req.params = { id: mockUuid };
+
+            expect.assertions(2);
+
+            await postController.fetchPost(req, res);
+
+            expect(fetchPost).toHaveBeenCalledWith(mockPost.id);
+            expect(res.json).toHaveBeenCalledWith(mockPost);
+        });
+    });
+
+    describe('#createPost', () => {
+        const data = {
+            title: 'title',
+            body: 'body',
+        };
+
+        test('creates a new post', async () => {
+            const createPost = jest.spyOn(postService, 'createPost').mockResolvedValue(mockPost);
+            req.body = data;
+
+            expect.assertions(2);
+
+            await postController.createPost(req, res);
+
+            expect(createPost).toHaveBeenCalledWith(data);
+            expect(res.json).toHaveBeenCalledWith(mockPost);
+        });
+    });
+
+    describe('#updatePost', () => {
+        const data = {
+            title: 'updated_title',
+            body: 'updated_body',
+        };
+
+        test('updates a post', async () => {
+            const updatePost = jest
+                .spyOn(postService, 'updatePost')
+                .mockResolvedValue({ ...mockPost, ...data });
+            req.params = { id: mockUuid };
+            req.body = data;
+
+            expect.assertions(2);
+
+            await postController.updatePost(req, res);
+
+            expect(updatePost).toHaveBeenCalledWith({
+                id: mockUuid,
+                ...data,
+            });
+            expect(res.json).toHaveBeenCalledWith({ ...mockPost, ...data });
+        });
+    });
+
+    describe('#deletePost', () => {
+        test('deletes a post', async () => {
+            const deletePost = jest.spyOn(postService, 'deletePost').mockResolvedValue();
+            req.params = { id: mockUuid };
+
+            expect.assertions(2);
+
+            await postController.deletePost(req, res);
+
+            expect(deletePost).toHaveBeenCalledWith(mockPost.id);
+            expect(res.end).toHaveBeenCalled();
+        });
+    });
 });

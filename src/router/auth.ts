@@ -3,7 +3,7 @@ import passport from 'passport';
 import * as authController from '../controllers/auth-controller';
 import { signupSchema, loginSchema } from '../helpers/schemas';
 import asyncWrapper from '../middleware/asyncWrapper';
-import { sanitizeEmail, sanitizeUsername } from '../middleware/sanitizers';
+import { sanitizeEmail, createTextSanitizer } from '../middleware/sanitizers';
 import { validateBody } from '../middleware/validation';
 
 const router = express.Router();
@@ -15,7 +15,7 @@ router.route('/current-user').get((req, res) => {
 router
     .route('/signup')
     .post(
-        [sanitizeEmail, sanitizeUsername],
+        [sanitizeEmail, createTextSanitizer('username')],
         validateBody(signupSchema),
         asyncWrapper(authController.signup),
     );

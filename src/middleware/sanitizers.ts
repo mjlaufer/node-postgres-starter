@@ -1,7 +1,9 @@
-import { sanitizeBody } from 'express-validator';
+import { sanitizeBody, SanitizationChain } from 'express-validator';
 
 export const sanitizeEmail = sanitizeBody('email').normalizeEmail();
 
-export const sanitizeUsername = sanitizeBody('username')
-    .trim()
-    .escape();
+export function createTextSanitizer(field: string): SanitizationChain {
+    return sanitizeBody(field)
+        .trim()
+        .escape();
+}
