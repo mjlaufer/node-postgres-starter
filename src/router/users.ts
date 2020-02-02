@@ -1,9 +1,9 @@
 import express from 'express';
 import * as userController from '../controllers/user-controller';
-import { idSchema, signupSchema, updateUserSchema } from '../helpers/schemas';
+import { idSchema, signupSchema, updateUserSchema } from '../helpers/validation';
 import asyncWrapper from '../middleware/asyncWrapper';
 import { sanitizeEmail, createTextSanitizer } from '../middleware/sanitizers';
-import { validateParams, validateBody } from '../middleware/validation';
+import { validateParams, validateBody } from '../middleware/validators';
 
 const router = express.Router();
 

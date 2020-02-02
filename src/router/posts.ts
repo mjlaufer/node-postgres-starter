@@ -1,9 +1,9 @@
 import express from 'express';
 import * as postController from '../controllers/post-controller';
-import { idSchema } from '../helpers/schemas';
+import { idSchema } from '../helpers/validation';
 import asyncWrapper from '../middleware/asyncWrapper';
 import { createTextSanitizer } from '../middleware/sanitizers';
-import { validateParams } from '../middleware/validation';
+import { validateParams } from '../middleware/validators';
 
 const router = express.Router();
 

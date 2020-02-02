@@ -1,10 +1,10 @@
 import express from 'express';
 import passport from 'passport';
 import * as authController from '../controllers/auth-controller';
-import { signupSchema, loginSchema } from '../helpers/schemas';
+import { signupSchema, loginSchema } from '../helpers/validation';
 import asyncWrapper from '../middleware/asyncWrapper';
 import { sanitizeEmail, createTextSanitizer } from '../middleware/sanitizers';
-import { validateBody } from '../middleware/validation';
+import { validateBody } from '../middleware/validators';
 
 const router = express.Router();
 

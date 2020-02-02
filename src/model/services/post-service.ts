@@ -1,5 +1,5 @@
 import { HttpError } from '../../helpers/errors';
-import { generateId } from '../../helpers/id';
+import { generateId } from '../../helpers/uuid';
 import { PostCreateRequest, PostUpdateRequest, PostEntity } from '../../types';
 import { db } from '../db';
 import Post from '../Post';

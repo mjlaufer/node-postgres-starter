@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { HttpError } from '../../helpers/errors';
-import { generateId } from '../../helpers/id';
+import { generateId } from '../../helpers/uuid';
 import { SignupRequest, UserEntity, UserUpdateRequest } from '../../types';
 import { db } from '../db';
 import User from '../User';

@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import redis, { RedisClient } from 'redis';
 import createRedisStore from 'connect-redis';
 import session from 'express-session';
-import { generateId } from '../helpers/id';
+import { generateId } from '../helpers/uuid';
 
 dotenv.config();
 

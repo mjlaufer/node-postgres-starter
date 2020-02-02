@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import Joi from '@hapi/joi';
 import { HttpError } from '../helpers/errors';
-import { validateParams, validateBody } from './validation';
+import { validateParams, validateBody } from './validators';
 
 describe('validateParams', () => {
     let req: Request;
