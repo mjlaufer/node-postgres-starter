@@ -27,8 +27,8 @@ describe('AuthService', () => {
         email: mockSignupRequest.email,
         username: mockSignupRequest.username,
         password: '$2a$10$37xEfpMwqmfSCAfYlaMzS.trfLiJEqpk4gk.OegKglZRQNw3LIUWG',
-        createdAt: '',
-        modifiedAt: '',
+        createdAt: new Date(),
+        modifiedAt: new Date(),
         deletedAt: null,
     };
 

@@ -13,6 +13,15 @@ const passwordValidator = Joi.string()
     .pattern(/^[\w`~!@#$%^&*()-=+\[\]{},./?]{5,30}$/)
     .required();
 
+export const paginationSchema = Joi.object({
+    limit: Joi.number().max(99),
+    lastCreatedAt: Joi.date(),
+    order: Joi.string()
+        .alphanum()
+        .min(3)
+        .max(4),
+});
+
 export const idSchema = Joi.object({
     id: uuidValidator,
 });

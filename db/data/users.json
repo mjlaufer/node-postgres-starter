@@ -1,20 +1,20 @@
 [
   {
     "id": "b9a75c4e-ff61-406b-95a6-6313d55c39fe",
-    "username": "matthewjustin",
-    "email": "test1@test.com",
+    "username": "user1",
+    "email": "user1@example.com",
     "password": "$2a$10$37xEfpMwqmfSCAfYlaMzS.trfLiJEqpk4gk.OegKglZRQNw3LIUWG"
   },
   {
     "id": "a0e55e53-0d87-44b2-87e3-d03670d4876d",
-    "username": "kaylamariko",
-    "email": "test2@test.com",
+    "username": "user2",
+    "email": "user2@example.com",
     "password": "$2a$10$37xEfpMwqmfSCAfYlaMzS.trfLiJEqpk4gk.OegKglZRQNw3LIUWG"
   },
   {
     "id": "dc611fde-8bd0-4cf9-9985-297683c4b599",
-    "username": "jessicaemiko",
-    "email": "test3@test.com",
+    "username": "user3",
+    "email": "user3@example.com",
     "password": "$2a$10$37xEfpMwqmfSCAfYlaMzS.trfLiJEqpk4gk.OegKglZRQNw3LIUWG"
   }
 ]

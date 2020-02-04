@@ -10,6 +10,7 @@ describe('userController', () => {
         id: mockUuid,
         email: 'test@test.com',
         username: 'username',
+        createdAt: new Date(),
     };
     let req: Request;
     let res: Response;
@@ -25,6 +26,7 @@ describe('userController', () => {
     describe('#fetchUsers', () => {
         test('retrieves a list of users', async () => {
             const fetchUsers = jest.spyOn(userService, 'fetchUsers').mockResolvedValue([mockUser]);
+            req.query = {};
 
             expect.assertions(2);
 

@@ -30,9 +30,9 @@ export interface UserEntity {
     email: string;
     username: string;
     password: string;
-    createdAt: string;
-    modifiedAt: string;
-    deletedAt: string | null;
+    createdAt: Date;
+    modifiedAt: Date;
+    deletedAt: Date | null;
 }
 
 export interface PostCreateRequest {
@@ -52,7 +52,13 @@ export interface PostEntity {
     title: string;
     body: string;
     username: string;
-    createdAt: string;
-    modifiedAt: string;
-    deletedAt: string | null;
+    createdAt: Date;
+    modifiedAt: Date;
+    deletedAt: Date | null;
+}
+
+export interface PaginationOptions {
+    limit: number;
+    lastCreatedAt: Date;
+    order: 'ASC' | 'DESC';
 }

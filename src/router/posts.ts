@@ -1,25 +1,26 @@
 import express from 'express';
 import * as postController from '../controllers/post-controller';
-import { idSchema } from '../helpers/validation';
+import { paginationSchema, idSchema } from '../helpers/validation';
 import asyncWrapper from '../middleware/asyncWrapper';
-import { createTextSanitizer } from '../middleware/sanitizers';
-import { validateParams } from '../middleware/validators';
+import { sanitizeText, sanitizePaginationOptions } from '../middleware/sanitizers';
+import { validateQuery, validateParams } from '../middleware/validators';
 
 const router = express.Router();
 
 router
     .route('/')
-    .get(asyncWrapper(postController.fetchPosts))
-    .post(
-        [createTextSanitizer('title'), createTextSanitizer('body')],
-        asyncWrapper(postController.createPost),
-    );
+    .get(
+        sanitizePaginationOptions,
+        validateQuery(paginationSchema),
+        asyncWrapper(postController.fetchPosts),
+    )
+    .post(sanitizeText(['title', 'body']), asyncWrapper(postController.createPost));
 
 router
     .route('/:id')
     .get(asyncWrapper(postController.fetchPost))
     .put(
-        [createTextSanitizer('title'), createTextSanitizer('body')],
+        sanitizeText(['title', 'body']),
         validateParams(idSchema),
         asyncWrapper(postController.updatePost),
     )

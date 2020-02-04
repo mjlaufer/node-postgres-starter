@@ -1,12 +1,12 @@
 import { HttpError } from '../../helpers/errors';
 import { generateId } from '../../helpers/uuid';
-import { PostCreateRequest, PostUpdateRequest, PostEntity } from '../../types';
+import { PostCreateRequest, PostUpdateRequest, PostEntity, PaginationOptions } from '../../types';
 import { db } from '../db';
 import Post from '../Post';
 
-export async function fetchPosts(): Promise<Post[]> {
+export async function fetchPosts(paginationOptions: PaginationOptions): Promise<Post[]> {
     try {
-        const postEntities: PostEntity[] = await db.posts.findAll();
+        const postEntities: PostEntity[] = await db.posts.findAll(paginationOptions);
         return postEntities.map(postEntity => new Post(postEntity));
     } catch (err) {
         throw new HttpError(err);

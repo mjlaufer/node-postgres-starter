@@ -11,6 +11,7 @@ describe('postController', () => {
         title: 'title',
         body: 'body',
         author: 'author',
+        createdAt: new Date(),
     };
     let req: Request;
     let res: Response;
@@ -26,6 +27,7 @@ describe('postController', () => {
     describe('#fetchPosts', () => {
         test('retrieves a list of posts', async () => {
             const fetchPosts = jest.spyOn(postService, 'fetchPosts').mockResolvedValue([mockPost]);
+            req.query = {};
 
             expect.assertions(2);
 

@@ -9,6 +9,7 @@ describe('authController', () => {
         id: '00000000-0000-0000-0000-000000000000',
         email: 'test@test.com',
         username: 'test_user',
+        createdAt: new Date(),
     };
     let req: Request;
     let res: Response;

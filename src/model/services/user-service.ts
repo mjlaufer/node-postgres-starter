@@ -1,13 +1,13 @@
 import bcrypt from 'bcryptjs';
 import { HttpError } from '../../helpers/errors';
 import { generateId } from '../../helpers/uuid';
-import { SignupRequest, UserEntity, UserUpdateRequest } from '../../types';
+import { SignupRequest, UserEntity, UserUpdateRequest, PaginationOptions } from '../../types';
 import { db } from '../db';
 import User from '../User';
 
-export async function fetchUsers(): Promise<User[]> {
+export async function fetchUsers(paginationOptions: PaginationOptions): Promise<User[]> {
     try {
-        const userEntities: UserEntity[] = await db.users.findAll();
+        const userEntities: UserEntity[] = await db.users.findAll(paginationOptions);
         return userEntities.map((userEntity: UserEntity) => new User(userEntity));
     } catch (err) {
         throw new HttpError(err);

@@ -13,7 +13,7 @@ describe('/users', () => {
 
     describe('GET /users', () => {
         test('should return users', async () => {
-            expect.assertions(2);
+            expect.assertions(3);
 
             const response = await request(app)
                 .get('/users')
@@ -21,17 +21,9 @@ describe('/users', () => {
                 .expect('Content-Type', /json/)
                 .expect(200);
 
-            expect(response.body).toEqual({
-                users: expect.arrayContaining([
-                    {
-                        id: 'b9a75c4e-ff61-406b-95a6-6313d55c39fe',
-                        email: 'test1@test.com',
-                        username: 'matthewjustin',
-                    },
-                ]),
-            });
-
             expect(response.body.users).toHaveLength(3);
+            expect(response.body.users[0]).toHaveProperty('email');
+            expect(response.body.users[0]).toHaveProperty('username');
         });
     });
 
@@ -42,7 +34,7 @@ describe('/users', () => {
             const response = await request(app)
                 .post('/users')
                 .send({
-                    email: 'newuser@test.com',
+                    email: 'newuser@example.com',
                     username: 'newuser',
                     password: 'password',
                 })
@@ -52,7 +44,7 @@ describe('/users', () => {
 
             expect(response.body).toEqual(
                 expect.objectContaining({
-                    email: 'newuser@test.com',
+                    email: 'newuser@example.com',
                     username: 'newuser',
                 }),
             );
@@ -72,8 +64,8 @@ describe('/users', () => {
             expect(response.body).toEqual(
                 expect.objectContaining({
                     id: 'b9a75c4e-ff61-406b-95a6-6313d55c39fe',
-                    email: 'test1@test.com',
-                    username: 'matthewjustin',
+                    email: 'user1@example.com',
+                    username: 'user1',
                 }),
             );
         });

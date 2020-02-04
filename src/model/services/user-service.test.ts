@@ -1,11 +1,17 @@
 import pgPromise from 'pg-promise';
 import { HttpError } from '../../helpers/errors';
-import { SignupRequest, UserUpdateRequest, UserEntity } from '../../types';
+import { SignupRequest, UserUpdateRequest, UserEntity, PaginationOptions } from '../../types';
 import { db } from '../db';
 import User from '../User';
 import * as userService from './user-service';
 
 const mockUuid = '00000000-0000-0000-0000-000000000000';
+
+const paginationOptions: PaginationOptions = {
+    lastCreatedAt: new Date(),
+    limit: 10,
+    order: 'DESC',
+};
 
 jest.mock('../db', () => ({
     db: {
@@ -26,8 +32,8 @@ describe('userService', () => {
         email: mockSignupRequest.email,
         username: mockSignupRequest.username,
         password: '$2a$10$37xEfpMwqmfSCAfYlaMzS.trfLiJEqpk4gk.OegKglZRQNw3LIUWG',
-        createdAt: '',
-        modifiedAt: '',
+        createdAt: new Date(),
+        modifiedAt: new Date(),
         deletedAt: null,
     };
 
@@ -39,7 +45,7 @@ describe('userService', () => {
 
             expect.assertions(2);
 
-            const users = await userService.fetchUsers();
+            const users = await userService.fetchUsers(paginationOptions);
 
             expect(db.users.findAll).toHaveBeenCalled();
             expect(users).toEqual([mockUser]);
@@ -50,7 +56,7 @@ describe('userService', () => {
 
             expect.assertions(1);
 
-            await expect(userService.fetchUsers()).rejects.toThrow(
+            await expect(userService.fetchUsers(paginationOptions)).rejects.toThrow(
                 new HttpError('mock error message'),
             );
         });

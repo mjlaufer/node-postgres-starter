@@ -1,11 +1,17 @@
 import pgPromise from 'pg-promise';
 import { HttpError } from '../../helpers/errors';
-import { PostCreateRequest, PostUpdateRequest, PostEntity } from '../../types';
+import { PostCreateRequest, PostUpdateRequest, PostEntity, PaginationOptions } from '../../types';
 import { db } from '../db';
 import Post from '../Post';
 import * as postService from './post-service';
 
 const mockUuid = '00000000-0000-0000-0000-000000000000';
+
+const paginationOptions: PaginationOptions = {
+    lastCreatedAt: new Date(),
+    limit: 10,
+    order: 'DESC',
+};
 
 jest.mock('../db', () => ({
     db: {
@@ -26,8 +32,8 @@ describe('postService', () => {
         title: 'title',
         body: 'body',
         username: 'username',
-        createdAt: '',
-        modifiedAt: '',
+        createdAt: new Date(),
+        modifiedAt: new Date(),
         deletedAt: null,
     };
 
@@ -39,7 +45,7 @@ describe('postService', () => {
 
             expect.assertions(2);
 
-            const posts = await postService.fetchPosts();
+            const posts = await postService.fetchPosts(paginationOptions);
 
             expect(db.posts.findAll).toHaveBeenCalled();
             expect(posts).toEqual([mockPost]);
@@ -50,7 +56,7 @@ describe('postService', () => {
 
             expect.assertions(1);
 
-            await expect(postService.fetchPosts()).rejects.toThrow(
+            await expect(postService.fetchPosts(paginationOptions)).rejects.toThrow(
                 new HttpError('mock error message'),
             );
         });

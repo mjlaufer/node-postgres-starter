@@ -1,5 +1,5 @@
 import { IDatabase } from 'pg-promise';
-import { SignupRequest, UserEntity } from '../../types';
+import { SignupRequest, UserEntity, PaginationOptions } from '../../types';
 import { generateWhereClause } from './helpers';
 
 interface SignupRequestWithId extends SignupRequest {
@@ -9,8 +9,11 @@ interface SignupRequestWithId extends SignupRequest {
 export default class UserRepository {
     constructor(private db: IDatabase<any>) {}
 
-    async findAll(): Promise<UserEntity[]> {
-        const users = await this.db.any<UserEntity>('SELECT * FROM users');
+    async findAll(paginationOptions: PaginationOptions): Promise<UserEntity[]> {
+        const users = await this.db.any<UserEntity>(
+            'SELECT * FROM users WHERE created_at < ${lastCreatedAt} ORDER BY created_at ${order:raw} LIMIT ${limit}',
+            paginationOptions,
+        );
         return users;
     }
 

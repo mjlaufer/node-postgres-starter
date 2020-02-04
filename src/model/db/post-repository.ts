@@ -1,5 +1,5 @@
 import { IDatabase } from 'pg-promise';
-import { PostCreateRequest, PostEntity } from '../../types';
+import { PostCreateRequest, PostEntity, PaginationOptions } from '../../types';
 
 interface PostCreateRequestWithId extends PostCreateRequest {
     id: string;
@@ -8,9 +8,10 @@ interface PostCreateRequestWithId extends PostCreateRequest {
 export default class PostRepository {
     constructor(private db: IDatabase<any>) {}
 
-    async findAll(): Promise<PostEntity[]> {
+    async findAll(paginationOptions: PaginationOptions): Promise<PostEntity[]> {
         const posts = await this.db.any<PostEntity>(
-            'SELECT p.id, p.body, p.title, u.username FROM posts p INNER JOIN users u ON u.id = p.user_id',
+            'SELECT p.id, p.body, p.title, p.created_at, u.username FROM posts p INNER JOIN users u ON u.id = p.user_id WHERE p.created_at < ${lastCreatedAt} ORDER BY p.created_at ${order:raw} LIMIT ${limit}',
+            paginationOptions,
         );
         return posts;
     }

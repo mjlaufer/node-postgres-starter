@@ -1,17 +1,22 @@
 import express from 'express';
 import * as userController from '../controllers/user-controller';
-import { idSchema, signupSchema, updateUserSchema } from '../helpers/validation';
+import { idSchema, signupSchema, updateUserSchema, paginationSchema } from '../helpers/validation';
 import asyncWrapper from '../middleware/asyncWrapper';
-import { sanitizeEmail, createTextSanitizer } from '../middleware/sanitizers';
-import { validateParams, validateBody } from '../middleware/validators';
+import { sanitizeEmail, sanitizeText, sanitizePaginationOptions } from '../middleware/sanitizers';
+import { validateQuery, validateParams, validateBody } from '../middleware/validators';
 
 const router = express.Router();
 
 router
     .route('/')
-    .get(asyncWrapper(userController.fetchUsers))
+    .get(
+        sanitizePaginationOptions,
+        validateQuery(paginationSchema),
+        asyncWrapper(userController.fetchUsers),
+    )
     .post(
-        [sanitizeEmail, createTextSanitizer('username')],
+        sanitizeEmail,
+        sanitizeText('username'),
         validateBody(signupSchema),
         asyncWrapper(userController.createUser),
     );
@@ -20,7 +25,8 @@ router
     .route('/:id')
     .get(validateParams(idSchema), asyncWrapper(userController.fetchUser))
     .put(
-        [sanitizeEmail, createTextSanitizer('username')],
+        sanitizeEmail,
+        sanitizeText('username'),
         validateParams(idSchema),
         validateBody(updateUserSchema),
         asyncWrapper(userController.updateUser),
