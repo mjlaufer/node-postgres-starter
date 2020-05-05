@@ -475,10 +475,10 @@
     "@types/express-serve-static-core" "*"
     "@types/serve-static" "*"
 
-"@types/hapi__joi@^16.0.9":
-  version "16.0.9"
-  resolved "https://registry.yarnpkg.com/@types/hapi__joi/-/hapi__joi-16.0.9.tgz#0ad11f9de3753748444ac16249a264fc7c798ab4"
-  integrity sha512-FV+rJxm4UBxBsRvT5hpiRvnxbpi9iJu4qdwXQvNXf6eXJkcgKGlTwHnstIDAxSTKTUMSmpJnyXpr6XI9X/4SjA==
+"@types/hapi__joi@^17.1.0":
+  version "17.1.0"
+  resolved "https://registry.yarnpkg.com/@types/hapi__joi/-/hapi__joi-17.1.0.tgz#b5324c423a49697ea0926f19cc90c6f5cbb68391"
+  integrity sha512-zqPGKJ3FUiut0NZUstLBm3gAkSMwWwn/soNi/KvefJfhlaQYYoLnMiMCaMN97dPK4iKjFSIVwRbHANSgUCKm7g==
 
 "@types/helmet@^0.0.45":
   version "0.0.45"
