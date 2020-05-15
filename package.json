@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
-    "@types/connect-redis": "^0.0.13",
+    "@types/connect-redis": "^0.0.14",
     "@types/express": "^4.17.2",
     "@types/express-session": "^1.15.16",
     "@types/hapi__joi": "^16.0.9",
