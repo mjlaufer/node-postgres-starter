@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
+import { v4 as uuidv4 } from 'uuid';
 import { HttpError } from '../../helpers/errors';
-import { generateId } from '../../helpers/uuid';
 import { SignupRequest, UserEntity, UserUpdateRequest, PaginationOptions } from '../../types';
 import { db } from '../db';
 import User from '../User';
@@ -28,7 +28,7 @@ export async function createUser(signupRequestData: SignupRequest): Promise<User
         const password = hash(signupRequestData.password);
 
         const userEntity: UserEntity = await db.users.create({
-            id: generateId(),
+            id: uuidv4(),
             ...signupRequestData,
             password,
         });

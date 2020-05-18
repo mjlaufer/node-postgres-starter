@@ -10,7 +10,7 @@ export async function signup(req: Request, res: Response): Promise<void> {
     const { message, user }: SignupResponse = await authService.signup(signupRequestData);
 
     if (user) {
-        return req.login(user, err => {
+        return req.login(user, (err) => {
             if (err) {
                 throw new HttpError(err);
             }

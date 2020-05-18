@@ -1,13 +1,11 @@
-# ts-node-postgres-starter
-
-[![Greenkeeper badge](https://badges.greenkeeper.io/mjlaufer/ts-node-postgres-starter.svg)](https://greenkeeper.io/)
+# node-postgres-starter
 
 ## About
 
 This is an opinionated template for developing containerized web APIs with Node, TypeScript, and PostgreSQL. To that end, this project uses the following technologies and packages:
 
--   Node.js v13
--   TypeScript v3.7
+-   Node.js v14
+-   TypeScript v4.1
 -   Express.js
 -   PostgreSQL v12
 -   pg-promise
@@ -24,6 +22,8 @@ This is an opinionated template for developing containerized web APIs with Node,
 ### Local Development:
 
 `yarn run dev` : Run the application in development mode.
+
+`yarn run test:watch` : Run the test runner in watch mode.
 
 `yarn run knex migrate:latest` : Run database migrations.
 

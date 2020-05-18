@@ -7,22 +7,11 @@ export function sanitizeText(field: string | string[]): ValidationChain[] {
         field = [field];
     }
 
-    return field.map(f =>
-        check(f)
-            .trim()
-            .escape(),
-    );
+    return field.map((f) => check(f).trim().escape());
 }
 
 export const sanitizePaginationOptions = [
-    query('limit')
-        .optional()
-        .toInt(),
-    query('lastCreatedAt')
-        .optional()
-        .toDate(),
-    query('order')
-        .optional()
-        .trim()
-        .escape(),
+    query('limit').optional().toInt(),
+    query('lastCreatedAt').optional().toDate(),
+    query('order').optional().trim().escape(),
 ];

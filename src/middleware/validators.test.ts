@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Joi from '@hapi/joi';
+import Joi from 'joi';
 import { HttpError } from '../helpers/errors';
 import { validateParams, validateBody } from './validators';
 

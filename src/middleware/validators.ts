@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { partial } from 'lodash';
-import Joi from '@hapi/joi';
+import Joi from 'joi';
 import { HttpError } from '../helpers/errors';
 import { MiddlewareFunc } from '../types';
 

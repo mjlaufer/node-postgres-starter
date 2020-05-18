@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import redis, { RedisClient } from 'redis';
 import createRedisStore from 'connect-redis';
 import session from 'express-session';
-import { generateId } from '../helpers/uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 dotenv.config();
 
@@ -16,7 +16,7 @@ if (NODE_ENV === 'production') {
     redisClient = redis.createClient({ host: REDIS_HOST, port: Number(REDIS_PORT) });
 }
 
-redisClient.on('error', err => {
+redisClient.on('error', (err) => {
     console.log('Redis error: ', err);
 });
 
@@ -29,7 +29,7 @@ const cookieOptions = {
 
 export default function createSessionMiddleware() {
     return session({
-        genid: () => generateId(),
+        genid: () => uuidv4(),
         store: new RedisStore({ client: redisClient }),
         name: 'sid',
         secret: SESSION_SECRET,

@@ -1,11 +1,8 @@
-import Joi from '@hapi/joi';
+import Joi from 'joi';
 
 const uuidValidator = Joi.string().guid({ version: 'uuidv4' });
 
-const usernameValidator = Joi.string()
-    .alphanum()
-    .min(3)
-    .max(30);
+const usernameValidator = Joi.string().alphanum().min(3).max(30);
 
 const emailValidator = Joi.string().email();
 
@@ -16,10 +13,7 @@ const passwordValidator = Joi.string()
 export const paginationSchema = Joi.object({
     limit: Joi.number().max(99),
     lastCreatedAt: Joi.date(),
-    order: Joi.string()
-        .alphanum()
-        .min(3)
-        .max(4),
+    order: Joi.string().alphanum().min(3).max(4),
 });
 
 export const idSchema = Joi.object({

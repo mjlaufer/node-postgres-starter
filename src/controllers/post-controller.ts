@@ -5,7 +5,10 @@ import Post from '../model/Post';
 import { PostCreateRequest, PostUpdateRequest } from '../types';
 
 export async function fetchPosts(req: Request, res: Response): Promise<void> {
-    const { lastCreatedAt = new Date(), limit = 10, order = 'DESC' } = req.query;
+    const lastCreatedAt =
+        req.query.lastCreatedAt instanceof Date ? req.query.lastCreatedAt : new Date();
+    const limit = typeof req.query.limit === 'number' ? req.query.limit : 10;
+    const order = req.query.order === 'ASC' ? 'ASC' : 'DESC';
 
     const posts = await postService.fetchPosts({ lastCreatedAt, limit, order });
 

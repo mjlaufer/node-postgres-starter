@@ -1,5 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
 import { HttpError } from '../../helpers/errors';
-import { generateId } from '../../helpers/uuid';
 import { PostCreateRequest, PostUpdateRequest, PostEntity, PaginationOptions } from '../../types';
 import { db } from '../db';
 import Post from '../Post';
@@ -7,7 +7,7 @@ import Post from '../Post';
 export async function fetchPosts(paginationOptions: PaginationOptions): Promise<Post[]> {
     try {
         const postEntities: PostEntity[] = await db.posts.findAll(paginationOptions);
-        return postEntities.map(postEntity => new Post(postEntity));
+        return postEntities.map((postEntity) => new Post(postEntity));
     } catch (err) {
         throw new HttpError(err);
     }
@@ -25,7 +25,7 @@ export async function fetchPost(id: string): Promise<Post> {
 export async function createPost(postRequestData: PostCreateRequest): Promise<Post> {
     try {
         const postEntity: PostEntity = await db.posts.create({
-            id: generateId(),
+            id: uuidv4(),
             ...postRequestData,
         });
 

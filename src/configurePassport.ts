@@ -32,6 +32,7 @@ export default function configurePassport(passport: PassportStatic): void {
         }),
     );
 
+    // @ts-expect-error
     passport.serializeUser((user: User, done) => done(null, user.id));
 
     passport.deserializeUser(async (id: string, done) => {

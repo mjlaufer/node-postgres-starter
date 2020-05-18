@@ -5,7 +5,10 @@ import User from '../model/User';
 import * as userService from '../model/services/user-service';
 
 export async function fetchUsers(req: Request, res: Response): Promise<void> {
-    const { lastCreatedAt = new Date(), limit = 10, order = 'DESC' } = req.query;
+    const lastCreatedAt =
+        req.query.lastCreatedAt instanceof Date ? req.query.lastCreatedAt : new Date();
+    const limit = typeof req.query.limit === 'number' ? req.query.limit : 10;
+    const order = req.query.order === 'ASC' ? 'ASC' : 'DESC';
 
     const users: User[] = await userService.fetchUsers({ lastCreatedAt, limit, order });
 
