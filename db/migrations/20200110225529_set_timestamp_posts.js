@@ -1,4 +1,4 @@
-exports.up = function(knex) {
+exports.up = function (knex) {
     return knex.raw(`
         CREATE TRIGGER set_timestamp
         BEFORE UPDATE ON posts
@@ -7,6 +7,6 @@ exports.up = function(knex) {
   `);
 };
 
-exports.down = function(knex) {
+exports.down = function (knex) {
     return knex.raw(`DROP TRIGGER IF EXISTS set_timestamp ON posts`);
 };

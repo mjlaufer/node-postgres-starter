@@ -1,4 +1,4 @@
-exports.up = function(knex) {
+exports.up = function (knex) {
     return knex.raw(`
         CREATE OR REPLACE FUNCTION trigger_set_timestamp()
         RETURNS TRIGGER AS $$
@@ -10,6 +10,6 @@ exports.up = function(knex) {
     `);
 };
 
-exports.down = function(knex) {
+exports.down = function (knex) {
     return knex.raw(`DROP FUNCTION IF EXISTS trigger_set_timestamp()`);
 };

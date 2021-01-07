@@ -24,7 +24,7 @@ const initOptions: IInitOptions<Extensions> = {
 
 export const pgp: IMain = pgPromise(initOptions);
 
-function camelCaseColumns(data: { [key: string]: string }[]) {
+function camelCaseColumns(data: { [key: string]: string }[]): void {
     const tmp = data[0];
     for (const prop in tmp) {
         const camel = pgp.utils.camelize(prop);
