@@ -1,5 +1,5 @@
 import Knex from 'knex';
-import * as knexConfig from '../../knexfile';
+import * as knexConfig from '../knexfile';
 import { db } from '../db';
 import { redisClient } from '../middleware/session';
 

@@ -21,9 +21,9 @@ module.exports = {
         password: POSTGRES_PASSWORD,
     },
     migrations: {
-        directory: path.join(__dirname, '/db/migrations'),
+        directory: path.join(__dirname, '../db/migrations'),
     },
     seeds: {
-        directory: path.join(__dirname, '/db/seeds'),
+        directory: path.join(__dirname, '../db/seeds'),
     },
 };

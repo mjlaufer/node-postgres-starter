@@ -45,7 +45,7 @@ export function validate(
     userInput: 'query' | 'params' | 'body',
     schema: Joi.ObjectSchema,
 ): MiddlewareFunc {
-    return async (req: Request, res: Response, next: NextFunction) => {
+    return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             await schema.validateAsync(req[userInput]);
             next();
