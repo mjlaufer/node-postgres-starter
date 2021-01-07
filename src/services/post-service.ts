@@ -1,13 +1,26 @@
+import { pick } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
-import { HttpError } from '../../helpers/errors';
-import { PostCreateRequest, PostUpdateRequest, PostEntity, PaginationOptions } from '../../types';
 import { db } from '../db';
-import Post from '../Post';
+import { HttpError } from '../helpers/errors';
+import {
+    Post,
+    PostCreateRequest,
+    PostUpdateRequest,
+    PostEntity,
+    PaginationOptions,
+} from '../types';
+
+export function makePost(data: PostEntity): Post {
+    return {
+        ...pick(data, ['id', 'title', 'body', 'createdAt', 'modifiedAt']),
+        author: data.username,
+    };
+}
 
 export async function fetchPosts(paginationOptions: PaginationOptions): Promise<Post[]> {
     try {
         const postEntities: PostEntity[] = await db.posts.findAll(paginationOptions);
-        return postEntities.map((postEntity) => new Post(postEntity));
+        return postEntities.map(makePost);
     } catch (err) {
         throw new HttpError(err);
     }
@@ -16,7 +29,7 @@ export async function fetchPosts(paginationOptions: PaginationOptions): Promise<
 export async function fetchPost(id: string): Promise<Post> {
     try {
         const postEntity: PostEntity = await db.posts.findById(id);
-        return new Post(postEntity);
+        return makePost(postEntity);
     } catch (err) {
         throw new HttpError(err, 404);
     }
@@ -28,8 +41,7 @@ export async function createPost(postRequestData: PostCreateRequest): Promise<Po
             id: uuidv4(),
             ...postRequestData,
         });
-
-        return new Post(postEntity);
+        return makePost(postEntity);
     } catch (err) {
         throw new HttpError(err);
     }
@@ -39,10 +51,8 @@ export async function updatePost(postData: PostUpdateRequest): Promise<Post> {
     try {
         const postEntity: PostEntity = await db.posts.findById(postData.id);
         const updatedPostEntity: PostEntity = { ...postEntity, ...postData };
-
         await db.posts.update(updatedPostEntity);
-
-        return new Post(updatedPostEntity);
+        return makePost(updatedPostEntity);
     } catch (err) {
         throw new HttpError(err, 404);
     }

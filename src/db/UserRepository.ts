@@ -1,5 +1,5 @@
 import { IDatabase } from 'pg-promise';
-import { SignupRequest, UserEntity, PaginationOptions } from '../../types';
+import { SignupRequest, UserEntity, PaginationOptions } from '../types';
 import { generateWhereClause } from './helpers';
 
 interface SignupRequestWithId extends SignupRequest {

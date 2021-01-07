@@ -2,7 +2,7 @@
 
 ## About
 
-This is an opinionated template for developing containerized web APIs with Node, TypeScript, and PostgreSQL. To that end, this project uses the following technologies and packages:
+This is an opinionated template for developing containerized web services with Node, TypeScript, and PostgreSQL. To that end, this project uses the following technologies and packages:
 
 -   Node.js v14
 -   TypeScript v4.1

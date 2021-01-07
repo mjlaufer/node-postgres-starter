@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import User from '../model/User';
-import * as userService from '../model/services/user-service';
+import * as userService from '../services/user-service';
+import { User } from '../types';
 import * as userController from './user-controller';
 
 const mockUuid = '00000000-0000-0000-0000-000000000000';

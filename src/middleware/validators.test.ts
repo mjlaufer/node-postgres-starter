@@ -1,14 +1,13 @@
 import { Request, Response } from 'express';
 import Joi from 'joi';
 import { HttpError } from '../helpers/errors';
-import { validateParams, validateBody } from './validators';
+import { validate } from './validators';
 
-describe('validateParams', () => {
+describe('validate', () => {
     let req: Request;
     let res: Response;
     const next = jest.fn();
     const mockSchema = Joi.object({ mockField: Joi.string().min(3) });
-    const middleware = validateParams(mockSchema);
 
     beforeEach(() => {
         jest.resetAllMocks();
@@ -16,13 +15,9 @@ describe('validateParams', () => {
         res = {} as Response;
     });
 
-    test('creates a middleware', () => {
-        expect.assertions(1);
+    test('can validate req.params; calls next() on success', async () => {
+        const middleware = validate('params', mockSchema);
 
-        expect(typeof middleware).toBe('function');
-    });
-
-    test('validates req.body and calls next() on success', async () => {
         req.params = {
             mockField: 'foo',
         };
@@ -35,6 +30,7 @@ describe('validateParams', () => {
     });
 
     test('passes Bad Request error to next() if validation fails', async () => {
+        const middleware = validate('params', mockSchema);
         req.params = {
             mockField: 'f',
         };
@@ -47,28 +43,9 @@ describe('validateParams', () => {
             new HttpError('"mockField" length must be at least 3 characters long', 400),
         );
     });
-});
 
-describe('validateBody', () => {
-    let req: Request;
-    let res: Response;
-    const next = jest.fn();
-    const mockSchema = Joi.object({ mockField: Joi.string().min(3) });
-    const middleware = validateBody(mockSchema);
-
-    beforeEach(() => {
-        jest.resetAllMocks();
-        req = {} as Request;
-        res = {} as Response;
-    });
-
-    test('creates a middleware', () => {
-        expect.assertions(1);
-
-        expect(typeof middleware).toBe('function');
-    });
-
-    test('validates req.body and calls next() on success', async () => {
+    test('can validate req.body; calls next() on success', async () => {
+        const middleware = validate('body', mockSchema);
         req.body = {
             mockField: 'foo',
         };
@@ -81,6 +58,7 @@ describe('validateBody', () => {
     });
 
     test('passes Bad Request error to next() if validation fails', async () => {
+        const middleware = validate('body', mockSchema);
         req.body = {
             mockField: 'f',
         };

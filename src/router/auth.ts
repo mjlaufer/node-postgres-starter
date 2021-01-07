@@ -1,10 +1,9 @@
 import express, { Request, Response } from 'express';
 import passport from 'passport';
 import * as authController from '../controllers/auth-controller';
-import { signupSchema, loginSchema } from '../helpers/validation';
 import asyncWrapper from '../middleware/asyncWrapper';
 import { sanitizeEmail, sanitizeText } from '../middleware/sanitizers';
-import { validateBody } from '../middleware/validators';
+import { validateLoginCredentials, validateSignupCredentials } from '../middleware/validators';
 
 const router = express.Router();
 
@@ -17,7 +16,7 @@ router
     .post(
         sanitizeEmail,
         sanitizeText('username'),
-        validateBody(signupSchema),
+        validateSignupCredentials,
         asyncWrapper(authController.signup),
     );
 
@@ -25,7 +24,7 @@ router
     .route('/login')
     .post(
         sanitizeEmail,
-        validateBody(loginSchema),
+        validateLoginCredentials,
         passport.authenticate('local'),
         (req: Request, res: Response) => {
             res.json({ isAuthenticated: !!req.user });

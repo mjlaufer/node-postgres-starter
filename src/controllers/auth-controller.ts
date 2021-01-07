@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 import { pick } from 'lodash';
 import { HttpError } from '../helpers/errors';
-import * as authService from '../model/services/auth-service';
-import { SignupRequest, SignupResponse } from '../types';
+import * as authService from '../services/auth-service';
+import { SignupRequest } from '../types';
 
 export async function signup(req: Request, res: Response): Promise<void> {
     const signupRequestData: SignupRequest = pick(req.body, ['email', 'username', 'password']);
 
-    const { message, user }: SignupResponse = await authService.signup(signupRequestData);
+    const { message, user } = await authService.signup(signupRequestData);
 
     if (user) {
         return req.login(user, (err) => {

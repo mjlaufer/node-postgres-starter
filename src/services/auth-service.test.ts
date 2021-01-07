@@ -1,10 +1,9 @@
 import pgPromise from 'pg-promise';
-import { HttpError } from '../../helpers/errors';
-import { SignupRequest, UserEntity } from '../../types';
-import User from '../User';
+import { db } from '../db';
+import { HttpError } from '../helpers/errors';
+import { SignupRequest, User, UserEntity } from '../types';
 import * as userService from './user-service';
 import * as authService from './auth-service';
-import { db } from '../db';
 
 jest.mock('../db', () => ({
     db: {
@@ -29,10 +28,7 @@ describe('AuthService', () => {
         password: '$2a$10$37xEfpMwqmfSCAfYlaMzS.trfLiJEqpk4gk.OegKglZRQNw3LIUWG',
         createdAt: new Date(),
         modifiedAt: new Date(),
-        deletedAt: null,
     };
-
-    const mockUser = new User(mockUserEntity);
 
     describe('#signup', () => {
         beforeEach(() => {
@@ -40,6 +36,8 @@ describe('AuthService', () => {
         });
 
         test('creates a new user', async () => {
+            const mockUser: User = userService.makeUser(mockUserEntity);
+
             jest.spyOn(userService, 'createUser').mockResolvedValue(mockUser);
 
             expect.assertions(1);
@@ -60,12 +58,14 @@ describe('AuthService', () => {
         });
 
         test('throws an HttpError if unsuccessful', async () => {
-            jest.spyOn(userService, 'createUser').mockRejectedValue('mock error message');
+            const MOCK_ERROR_MESSAGE = 'mock error message';
+
+            jest.spyOn(userService, 'createUser').mockRejectedValue(MOCK_ERROR_MESSAGE);
 
             expect.assertions(1);
 
             await expect(authService.signup(mockSignupRequest)).rejects.toThrow(
-                new HttpError('mock error message'),
+                new HttpError(MOCK_ERROR_MESSAGE),
             );
         });
     });

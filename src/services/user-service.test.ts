@@ -1,8 +1,7 @@
 import pgPromise from 'pg-promise';
-import { HttpError } from '../../helpers/errors';
-import { SignupRequest, UserUpdateRequest, UserEntity, PaginationOptions } from '../../types';
 import { db } from '../db';
-import User from '../User';
+import { HttpError } from '../helpers/errors';
+import { SignupRequest, User, UserUpdateRequest, UserEntity, PaginationOptions } from '../types';
 import * as userService from './user-service';
 
 const mockUuid = '00000000-0000-0000-0000-000000000000';
@@ -34,10 +33,9 @@ describe('userService', () => {
         password: '$2a$10$37xEfpMwqmfSCAfYlaMzS.trfLiJEqpk4gk.OegKglZRQNw3LIUWG',
         createdAt: new Date(),
         modifiedAt: new Date(),
-        deletedAt: null,
     };
 
-    const mockUser = new User(mockUserEntity);
+    const mockUser: User = userService.makeUser(mockUserEntity);
 
     describe('#fetchUsers', () => {
         test('returns a list of all users', async () => {
@@ -131,7 +129,7 @@ describe('userService', () => {
 
             expect(db.users.findById).toHaveBeenCalled();
             expect(db.users.update).toHaveBeenCalled();
-            expect(user).toEqual(new User(updatedUserEntity));
+            expect(user).toEqual(userService.makeUser(updatedUserEntity));
         });
 
         test('throws an HttpError if unsuccessful', async () => {

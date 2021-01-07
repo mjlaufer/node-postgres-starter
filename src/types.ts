@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import User from './model/User';
 
 export type MiddlewareFunc = (
     req: Request,
@@ -18,11 +17,11 @@ export interface SignupResponse {
     user?: User;
 }
 
-export interface UserUpdateRequest {
+export interface User {
     id: string;
-    email?: string;
-    username?: string;
-    password?: string;
+    email: string;
+    username: string;
+    createdAt: Date;
 }
 
 export interface UserEntity {
@@ -32,19 +31,16 @@ export interface UserEntity {
     password: string;
     createdAt: Date;
     modifiedAt: Date;
-    deletedAt: Date | null;
 }
 
-export interface PostCreateRequest {
+export type UserUpdateRequest = Partial<UserEntity> & { id: string };
+
+export interface Post {
+    id: string;
     title: string;
     body: string;
-    userId: string;
-}
-
-export interface PostUpdateRequest {
-    id: string;
-    title?: string;
-    body?: string;
+    author: string;
+    createdAt: Date;
 }
 
 export interface PostEntity {
@@ -54,8 +50,13 @@ export interface PostEntity {
     username: string;
     createdAt: Date;
     modifiedAt: Date;
-    deletedAt: Date | null;
 }
+
+type HasTitleAndBody = Pick<PostEntity, 'title' | 'body'>;
+
+export type PostCreateRequest = HasTitleAndBody & { userId: string };
+
+export type PostUpdateRequest = Partial<HasTitleAndBody> & { id: string };
 
 export interface PaginationOptions {
     limit: number;

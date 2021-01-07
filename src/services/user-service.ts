@@ -1,14 +1,22 @@
 import bcrypt from 'bcryptjs';
+import { pick } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
-import { HttpError } from '../../helpers/errors';
-import { SignupRequest, UserEntity, UserUpdateRequest, PaginationOptions } from '../../types';
 import { db } from '../db';
-import User from '../User';
+import { HttpError } from '../helpers/errors';
+import { SignupRequest, User, UserEntity, UserUpdateRequest, PaginationOptions } from '../types';
+
+function hash(password: string): string {
+    return bcrypt.hashSync(password, 10);
+}
+
+export function makeUser(data: UserEntity): User {
+    return pick(data, ['id', 'email', 'username', 'createdAt']);
+}
 
 export async function fetchUsers(paginationOptions: PaginationOptions): Promise<User[]> {
     try {
         const userEntities: UserEntity[] = await db.users.findAll(paginationOptions);
-        return userEntities.map((userEntity: UserEntity) => new User(userEntity));
+        return userEntities.map(makeUser);
     } catch (err) {
         throw new HttpError(err);
     }
@@ -17,7 +25,7 @@ export async function fetchUsers(paginationOptions: PaginationOptions): Promise<
 export async function fetchUser(id: string): Promise<User> {
     try {
         const userEntity: UserEntity = await db.users.findById(id);
-        return new User(userEntity);
+        return makeUser(userEntity);
     } catch (err) {
         throw new HttpError(err, 404);
     }
@@ -33,7 +41,7 @@ export async function createUser(signupRequestData: SignupRequest): Promise<User
             password,
         });
 
-        return new User(userEntity);
+        return makeUser(userEntity);
     } catch (err) {
         throw new HttpError(err);
     }
@@ -47,7 +55,7 @@ export async function updateUser(userData: UserUpdateRequest): Promise<User> {
 
         await db.users.update(updatedUserEntity);
 
-        return new User(updatedUserEntity);
+        return makeUser(updatedUserEntity);
     } catch (err) {
         throw new HttpError(err, 404);
     }
@@ -59,8 +67,4 @@ export async function deleteUser(id: string): Promise<void> {
     } catch (err) {
         throw new HttpError(err);
     }
-}
-
-function hash(password: string): string {
-    return bcrypt.hashSync(password, 10);
 }

@@ -1,8 +1,13 @@
 import pgPromise from 'pg-promise';
-import { HttpError } from '../../helpers/errors';
-import { PostCreateRequest, PostUpdateRequest, PostEntity, PaginationOptions } from '../../types';
 import { db } from '../db';
-import Post from '../Post';
+import { HttpError } from '../helpers/errors';
+import {
+    Post,
+    PostCreateRequest,
+    PostUpdateRequest,
+    PostEntity,
+    PaginationOptions,
+} from '../types';
 import * as postService from './post-service';
 
 const mockUuid = '00000000-0000-0000-0000-000000000000';
@@ -34,10 +39,9 @@ describe('postService', () => {
         username: 'username',
         createdAt: new Date(),
         modifiedAt: new Date(),
-        deletedAt: null,
     };
 
-    const mockPost = new Post(mockPostEntity);
+    const mockPost: Post = postService.makePost(mockPostEntity);
 
     describe('#fetchPosts', () => {
         test('returns a list of all posts', async () => {
@@ -130,7 +134,7 @@ describe('postService', () => {
 
             expect(db.posts.findById).toHaveBeenCalled();
             expect(db.posts.update).toHaveBeenCalled();
-            expect(post).toEqual(new Post(updatedPostEntity));
+            expect(post).toEqual(postService.makePost(updatedPostEntity));
         });
 
         test('throws an HttpError if unsuccessful', async () => {

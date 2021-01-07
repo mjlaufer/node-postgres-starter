@@ -1,9 +1,13 @@
 import express from 'express';
 import * as userController from '../controllers/user-controller';
-import { idSchema, signupSchema, updateUserSchema, paginationSchema } from '../helpers/validation';
 import asyncWrapper from '../middleware/asyncWrapper';
 import { sanitizeEmail, sanitizeText, sanitizePaginationOptions } from '../middleware/sanitizers';
-import { validateQuery, validateParams, validateBody } from '../middleware/validators';
+import {
+    validateIdParam,
+    validatePaginationQuery,
+    validateSignupCredentials,
+    validateUserUpdate,
+} from '../middleware/validators';
 
 const router = express.Router();
 
@@ -11,26 +15,26 @@ router
     .route('/')
     .get(
         sanitizePaginationOptions,
-        validateQuery(paginationSchema),
+        validatePaginationQuery,
         asyncWrapper(userController.fetchUsers),
     )
     .post(
         sanitizeEmail,
         sanitizeText('username'),
-        validateBody(signupSchema),
+        validateSignupCredentials,
         asyncWrapper(userController.createUser),
     );
 
 router
     .route('/:id')
-    .get(validateParams(idSchema), asyncWrapper(userController.fetchUser))
+    .get(validateIdParam, asyncWrapper(userController.fetchUser))
     .put(
         sanitizeEmail,
         sanitizeText('username'),
-        validateParams(idSchema),
-        validateBody(updateUserSchema),
+        validateIdParam,
+        validateUserUpdate,
         asyncWrapper(userController.updateUser),
     )
-    .delete(validateParams(idSchema), asyncWrapper(userController.deleteUser));
+    .delete(validateIdParam, asyncWrapper(userController.deleteUser));
 
 export default router;

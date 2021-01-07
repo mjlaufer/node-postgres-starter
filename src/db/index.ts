@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import pgPromise, { IInitOptions, IDatabase, IMain } from 'pg-promise';
-import UserRepository from './user-repository';
-import PostRepository from './post-repository';
+import UserRepository from './UserRepository';
+import PostRepository from './PostRepository';
 
 dotenv.config();
 
