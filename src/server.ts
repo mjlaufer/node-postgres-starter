@@ -1,7 +1,8 @@
-import { Server } from 'net';
+import { Server as HttpServer } from 'http';
 import util from 'util';
 import express from 'express';
 import helmet from 'helmet';
+import { merge } from 'lodash';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import passport from 'passport';
@@ -10,13 +11,9 @@ import { errorHandler, notFoundHandler } from './middleware/errorHandlers';
 import createSessionMiddleware from './middleware/session';
 import configurePassport from './configurePassport';
 
-declare module 'net' {
-    interface Server {
-        quit: () => Promise<void>;
-    }
-}
+export type Server = Omit<HttpServer, 'close'> & { close: () => Promise<void> };
 
-export default async function startServer({ port = process.env.PORT } = {}): Promise<Server> {
+export async function startServer({ port = process.env.PORT } = {}): Promise<Server> {
     const app = express();
 
     app.use(helmet());
@@ -44,8 +41,8 @@ export default async function startServer({ port = process.env.PORT } = {}): Pro
     return new Promise((resolve) => {
         const server = app.listen(port, () => {
             console.log(`> server listening on port ${port}`);
-            server.quit = util.promisify(server.close);
-            resolve(server);
+            const close = util.promisify(server.close);
+            resolve(merge(server, { close }));
         });
     });
 }

@@ -1,7 +1,6 @@
-import { Server } from 'net';
 import got from 'got';
 import { isString } from 'lodash';
-import startServer from '../server';
+import { startServer, Server } from '../server';
 import { closeOpenHandles, resetDb } from '../test/utils';
 import { User } from '../types';
 
@@ -19,7 +18,7 @@ describe('/users', () => {
     beforeEach(() => resetDb());
 
     afterAll(async () => {
-        await Promise.all([closeOpenHandles(), server.quit()]);
+        await Promise.all([closeOpenHandles(), server.close()]);
     });
 
     test('GET /users', async () => {
