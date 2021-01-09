@@ -17,4 +17,5 @@ module.exports = {
     testPathIgnorePatterns: ['node_modules', 'dist', '__tests__'],
     collectCoverageFrom: ['./src/**/*.ts'],
     coveragePathIgnorePatterns: ['__tests__'],
+    watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
 };
