@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "NODE_ENV=production node dist/index.js",
-    "dev": "nodemon --exec \"ts-node\" src/index.ts",
+    "dev": "nodemon --exec \"ts-node -r tsconfig-paths/register\" src/index.ts",
     "debug": "nodemon --exec \"node --inspect -r ts-node/register\" src/index.ts",
     "build": "tsc",
     "test": "jest --coverage",
@@ -82,6 +82,7 @@
     "prettier": "^2.2.1",
     "ts-jest": "^26.4.4",
     "ts-node": "^9.1.1",
+    "tsconfig-paths": "^3.9.0",
     "typescript": "^4.1.3"
   }
 }
