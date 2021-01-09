@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { pick } from 'lodash';
-import * as userService from '../services/user-service';
-import { SignupRequest, UserUpdateRequest } from '../types';
+import * as userService from '@services/user-service';
+import { SignupRequest, UserUpdateRequest } from '@types';
 
 export async function fetchUsers(req: Request, res: Response): Promise<void> {
     const lastCreatedAt =

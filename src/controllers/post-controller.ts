@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { pick } from 'lodash';
-import * as postService from '../services/post-service';
-import { PostCreateRequest, PostUpdateRequest } from '../types';
+import * as postService from '@services/post-service';
+import { PostCreateRequest, PostUpdateRequest } from '@types';
 
 export async function fetchPosts(req: Request, res: Response): Promise<void> {
     const lastCreatedAt =

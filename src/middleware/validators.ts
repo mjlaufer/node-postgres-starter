@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
-import { HttpError } from '../helpers/errors';
-import { MiddlewareFunc } from '../types';
+import { HttpError } from '@utils/errors';
+import { MiddlewareFunc } from '@types';
 
 const uuidValidator = Joi.string().guid({ version: 'uuidv4' });
 const usernameValidator = Joi.string().alphanum().min(3).max(30);

@@ -1,9 +1,9 @@
 import express, { Request, Response } from 'express';
 import passport from 'passport';
-import * as authController from '../controllers/auth-controller';
-import asyncWrapper from '../middleware/asyncWrapper';
-import { sanitizeEmail, sanitizeText } from '../middleware/sanitizers';
-import { validateLoginCredentials, validateSignupCredentials } from '../middleware/validators';
+import * as authController from '@controllers/auth-controller';
+import asyncWrapper from '@middleware/asyncWrapper';
+import { sanitizeEmail, sanitizeText } from '@middleware/sanitizers';
+import { validateLoginCredentials, validateSignupCredentials } from '@middleware/validators';
 
 const router = express.Router();
 

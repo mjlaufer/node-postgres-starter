@@ -1,9 +1,9 @@
 import bcrypt from 'bcryptjs';
 import { pick } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
-import { db } from '../db';
-import { HttpError } from '../helpers/errors';
-import { SignupRequest, User, UserEntity, UserUpdateRequest, PaginationOptions } from '../types';
+import { db } from '@db';
+import { HttpError } from '@utils/errors';
+import { SignupRequest, User, UserEntity, UserUpdateRequest, PaginationOptions } from '@types';
 
 function hash(password: string): string {
     return bcrypt.hashSync(password, 10);

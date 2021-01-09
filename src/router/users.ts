@@ -1,13 +1,13 @@
 import express from 'express';
-import * as userController from '../controllers/user-controller';
-import asyncWrapper from '../middleware/asyncWrapper';
-import { sanitizeEmail, sanitizeText, sanitizePaginationOptions } from '../middleware/sanitizers';
+import * as userController from '@controllers/user-controller';
+import asyncWrapper from '@middleware/asyncWrapper';
+import { sanitizeEmail, sanitizeText, sanitizePaginationOptions } from '@middleware/sanitizers';
 import {
     validateIdParam,
     validatePaginationQuery,
     validateSignupCredentials,
     validateUserUpdate,
-} from '../middleware/validators';
+} from '@middleware/validators';
 
 const router = express.Router();
 

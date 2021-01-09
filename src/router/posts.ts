@@ -1,12 +1,12 @@
 import express from 'express';
-import * as postController from '../controllers/post-controller';
-import asyncWrapper from '../middleware/asyncWrapper';
-import { sanitizeText, sanitizePaginationOptions } from '../middleware/sanitizers';
+import * as postController from '@controllers/post-controller';
+import asyncWrapper from '@middleware/asyncWrapper';
+import { sanitizeText, sanitizePaginationOptions } from '@middleware/sanitizers';
 import {
     validateIdParam,
     validatePaginationQuery,
     validatePostUpdate,
-} from '../middleware/validators';
+} from '@middleware/validators';
 
 const router = express.Router();
 

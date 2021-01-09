@@ -1,7 +1,7 @@
 import pgPromise from 'pg-promise';
-import { db } from '../db';
-import { HttpError } from '../helpers/errors';
-import { SignupRequest, User, UserUpdateRequest, UserEntity, PaginationOptions } from '../types';
+import { db } from '@db';
+import { HttpError } from '@utils/errors';
+import { SignupRequest, User, UserUpdateRequest, UserEntity, PaginationOptions } from '@types';
 import * as userService from './user-service';
 
 const mockUuid = '00000000-0000-0000-0000-000000000000';
@@ -12,7 +12,7 @@ const paginationOptions: PaginationOptions = {
     order: 'DESC',
 };
 
-jest.mock('../db', () => ({
+jest.mock('@db', () => ({
     db: {
         users: {},
     },

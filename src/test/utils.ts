@@ -1,7 +1,7 @@
 import Knex from 'knex';
-import * as knexConfig from '../knexfile';
-import { db } from '../db';
-import { redisClient } from '../middleware/session';
+import { db } from '@db';
+import * as knexConfig from '@db/knexfile';
+import { redisClient } from '@middleware/session';
 
 export const knex = Knex(knexConfig);
 

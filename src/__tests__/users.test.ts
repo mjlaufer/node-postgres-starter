@@ -1,8 +1,8 @@
 import got from 'got';
 import { isString } from 'lodash';
-import { startServer, Server } from '../server';
-import { closeOpenHandles, resetDb } from '../test/utils';
-import { User } from '../types';
+import { startServer, Server } from '@server';
+import { closeOpenHandles, resetDb } from '@test/utils';
+import { User } from '@types';
 
 describe('/users', () => {
     let baseUrl: string;

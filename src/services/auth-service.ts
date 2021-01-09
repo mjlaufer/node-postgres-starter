@@ -1,6 +1,6 @@
-import { HttpError } from '../helpers/errors';
-import { db } from '../db';
-import { SignupRequest, SignupResponse, User, UserEntity } from '../types';
+import { HttpError } from '@utils/errors';
+import { db } from '@db';
+import { SignupRequest, SignupResponse, User, UserEntity } from '@types';
 import * as userService from './user-service';
 
 export const USER_EXISTS_MESSAGE = 'An account for this email or username already exists';

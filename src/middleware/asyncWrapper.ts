@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { MiddlewareFunc } from '../types';
+import { MiddlewareFunc } from '@types';
 
 export default function asyncWrapper(
     asyncFn: (req: Request, res: Response, next: NextFunction) => Promise<void>,

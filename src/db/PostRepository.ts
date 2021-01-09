@@ -1,5 +1,5 @@
 import { IDatabase } from 'pg-promise';
-import { PostCreateRequest, PostEntity, PaginationOptions } from '../types';
+import { PostCreateRequest, PostEntity, PaginationOptions } from '@types';
 
 interface PostCreateRequestWithId extends PostCreateRequest {
     id: string;

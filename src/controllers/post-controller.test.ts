@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import * as postService from '../services/post-service';
-import { Post } from '../types';
+import * as postService from '@services/post-service';
+import { Post } from '@types';
 import * as postController from './post-controller';
 
 const mockUuid = '00000000-0000-0000-0000-000000000000';

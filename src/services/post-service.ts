@@ -1,14 +1,8 @@
 import { pick } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
-import { db } from '../db';
-import { HttpError } from '../helpers/errors';
-import {
-    Post,
-    PostCreateRequest,
-    PostUpdateRequest,
-    PostEntity,
-    PaginationOptions,
-} from '../types';
+import { db } from '@db';
+import { HttpError } from '@utils/errors';
+import { Post, PostCreateRequest, PostUpdateRequest, PostEntity, PaginationOptions } from '@types';
 
 export function makePost(data: PostEntity): Post {
     return {

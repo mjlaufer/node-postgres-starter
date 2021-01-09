@@ -21,7 +21,7 @@
     "prettier": "prettier --write '**/*.ts'",
     "prettier:check": "prettier --check '**/*.ts'",
     "ci:check": "run-s prettier:check lint test:ci build",
-    "knex": "knex --knexfile ./src/knexfile.ts"
+    "knex": "knex --knexfile ./src/db/knexfile.ts"
   },
   "husky": {
     "hooks": {

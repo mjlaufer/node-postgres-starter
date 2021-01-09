@@ -6,9 +6,9 @@ import { merge } from 'lodash';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import passport from 'passport';
-import * as router from './router';
-import { errorHandler, notFoundHandler } from './middleware/errorHandlers';
-import createSessionMiddleware from './middleware/session';
+import * as router from '@router';
+import { errorHandler, notFoundHandler } from '@middleware/errorHandlers';
+import createSessionMiddleware from '@middleware/session';
 import configurePassport from './configurePassport';
 
 export type Server = Omit<HttpServer, 'close'> & { close: () => Promise<void> };

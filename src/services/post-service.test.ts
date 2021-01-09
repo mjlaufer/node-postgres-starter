@@ -1,13 +1,7 @@
 import pgPromise from 'pg-promise';
-import { db } from '../db';
-import { HttpError } from '../helpers/errors';
-import {
-    Post,
-    PostCreateRequest,
-    PostUpdateRequest,
-    PostEntity,
-    PaginationOptions,
-} from '../types';
+import { db } from '@db';
+import { HttpError } from '@utils/errors';
+import { Post, PostCreateRequest, PostUpdateRequest, PostEntity, PaginationOptions } from '@types';
 import * as postService from './post-service';
 
 const mockUuid = '00000000-0000-0000-0000-000000000000';
@@ -18,7 +12,7 @@ const paginationOptions: PaginationOptions = {
     order: 'DESC',
 };
 
-jest.mock('../db', () => ({
+jest.mock('@db', () => ({
     db: {
         posts: {},
     },

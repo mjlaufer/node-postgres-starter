@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import * as authService from '../services/auth-service';
-import { SignupRequest, User } from '../types';
+import * as authService from '@services/auth-service';
+import { SignupRequest, User } from '@types';
 import * as authController from './auth-controller';
 
 describe('authController', () => {
