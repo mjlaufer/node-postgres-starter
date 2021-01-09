@@ -14,6 +14,7 @@ module.exports = {
     },
     verbose: true,
     setupFilesAfterEnv: ['./src/test/setup-env.ts'],
+    testPathIgnorePatterns: ['node_modules', 'dist', '__tests__'],
     collectCoverageFrom: ['./src/**/*.ts'],
-    coveragePathIgnorePatterns: ['node_modules', '__tests__'],
+    coveragePathIgnorePatterns: ['__tests__'],
 };
