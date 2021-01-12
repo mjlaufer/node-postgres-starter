@@ -1,5 +1,5 @@
 import pgPromise from 'pg-promise';
-import { db } from '@db';
+import db from '@db';
 import { HttpError } from '@utils/errors';
 import { Post, PostCreateRequest, PostUpdateRequest, PostEntity, PaginationOptions } from '@types';
 import * as postService from './post-service';
@@ -13,9 +13,7 @@ const paginationOptions: PaginationOptions = {
 };
 
 jest.mock('@db', () => ({
-    db: {
-        posts: {},
-    },
+    posts: {},
     pgp: pgPromise(),
 }));
 

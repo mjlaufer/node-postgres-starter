@@ -1,8 +1,12 @@
-import got from 'got';
-import { isString } from 'lodash';
+import { head, identity, isString } from 'lodash';
+import validate from 'validator';
 import { startServer, Server } from '@server';
-import { closeOpenHandles, resetDb } from '@test/utils';
+import { apiClient, closeOpenHandles, generate, resetDb } from '@test/utils';
 import { User } from '@types';
+
+jest.mock('uuid', () => ({
+    v4: () => 'test_uuid',
+}));
 
 describe('/users', () => {
     let baseUrl: string;
@@ -22,7 +26,7 @@ describe('/users', () => {
     });
 
     test('GET /users', async () => {
-        const response: { users: User[] } = await got(baseUrl, { retry: 0 }).json();
+        const response: { users: User[] } = await apiClient(baseUrl).json();
 
         for (const user of response.users) {
             expect(user).toHaveProperty('email');
@@ -31,62 +35,62 @@ describe('/users', () => {
     });
 
     test('GET /users/:id', async () => {
-        const userId = 'b9a75c4e-ff61-406b-95a6-6313d55c39fe';
-        const response: User = await got(`${baseUrl}${userId}`, { retry: 0 }).json();
+        const { users }: { users: User[] } = await apiClient(baseUrl).json();
+        const firstUser = head(users) as User;
 
-        expect(response).toEqual(
-            expect.objectContaining({
-                id: 'b9a75c4e-ff61-406b-95a6-6313d55c39fe',
-                email: 'user1@example.com',
-                username: 'user1',
-            }),
-        );
+        const response: User = await apiClient(`${baseUrl}${firstUser.id}`).json();
+
+        expect(response).toMatchObject(firstUser);
     });
 
     test('POST /users', async () => {
-        const response: User = await got
+        const testUserCreateData = {
+            email: generate.email(),
+            username: generate.username(),
+            password: generate.password(),
+        };
+
+        const response: User = await apiClient
             .post(baseUrl, {
-                json: { email: 'newuser@example.com', username: 'newuser', password: 'password' },
-                retry: 0,
+                json: testUserCreateData,
             })
             .json();
 
-        expect(response).toEqual(
-            expect.objectContaining({
-                email: 'newuser@example.com',
-                username: 'newuser',
-            }),
-        );
+        expect(response).toMatchObject({
+            id: 'test_uuid',
+            email: validate.normalizeEmail(testUserCreateData.email),
+            username: testUserCreateData.username,
+        });
     });
 
     test('PUT /users/:id', async () => {
-        const userId = 'b9a75c4e-ff61-406b-95a6-6313d55c39fe';
-        const response: User = await got
-            .put(`${baseUrl}${userId}`, {
-                json: { email: 'updateduser@test.com', username: 'updateduser' },
-                retry: 0,
+        const { users }: { users: User[] } = await apiClient(baseUrl).json();
+        const firstUser = head(users) as User;
+
+        const testUserUpdateData = { email: generate.email(), username: generate.username() };
+
+        const response: User = await apiClient
+            .put(`${baseUrl}${firstUser.id}`, {
+                json: testUserUpdateData,
             })
             .json();
 
-        expect(response).toEqual(
-            expect.objectContaining({
-                id: 'b9a75c4e-ff61-406b-95a6-6313d55c39fe',
-                email: 'updateduser@test.com',
-                username: 'updateduser',
-            }),
-        );
+        expect(response).toMatchObject({
+            id: firstUser.id,
+            email: validate.normalizeEmail(testUserUpdateData.email),
+            username: testUserUpdateData.username,
+        });
     });
 
     test('DELETE /users/:id', async () => {
-        const userId = 'b9a75c4e-ff61-406b-95a6-6313d55c39fe';
-        const response = await got.delete(`${baseUrl}${userId}`, { retry: 0 }).json();
+        const { users }: { users: User[] } = await apiClient(baseUrl).json();
+        const firstUser = head(users) as User;
+
+        const response = await apiClient.delete(`${baseUrl}${firstUser.id}`).json();
 
         expect(response).toBe('');
 
-        await got(`${baseUrl}${userId}`, { retry: 0 })
-            .json()
-            .catch((err) => {
-                expect(err).toMatchInlineSnapshot(`[HTTPError: Response code 404 (Not Found)]`);
-            });
+        const err = await apiClient(`${baseUrl}${firstUser.id}`).json().catch(identity);
+        expect(err).toMatchInlineSnapshot(`[HTTPError: Response code 404 (Not Found)]`);
     });
 });

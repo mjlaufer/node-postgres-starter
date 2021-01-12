@@ -1,10 +1,11 @@
 import { check, body, query, ValidationChain } from 'express-validator';
+import { castArray, isString } from 'lodash';
 
 export const sanitizeEmail = [body('email').normalizeEmail()];
 
 export function sanitizeText(field: string | string[]): ValidationChain[] {
-    if (typeof field === 'string') {
-        field = [field];
+    if (isString(field)) {
+        field = castArray(field);
     }
 
     return field.map((f) => check(f).trim().escape());

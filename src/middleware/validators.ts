@@ -4,7 +4,7 @@ import { HttpError } from '@utils/errors';
 import { MiddlewareFunc } from '@types';
 
 const uuidValidator = Joi.string().guid({ version: 'uuidv4' });
-const usernameValidator = Joi.string().alphanum().min(3).max(30);
+const usernameValidator = Joi.string().min(3).max(30);
 const emailValidator = Joi.string().email();
 const passwordValidator = Joi.string()
     .pattern(/^[\w`~!@#$%^&*()-=+\[\]{},./?]{5,30}$/)

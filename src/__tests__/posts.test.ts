@@ -1,7 +1,6 @@
-import got from 'got';
-import { isString } from 'lodash';
+import { identity, isString } from 'lodash';
 import { startServer, Server } from '@server';
-import { closeOpenHandles, resetDb } from '@test/utils';
+import { apiClient, closeOpenHandles, resetDb } from '@test/utils';
 import { Post } from '@types';
 
 describe('/posts', () => {
@@ -22,7 +21,7 @@ describe('/posts', () => {
     });
 
     test('GET /posts', async () => {
-        const response: { posts: Post[] } = await got(baseUrl, { retry: 0 }).json();
+        const response: { posts: Post[] } = await apiClient(baseUrl).json();
 
         for (const post of response.posts) {
             expect(post).toHaveProperty('title');
@@ -33,7 +32,7 @@ describe('/posts', () => {
 
     test('GET /posts/:id', async () => {
         const postId = '708000d9-a4b9-48bb-b3cc-ee6f184777b8';
-        const response: Post = await got(`${baseUrl}${postId}`, { retry: 0 }).json();
+        const response: Post = await apiClient(`${baseUrl}${postId}`).json();
 
         expect(response).toEqual(
             expect.objectContaining({
@@ -47,14 +46,13 @@ describe('/posts', () => {
     });
 
     test('POST /posts', async () => {
-        const response: Post = await got
+        const response: Post = await apiClient
             .post(baseUrl, {
                 json: {
                     title: 'newtitle',
                     body: 'newbody',
                     userId: 'b9a75c4e-ff61-406b-95a6-6313d55c39fe',
                 },
-                retry: 0,
             })
             .json();
 
@@ -68,13 +66,12 @@ describe('/posts', () => {
 
     test('PUT /posts/:id', async () => {
         const postId = '708000d9-a4b9-48bb-b3cc-ee6f184777b8';
-        const response: Post = await got
+        const response: Post = await apiClient
             .put(`${baseUrl}${postId}`, {
                 json: {
                     title: 'updatedtitle',
                     body: 'updatedbody',
                 },
-                retry: 0,
             })
             .json();
 
@@ -89,14 +86,11 @@ describe('/posts', () => {
 
     test('DELETE /posts/:id', async () => {
         const postId = '708000d9-a4b9-48bb-b3cc-ee6f184777b8';
-        const response = await got.delete(`${baseUrl}${postId}`, { retry: 0 }).json();
+        const response = await apiClient.delete(`${baseUrl}${postId}`).json();
 
         expect(response).toBe('');
 
-        await got(`${baseUrl}${postId}`, { retry: 0 })
-            .json()
-            .catch((err) => {
-                expect(err).toMatchInlineSnapshot(`[HTTPError: Response code 404 (Not Found)]`);
-            });
+        const err = await apiClient(`${baseUrl}${postId}`).catch(identity);
+        expect(err).toMatchInlineSnapshot(`[HTTPError: Response code 404 (Not Found)]`);
     });
 });

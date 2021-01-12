@@ -17,6 +17,10 @@ export interface SignupResponse {
     user?: User;
 }
 
+export interface UserCreateRequest extends SignupRequest {
+    id: string;
+}
+
 export interface User {
     id: string;
     email: string;

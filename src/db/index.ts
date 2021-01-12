@@ -66,4 +66,4 @@ const connectionConfig: ConnectionConfig = {
 
 const connection = NODE_ENV === 'production' ? DATABASE_URL : connectionConfig;
 
-export const db: ExtendedProtocol = pgp(connection);
+export default pgp(connection) as ExtendedProtocol;

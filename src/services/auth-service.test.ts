@@ -1,15 +1,13 @@
 import pgPromise from 'pg-promise';
-import { db } from '@db';
+import db from '@db';
 import { HttpError } from '@utils/errors';
 import { SignupRequest, User, UserEntity } from '@types';
 import * as userService from './user-service';
 import * as authService from './auth-service';
 
 jest.mock('@db', () => ({
-    db: {
-        users: {
-            findOne: jest.fn(),
-        },
+    users: {
+        findOne: jest.fn(),
     },
     pgp: pgPromise(),
 }));

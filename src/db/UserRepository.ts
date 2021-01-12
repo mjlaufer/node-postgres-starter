@@ -1,10 +1,6 @@
 import { IDatabase } from 'pg-promise';
-import { SignupRequest, UserEntity, PaginationOptions } from '@types';
+import { UserCreateRequest, UserEntity, PaginationOptions } from '@types';
 import { generateWhereClause } from './helpers';
-
-interface SignupRequestWithId extends SignupRequest {
-    id: string;
-}
 
 export default class UserRepository {
     constructor(private db: IDatabase<any>) {}
@@ -30,10 +26,10 @@ export default class UserRepository {
         return user;
     }
 
-    async create(signupRequestData: SignupRequestWithId): Promise<UserEntity> {
+    async create(data: UserCreateRequest): Promise<UserEntity> {
         const newUser = await this.db.one<UserEntity>(
             'INSERT INTO users(id, email, username, password) VALUES(${id}, ${email}, ${username}, ${password}) RETURNING *',
-            signupRequestData,
+            data,
         );
         return newUser;
     }

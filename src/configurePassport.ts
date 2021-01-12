@@ -1,7 +1,7 @@
 import { PassportStatic } from 'passport';
 import { Strategy } from 'passport-local';
 import bcrypt from 'bcryptjs';
-import { db } from '@db';
+import db from '@db';
 import { User, UserEntity } from '@types';
 
 export default function configurePassport(passport: PassportStatic): void {

@@ -1,5 +1,5 @@
 import { HttpError } from '@utils/errors';
-import { db } from '@db';
+import db from '@db';
 import { SignupRequest, SignupResponse, User, UserEntity } from '@types';
 import * as userService from './user-service';
 
