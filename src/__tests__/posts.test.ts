@@ -1,17 +1,23 @@
-import { identity, isString } from 'lodash';
+import { head, identity, isString } from 'lodash';
 import { startServer, Server } from '@server';
-import { apiClient, closeOpenHandles, resetDb } from '@test/utils';
-import { Post } from '@types';
+import { apiClient, closeOpenHandles, generate, resetDb } from '@test/utils';
+import { Post, User } from '@types';
+
+jest.mock('uuid', () => ({
+    v4: () => 'test_uuid',
+}));
 
 describe('/posts', () => {
-    let baseUrl: string;
+    let postsUrl: string;
+    let usersUrl: string;
     let server: Server;
 
     beforeAll(async () => {
         server = await startServer();
         const address = server.address();
         const port = isString(address) ? '0' : address?.port;
-        baseUrl = `http://localhost:${port}/posts/`;
+        postsUrl = `http://localhost:${port}/posts/`;
+        usersUrl = `http://localhost:${port}/users/`;
     });
 
     beforeEach(() => resetDb());
@@ -21,7 +27,7 @@ describe('/posts', () => {
     });
 
     test('GET /posts', async () => {
-        const response: { posts: Post[] } = await apiClient(baseUrl).json();
+        const response: { posts: Post[] } = await apiClient(postsUrl).json();
 
         for (const post of response.posts) {
             expect(post).toHaveProperty('title');
@@ -31,66 +37,70 @@ describe('/posts', () => {
     });
 
     test('GET /posts/:id', async () => {
-        const postId = '708000d9-a4b9-48bb-b3cc-ee6f184777b8';
-        const response: Post = await apiClient(`${baseUrl}${postId}`).json();
+        const { posts }: { posts: Post[] } = await apiClient(postsUrl).json();
+        const firstPost = head(posts) as Post;
 
-        expect(response).toEqual(
-            expect.objectContaining({
-                id: '708000d9-a4b9-48bb-b3cc-ee6f184777b8',
-                title: 'fermentum',
-                body:
-                    'fermentum leo vel orci porta non pulvinar neque laoreet suspendisse interdum consectetur libero id faucibus nisl tincidunt eget nullam non',
-                author: 'user1',
-            }),
-        );
+        const response: Post = await apiClient(`${postsUrl}${firstPost.id}`).json();
+
+        expect(response).toMatchObject(firstPost);
     });
 
     test('POST /posts', async () => {
+        const { users }: { users: User[] } = await apiClient(usersUrl).json();
+        const firstUser = head(users) as User;
+
+        const testPostCreateData = {
+            title: generate.postTitle(),
+            body: generate.postBody(),
+            userId: firstUser.id,
+        };
+
         const response: Post = await apiClient
-            .post(baseUrl, {
-                json: {
-                    title: 'newtitle',
-                    body: 'newbody',
-                    userId: 'b9a75c4e-ff61-406b-95a6-6313d55c39fe',
-                },
+            .post(postsUrl, {
+                json: testPostCreateData,
             })
             .json();
 
-        expect(response).toEqual(
-            expect.objectContaining({
-                title: 'newtitle',
-                body: 'newbody',
-            }),
-        );
+        expect(response).toMatchObject({
+            id: 'test_uuid',
+            title: testPostCreateData.title,
+            body: testPostCreateData.body,
+            author: firstUser.username,
+        });
     });
 
     test('PUT /posts/:id', async () => {
-        const postId = '708000d9-a4b9-48bb-b3cc-ee6f184777b8';
+        const { posts }: { posts: Post[] } = await apiClient(postsUrl).json();
+        const firstPost = head(posts) as Post;
+
+        const testPostUpdateData = {
+            title: generate.postTitle(),
+            body: generate.postBody(),
+        };
+
         const response: Post = await apiClient
-            .put(`${baseUrl}${postId}`, {
-                json: {
-                    title: 'updatedtitle',
-                    body: 'updatedbody',
-                },
+            .put(`${postsUrl}${firstPost.id}`, {
+                json: testPostUpdateData,
             })
             .json();
 
-        expect(response).toEqual(
-            expect.objectContaining({
-                id: '708000d9-a4b9-48bb-b3cc-ee6f184777b8',
-                title: 'updatedtitle',
-                body: 'updatedbody',
-            }),
-        );
+        expect(response).toMatchObject({
+            id: firstPost.id,
+            title: testPostUpdateData.title,
+            body: testPostUpdateData.body,
+            author: firstPost.author,
+        });
     });
 
     test('DELETE /posts/:id', async () => {
-        const postId = '708000d9-a4b9-48bb-b3cc-ee6f184777b8';
-        const response = await apiClient.delete(`${baseUrl}${postId}`).json();
+        const { posts }: { posts: Post[] } = await apiClient(postsUrl).json();
+        const firstPost = head(posts) as Post;
+
+        const response = await apiClient.delete(`${postsUrl}${firstPost.id}`).json();
 
         expect(response).toBe('');
 
-        const err = await apiClient(`${baseUrl}${postId}`).catch(identity);
+        const err = await apiClient(`${postsUrl}${firstPost.id}`).catch(identity);
         expect(err).toMatchInlineSnapshot(`[HTTPError: Response code 404 (Not Found)]`);
     });
 });

@@ -9,14 +9,14 @@ jest.mock('uuid', () => ({
 }));
 
 describe('/users', () => {
-    let baseUrl: string;
+    let usersUrl: string;
     let server: Server;
 
     beforeAll(async () => {
         server = await startServer();
         const address = server.address();
         const port = isString(address) ? '0' : address?.port;
-        baseUrl = `http://localhost:${port}/users/`;
+        usersUrl = `http://localhost:${port}/users/`;
     });
 
     beforeEach(() => resetDb());
@@ -26,7 +26,7 @@ describe('/users', () => {
     });
 
     test('GET /users', async () => {
-        const response: { users: User[] } = await apiClient(baseUrl).json();
+        const response: { users: User[] } = await apiClient(usersUrl).json();
 
         for (const user of response.users) {
             expect(user).toHaveProperty('email');
@@ -35,10 +35,10 @@ describe('/users', () => {
     });
 
     test('GET /users/:id', async () => {
-        const { users }: { users: User[] } = await apiClient(baseUrl).json();
+        const { users }: { users: User[] } = await apiClient(usersUrl).json();
         const firstUser = head(users) as User;
 
-        const response: User = await apiClient(`${baseUrl}${firstUser.id}`).json();
+        const response: User = await apiClient(`${usersUrl}${firstUser.id}`).json();
 
         expect(response).toMatchObject(firstUser);
     });
@@ -51,7 +51,7 @@ describe('/users', () => {
         };
 
         const response: User = await apiClient
-            .post(baseUrl, {
+            .post(usersUrl, {
                 json: testUserCreateData,
             })
             .json();
@@ -64,13 +64,13 @@ describe('/users', () => {
     });
 
     test('PUT /users/:id', async () => {
-        const { users }: { users: User[] } = await apiClient(baseUrl).json();
+        const { users }: { users: User[] } = await apiClient(usersUrl).json();
         const firstUser = head(users) as User;
 
         const testUserUpdateData = { email: generate.email(), username: generate.username() };
 
         const response: User = await apiClient
-            .put(`${baseUrl}${firstUser.id}`, {
+            .put(`${usersUrl}${firstUser.id}`, {
                 json: testUserUpdateData,
             })
             .json();
@@ -83,14 +83,14 @@ describe('/users', () => {
     });
 
     test('DELETE /users/:id', async () => {
-        const { users }: { users: User[] } = await apiClient(baseUrl).json();
+        const { users }: { users: User[] } = await apiClient(usersUrl).json();
         const firstUser = head(users) as User;
 
-        const response = await apiClient.delete(`${baseUrl}${firstUser.id}`).json();
+        const response = await apiClient.delete(`${usersUrl}${firstUser.id}`).json();
 
         expect(response).toBe('');
 
-        const err = await apiClient(`${baseUrl}${firstUser.id}`).json().catch(identity);
+        const err = await apiClient(`${usersUrl}${firstUser.id}`).json().catch(identity);
         expect(err).toMatchInlineSnapshot(`[HTTPError: Response code 404 (Not Found)]`);
     });
 });
