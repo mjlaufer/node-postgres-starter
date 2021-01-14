@@ -90,7 +90,17 @@ describe('/users', () => {
 
         expect(response).toBe('');
 
-        const err = await apiClient(`${usersUrl}${firstUser.id}`).json().catch(identity);
-        expect(err).toMatchInlineSnapshot(`[HTTPError: Response code 404 (Not Found)]`);
+        const err = (await apiClient(`${usersUrl}${firstUser.id}`).json().catch(identity)) as Error;
+
+        // Because `firstUser.id` is dynamic, we need to replace it with a constant, so our snapshot remains consistent.
+        const testErr = err.message.replace(firstUser.id, 'GENERATED_USER_ID');
+        expect(testErr).toMatchInlineSnapshot(`
+            "(404) QueryResultError {
+                code: queryResultErrorCode.noData
+                message: \\"No data returned from the query.\\"
+                received: 0
+                query: \\"SELECT * FROM users WHERE id = 'GENERATED_USER_ID'\\"
+            }"
+        `);
     });
 });

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
-import { HttpError } from '@utils/errors';
+import { ValidationError } from '@utils/errors';
 import { MiddlewareFunc } from '@types';
 
 const uuidValidator = Joi.string().guid({ version: 'uuidv4' });
@@ -50,7 +50,7 @@ export function validate(
             await schema.validateAsync(req[userInput]);
             next();
         } catch (err) {
-            next(new HttpError(err.message, 400));
+            next(new ValidationError(err.message));
         }
     };
 }
