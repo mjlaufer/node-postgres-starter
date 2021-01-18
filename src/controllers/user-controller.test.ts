@@ -1,110 +1,99 @@
-import { Request, Response } from 'express';
 import * as userService from '@services/user-service';
-import { User } from '@types';
+import * as generate from '@test/utils/generate';
 import * as userController from './user-controller';
 
-const mockUuid = '00000000-0000-0000-0000-000000000000';
-
 describe('userController', () => {
-    const mockUser: User = {
-        id: mockUuid,
-        email: 'test@test.com',
-        username: 'username',
-        createdAt: new Date(),
-    };
-    let req: Request;
-    let res: Response;
+    const mockUser = generate.user();
 
-    beforeEach(() => {
-        req = {} as Request;
-        res = {} as Response;
-        res.json = jest.fn();
-        res.status = jest.fn(() => res);
-        res.end = jest.fn();
+    afterEach(() => {
+        jest.resetAllMocks();
     });
 
-    describe('#fetchUsers', () => {
-        test('retrieves a list of users', async () => {
-            const fetchUsers = jest.spyOn(userService, 'fetchUsers').mockResolvedValue([mockUser]);
-            req.query = {};
+    test('fetchUsers', async () => {
+        const fetchUsers = jest.spyOn(userService, 'fetchUsers').mockResolvedValue([mockUser]);
 
-            expect.assertions(2);
+        expect.assertions(4);
 
-            await userController.fetchUsers(req, res);
+        const req = generate.req();
+        const res = generate.res();
+        await userController.fetchUsers(req, res);
 
-            expect(fetchUsers).toHaveBeenCalled();
-            expect(res.json).toHaveBeenCalledWith({ users: [mockUser] });
-        });
+        expect(fetchUsers).toHaveBeenCalledWith(
+            expect.objectContaining({ limit: 10, order: 'DESC' }),
+        );
+        expect(fetchUsers).toHaveBeenCalledTimes(1);
+        expect(res.json).toHaveBeenCalledWith({ users: [mockUser] });
+        expect(res.json).toHaveBeenCalledTimes(1);
     });
 
-    describe('#fetchUser', () => {
-        test('retrieves the correct user', async () => {
-            const fetchUser = jest.spyOn(userService, 'fetchUser').mockResolvedValue(mockUser);
-            req.params = { id: mockUuid };
+    test('fetchUser', async () => {
+        const fetchUser = jest.spyOn(userService, 'fetchUser').mockResolvedValue(mockUser);
 
-            expect.assertions(2);
+        expect.assertions(4);
 
-            await userController.fetchUser(req, res);
+        const req = generate.req({ params: { id: mockUser.id } });
+        const res = generate.res();
+        await userController.fetchUser(req, res);
 
-            expect(fetchUser).toHaveBeenCalledWith(mockUser.id);
-            expect(res.json).toHaveBeenCalledWith(mockUser);
-        });
+        expect(fetchUser).toHaveBeenCalledWith(mockUser.id);
+        expect(fetchUser).toHaveBeenCalledTimes(1);
+        expect(res.json).toHaveBeenCalledWith(mockUser);
+        expect(res.json).toHaveBeenCalledTimes(1);
     });
 
-    describe('#createUser', () => {
+    test('createUser', async () => {
+        const createUser = jest.spyOn(userService, 'createUser').mockResolvedValue(mockUser);
+
+        expect.assertions(4);
+
         const data = {
-            email: 'test@test.com',
-            username: 'username',
+            email: generate.email(),
+            username: generate.username(),
         };
+        const req = generate.req({ body: data });
+        const res = generate.res();
+        await userController.createUser(req, res);
 
-        test('creates a new user', async () => {
-            const createUser = jest.spyOn(userService, 'createUser').mockResolvedValue(mockUser);
-            req.body = data;
-
-            expect.assertions(2);
-
-            await userController.createUser(req, res);
-
-            expect(createUser).toHaveBeenCalledWith(data);
-            expect(res.json).toHaveBeenCalledWith(mockUser);
-        });
+        expect(createUser).toHaveBeenCalledWith(data);
+        expect(createUser).toHaveBeenCalledTimes(1);
+        expect(res.json).toHaveBeenCalledWith(mockUser);
+        expect(res.json).toHaveBeenCalledTimes(1);
     });
 
-    describe('#updateUser', () => {
+    test('updateUser', async () => {
         const data = {
-            username: 'updated_user',
+            username: generate.username(),
         };
+        const updateUser = jest
+            .spyOn(userService, 'updateUser')
+            .mockResolvedValue({ ...mockUser, ...data });
 
-        test('updates a user', async () => {
-            const updateUser = jest
-                .spyOn(userService, 'updateUser')
-                .mockResolvedValue({ ...mockUser, ...data });
-            req.params = { id: mockUuid };
-            req.body = data;
+        expect.assertions(4);
 
-            expect.assertions(2);
+        const req = generate.req({ params: { id: mockUser.id }, body: data });
+        const res = generate.res();
+        await userController.updateUser(req, res);
 
-            await userController.updateUser(req, res);
-
-            expect(updateUser).toHaveBeenCalledWith({
-                id: mockUuid,
-                ...data,
-            });
-            expect(res.json).toHaveBeenCalledWith({ ...mockUser, ...data });
+        expect(updateUser).toHaveBeenCalledWith({
+            id: mockUser.id,
+            ...data,
         });
+        expect(updateUser).toHaveBeenCalledTimes(1);
+        expect(res.json).toHaveBeenCalledWith({ ...mockUser, ...data });
+        expect(res.json).toHaveBeenCalledTimes(1);
     });
 
-    describe('#deleteUser', () => {
-        test('deletes a user', async () => {
-            const deleteUser = jest.spyOn(userService, 'deleteUser').mockResolvedValue();
-            req.params = { id: mockUuid };
+    test('deleteUser', async () => {
+        const deleteUser = jest.spyOn(userService, 'deleteUser').mockResolvedValue();
 
-            expect.assertions(2);
+        expect.assertions(3);
 
-            await userController.deleteUser(req, res);
+        const req = generate.req({ params: { id: mockUser.id } });
+        const res = generate.res();
+        await userController.deleteUser(req, res);
 
-            expect(deleteUser).toHaveBeenCalledWith(mockUser.id);
-            expect(res.end).toHaveBeenCalled();
-        });
+        expect(deleteUser).toHaveBeenCalledWith(mockUser.id);
+        expect(deleteUser).toHaveBeenCalledTimes(1);
+        expect(res.end).toHaveBeenCalledTimes(1);
     });
 });

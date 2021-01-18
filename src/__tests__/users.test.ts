@@ -1,7 +1,9 @@
 import { head, identity, isString } from 'lodash';
 import validate from 'validator';
 import { startServer, Server } from '@server';
-import { apiClient, closeOpenHandles, generate, resetDb } from '@test/utils';
+import * as generate from '@test/utils/generate';
+import { closeOpenHandles, resetDb } from '@test/utils/integration';
+import { request } from '@test/utils/request';
 import { User } from '@types';
 
 jest.mock('uuid', () => ({
@@ -26,7 +28,7 @@ describe('/users', () => {
     });
 
     test('GET /users', async () => {
-        const response: { users: User[] } = await apiClient(usersUrl).json();
+        const response: { users: User[] } = await request(usersUrl).json();
 
         for (const user of response.users) {
             expect(user).toHaveProperty('email');
@@ -35,10 +37,10 @@ describe('/users', () => {
     });
 
     test('GET /users/:id', async () => {
-        const { users }: { users: User[] } = await apiClient(usersUrl).json();
+        const { users }: { users: User[] } = await request(usersUrl).json();
         const firstUser = head(users) as User;
 
-        const response: User = await apiClient(`${usersUrl}${firstUser.id}`).json();
+        const response: User = await request(`${usersUrl}${firstUser.id}`).json();
 
         expect(response).toMatchObject(firstUser);
     });
@@ -50,7 +52,7 @@ describe('/users', () => {
             password: generate.password(),
         };
 
-        const response: User = await apiClient
+        const response: User = await request
             .post(usersUrl, {
                 json: testUserCreateData,
             })
@@ -64,12 +66,12 @@ describe('/users', () => {
     });
 
     test('PUT /users/:id', async () => {
-        const { users }: { users: User[] } = await apiClient(usersUrl).json();
+        const { users }: { users: User[] } = await request(usersUrl).json();
         const firstUser = head(users) as User;
 
         const testUserUpdateData = { email: generate.email(), username: generate.username() };
 
-        const response: User = await apiClient
+        const response: User = await request
             .put(`${usersUrl}${firstUser.id}`, {
                 json: testUserUpdateData,
             })
@@ -83,14 +85,14 @@ describe('/users', () => {
     });
 
     test('DELETE /users/:id', async () => {
-        const { users }: { users: User[] } = await apiClient(usersUrl).json();
+        const { users }: { users: User[] } = await request(usersUrl).json();
         const firstUser = head(users) as User;
 
-        const response = await apiClient.delete(`${usersUrl}${firstUser.id}`).json();
+        const response = await request.delete(`${usersUrl}${firstUser.id}`).json();
 
         expect(response).toBe('');
 
-        const err = (await apiClient(`${usersUrl}${firstUser.id}`).json().catch(identity)) as Error;
+        const err = (await request(`${usersUrl}${firstUser.id}`).json().catch(identity)) as Error;
 
         // Because `firstUser.id` is dynamic, we need to replace it with a constant, so our snapshot remains consistent.
         const testErr = err.message.replace(firstUser.id, 'GENERATED_USER_ID');

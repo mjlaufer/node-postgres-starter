@@ -1,6 +1,9 @@
 import { head, identity, isString } from 'lodash';
 import { startServer, Server } from '@server';
-import { apiClient, closeOpenHandles, generate, resetDb } from '@test/utils';
+import * as generate from '@test/utils/generate';
+import { closeOpenHandles, resetDb } from '@test/utils/integration';
+import { request } from '@test/utils/request';
+
 import { Post, User } from '@types';
 
 jest.mock('uuid', () => ({
@@ -27,7 +30,7 @@ describe('/posts', () => {
     });
 
     test('GET /posts', async () => {
-        const response: { posts: Post[] } = await apiClient(postsUrl).json();
+        const response: { posts: Post[] } = await request(postsUrl).json();
 
         for (const post of response.posts) {
             expect(post).toHaveProperty('title');
@@ -37,16 +40,16 @@ describe('/posts', () => {
     });
 
     test('GET /posts/:id', async () => {
-        const { posts }: { posts: Post[] } = await apiClient(postsUrl).json();
+        const { posts }: { posts: Post[] } = await request(postsUrl).json();
         const firstPost = head(posts) as Post;
 
-        const response: Post = await apiClient(`${postsUrl}${firstPost.id}`).json();
+        const response: Post = await request(`${postsUrl}${firstPost.id}`).json();
 
         expect(response).toMatchObject(firstPost);
     });
 
     test('POST /posts', async () => {
-        const { users }: { users: User[] } = await apiClient(usersUrl).json();
+        const { users }: { users: User[] } = await request(usersUrl).json();
         const firstUser = head(users) as User;
 
         const testPostCreateData = {
@@ -55,7 +58,7 @@ describe('/posts', () => {
             userId: firstUser.id,
         };
 
-        const response: Post = await apiClient
+        const response: Post = await request
             .post(postsUrl, {
                 json: testPostCreateData,
             })
@@ -70,7 +73,7 @@ describe('/posts', () => {
     });
 
     test('PUT /posts/:id', async () => {
-        const { posts }: { posts: Post[] } = await apiClient(postsUrl).json();
+        const { posts }: { posts: Post[] } = await request(postsUrl).json();
         const firstPost = head(posts) as Post;
 
         const testPostUpdateData = {
@@ -78,7 +81,7 @@ describe('/posts', () => {
             body: generate.postBody(),
         };
 
-        const response: Post = await apiClient
+        const response: Post = await request
             .put(`${postsUrl}${firstPost.id}`, {
                 json: testPostUpdateData,
             })
@@ -93,14 +96,14 @@ describe('/posts', () => {
     });
 
     test('DELETE /posts/:id', async () => {
-        const { posts }: { posts: Post[] } = await apiClient(postsUrl).json();
+        const { posts }: { posts: Post[] } = await request(postsUrl).json();
         const firstPost = head(posts) as Post;
 
-        const response = await apiClient.delete(`${postsUrl}${firstPost.id}`).json();
+        const response = await request.delete(`${postsUrl}${firstPost.id}`).json();
 
         expect(response).toBe('');
 
-        const err = (await apiClient(`${postsUrl}${firstPost.id}`).json().catch(identity)) as Error;
+        const err = (await request(`${postsUrl}${firstPost.id}`).json().catch(identity)) as Error;
 
         // Because `firstPost.id` is dynamic, we need to replace it with a constant, so our snapshot remains consistent.
         const testErr = err.message.replace(firstPost.id, 'GENERATED_POST_ID');
