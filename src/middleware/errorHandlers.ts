@@ -12,6 +12,10 @@ export function errorHandler(
     res: Response,
     next: NextFunction,
 ): void {
+    if (res.headersSent) {
+        return next(err);
+    }
+
     if (process.env.NODE_ENV !== 'production') {
         res.status(err.status).json({
             message: err.message,
@@ -33,6 +37,4 @@ export function errorHandler(
 
         res.status(err.status).json({ message });
     }
-
-    next();
 }

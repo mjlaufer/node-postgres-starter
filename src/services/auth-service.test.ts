@@ -1,7 +1,9 @@
+import { identity, pick } from 'lodash';
 import pgPromise from 'pg-promise';
 import db from '@db';
+import * as generate from '@test/utils/generate';
 import { HttpError } from '@utils/errors';
-import { SignupRequest, User, UserEntity } from '@types';
+import { SignupRequest, UserEntity } from '@types';
 import * as userService from './user-service';
 import * as authService from './auth-service';
 
@@ -12,59 +14,63 @@ jest.mock('@db', () => ({
     pgp: pgPromise(),
 }));
 
-describe('AuthService', () => {
-    const mockSignupRequest: SignupRequest = {
-        email: 'user@test.com',
-        username: 'username',
-        password: 'password',
-    };
+const mockSignupRequest: SignupRequest = {
+    email: generate.email(),
+    username: generate.username(),
+    password: generate.password(),
+};
 
-    const mockUserEntity: UserEntity = {
-        id: '00000000-0000-0000-0000-000000000000',
-        email: mockSignupRequest.email,
-        username: mockSignupRequest.username,
-        password: '$2a$10$37xEfpMwqmfSCAfYlaMzS.trfLiJEqpk4gk.OegKglZRQNw3LIUWG',
-        createdAt: new Date(),
-        modifiedAt: new Date(),
-    };
+const mockUserEntity: UserEntity = {
+    id: generate.id(),
+    email: mockSignupRequest.email,
+    username: mockSignupRequest.username,
+    password: userService.hash(mockSignupRequest.password),
+    createdAt: new Date(),
+    modifiedAt: new Date(),
+};
 
-    describe('#signup', () => {
-        beforeEach(() => {
-            jest.resetAllMocks();
-        });
+describe('#authService', () => {
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
 
-        test('creates a new user', async () => {
-            const mockUser: User = userService.makeUser(mockUserEntity);
+    test('signup', async () => {
+        const mockUser = generate.user(mockSignupRequest);
+        jest.spyOn(userService, 'createUser').mockResolvedValue(mockUser);
 
-            jest.spyOn(userService, 'createUser').mockResolvedValue(mockUser);
+        expect.assertions(5);
 
-            expect.assertions(1);
+        const { user } = await authService.signup(mockSignupRequest);
+        expect(user).toEqual(mockUser);
+        expect(db.users.findOne).toHaveBeenCalledWith(pick(mockSignupRequest, 'email'));
+        expect(db.users.findOne).toHaveBeenCalledTimes(1);
+        expect(userService.createUser).toHaveBeenCalledWith(mockSignupRequest);
+        expect(userService.createUser).toHaveBeenCalledTimes(1);
+    });
 
-            await expect(authService.signup(mockSignupRequest)).resolves.toEqual({
-                user: mockUser,
-            });
-        });
+    test('signup: user already exists', async () => {
+        db.users.findOne = jest.fn().mockResolvedValue(mockUserEntity);
 
-        test('returns a message if the provided email or username is associated with an existing user', async () => {
-            db.users.findOne = jest.fn().mockResolvedValue(mockUserEntity);
+        expect.assertions(4);
 
-            expect.assertions(1);
+        const { message } = await authService.signup(mockSignupRequest);
+        expect(message).toBe(authService.USER_EXISTS_MESSAGE);
+        expect(db.users.findOne).toHaveBeenCalledWith(pick(mockSignupRequest, 'email'));
+        expect(db.users.findOne).toHaveBeenCalledTimes(1);
+        expect(userService.createUser).not.toHaveBeenCalled();
+    });
 
-            await expect(authService.signup(mockSignupRequest)).resolves.toEqual({
-                message: authService.USER_EXISTS_MESSAGE,
-            });
-        });
+    test('signup: fail', async () => {
+        const MOCK_ERROR_MESSAGE = 'mock error message';
+        jest.spyOn(userService, 'createUser').mockRejectedValue(MOCK_ERROR_MESSAGE);
 
-        test('throws an HttpError if unsuccessful', async () => {
-            const MOCK_ERROR_MESSAGE = 'mock error message';
+        expect.assertions(5);
 
-            jest.spyOn(userService, 'createUser').mockRejectedValue(MOCK_ERROR_MESSAGE);
-
-            expect.assertions(1);
-
-            await expect(authService.signup(mockSignupRequest)).rejects.toThrow(
-                new HttpError(MOCK_ERROR_MESSAGE),
-            );
-        });
+        const err = await authService.signup(mockSignupRequest).catch(identity);
+        expect(err).toEqual(new HttpError(MOCK_ERROR_MESSAGE));
+        expect(db.users.findOne).toHaveBeenCalledWith(pick(mockSignupRequest, 'email'));
+        expect(db.users.findOne).toHaveBeenCalledTimes(1);
+        expect(userService.createUser).toHaveBeenCalledWith(mockSignupRequest);
+        expect(userService.createUser).toHaveBeenCalledTimes(1);
     });
 });

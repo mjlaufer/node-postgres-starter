@@ -1,60 +1,79 @@
-import { Request, Response } from 'express';
+import * as generate from '@test/utils/generate';
 import { HttpError, HttpErrorMessages } from '@utils/errors';
 import { notFoundHandler, errorHandler } from './errorHandlers';
 
 describe('notFoundHandler', () => {
     test('calls next with a `Not Found` error', () => {
-        const next = jest.fn();
+        const req = generate.req();
+        const res = generate.res();
+        const next = generate.next();
         const notFoundError = new HttpError(HttpErrorMessages.NOT_FOUND, 404);
 
-        notFoundHandler({} as Request, {} as Response, next);
+        notFoundHandler(req, res, next);
 
         expect(next).toHaveBeenCalledWith(notFoundError);
+        expect(next).toHaveBeenCalledTimes(1);
     });
 });
 
 describe('errorHandler', () => {
-    const error = new HttpError('error');
-    let res: Response;
-    const next = jest.fn();
-
     beforeEach(() => {
-        res = {} as Response;
-        res.json = jest.fn();
-        res.status = jest.fn(() => res);
+        jest.resetAllMocks();
     });
 
     afterEach(() => {
         delete process.env.NODE_ENV;
     });
 
-    test('sends stack trace in non-production environments', () => {
-        errorHandler(error, {} as Request, res as Response, next);
+    test('calls next if headersSent is true', () => {
+        const err = new HttpError('error');
+        const req = generate.req();
+        const res = generate.res({ headersSent: true });
+        const next = generate.next();
+        errorHandler(err, req, res, next);
 
-        expect(res.status).toHaveBeenCalledWith(error.status);
-        expect(res.json).toHaveBeenCalledWith(
-            expect.objectContaining({
-                message: error.message,
-                stack: error.stack,
-            }),
-        );
+        expect(next).toHaveBeenCalledWith(err);
+        expect(res.status).not.toHaveBeenCalled();
+        expect(res.json).not.toHaveBeenCalled();
+    });
+
+    test('sends stack trace in non-production environments', () => {
+        const err = new HttpError('error');
+        const req = generate.req();
+        const res = generate.res();
+        const next = generate.next();
+        errorHandler(err, req, res, next);
+
+        expect(res.status).toHaveBeenCalledWith(err.status);
+        expect(res.status).toHaveBeenCalledTimes(1);
+        expect(res.json).toHaveBeenCalledWith({
+            message: err.message,
+            stack: err.stack,
+        });
+        expect(res.json).toHaveBeenCalledTimes(1);
+        expect(next).not.toHaveBeenCalled();
     });
 
     test('does not send stack trace in production', () => {
         process.env.NODE_ENV = 'production';
 
-        errorHandler(error, {} as Request, res as Response, next);
+        const err = new HttpError('error');
+        const req = generate.req();
+        const res = generate.res();
+        const next = generate.next();
+        errorHandler(err, req, res, next);
 
-        expect(res.status).toHaveBeenCalledWith(error.status);
-        expect(res.json).toHaveBeenCalledWith(
-            expect.objectContaining({
-                message: HttpErrorMessages.INTERNAL_SERVER_ERROR,
-            }),
-        );
+        expect(res.status).toHaveBeenCalledWith(err.status);
+        expect(res.status).toHaveBeenCalledTimes(1);
+        expect(res.json).toHaveBeenCalledWith({
+            message: HttpErrorMessages.INTERNAL_SERVER_ERROR,
+        });
+        expect(res.json).toHaveBeenCalledTimes(1);
         expect(res.json).not.toHaveBeenCalledWith(
             expect.objectContaining({
-                stack: error.stack,
+                stack: err.stack,
             }),
         );
+        expect(next).not.toHaveBeenCalled();
     });
 });

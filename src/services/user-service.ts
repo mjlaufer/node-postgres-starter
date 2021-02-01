@@ -5,7 +5,7 @@ import db from '@db';
 import { HttpError } from '@utils/errors';
 import { SignupRequest, User, UserEntity, UserUpdateRequest, PaginationOptions } from '@types';
 
-function hash(password: string): string {
+export function hash(password: string): string {
     return bcrypt.hashSync(password, 10);
 }
 
@@ -33,12 +33,12 @@ export async function fetchUser(id: string): Promise<User> {
 
 export async function createUser(signupRequestData: SignupRequest): Promise<User> {
     try {
-        const password = hash(signupRequestData.password);
+        const hashedPassword = hash(signupRequestData.password);
 
         const userEntity: UserEntity = await db.users.create({
             id: uuidv4(),
             ...signupRequestData,
-            password,
+            password: hashedPassword,
         });
 
         return makeUser(userEntity);

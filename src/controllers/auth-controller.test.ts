@@ -15,7 +15,7 @@ describe('authController', () => {
         jest.resetAllMocks();
     });
 
-    test('signup: success', async () => {
+    test('signup', async () => {
         const signup = jest.spyOn(authService, 'signup').mockResolvedValue({ user: mockUser });
 
         expect.assertions(2);
