@@ -3,7 +3,7 @@ import db from '@db';
 import { SignupRequest, SignupResponse, User, UserEntity } from '@types';
 import * as userService from './user-service';
 
-export const USER_EXISTS_MESSAGE = 'An account for this email or username already exists';
+export const USER_EXISTS_MESSAGE = 'An account for this email already exists';
 
 export async function signup(signupRequestData: SignupRequest): Promise<SignupResponse> {
     try {

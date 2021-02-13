@@ -8,7 +8,10 @@ import { validateLoginCredentials, validateSignupCredentials } from '@middleware
 const router = express.Router();
 
 router.route('/current-user').get((req: Request, res: Response) => {
-    res.json(req.user);
+    if (req.user) {
+        res.json(req.user);
+    }
+    res.status(401).end();
 });
 
 router
@@ -27,7 +30,7 @@ router
         validateLoginCredentials,
         passport.authenticate('local'),
         (req: Request, res: Response) => {
-            res.json({ isAuthenticated: !!req.user });
+            res.json({ isAuthenticated: true });
         },
     );
 
