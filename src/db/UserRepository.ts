@@ -27,9 +27,13 @@ export default class UserRepository {
     }
 
     async create(data: UserCreateRequest): Promise<UserEntity> {
+        const { id: roleId } = await this.db.one<{ id: number }>(
+            'SELECT id FROM roles WHERE name = $1',
+            data.role,
+        );
         const newUser = await this.db.one<UserEntity>(
-            'INSERT INTO users(id, email, username, password) VALUES(${id}, ${email}, ${username}, ${password}) RETURNING *',
-            data,
+            'INSERT INTO users(id, email, username, password, role_id) VALUES(${id}, ${email}, ${username}, ${password}, ${roleId}) RETURNING *',
+            { ...data, roleId },
         );
         return newUser;
     }

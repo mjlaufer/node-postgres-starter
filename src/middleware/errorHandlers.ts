@@ -31,6 +31,9 @@ export function errorHandler(
             case 401:
                 message = HttpErrorMessages.UNAUTHORIZED;
                 break;
+            case 403:
+                message = HttpErrorMessages.FORBIDDEN;
+                break;
             case 404:
                 message = HttpErrorMessages.NOT_FOUND;
                 break;

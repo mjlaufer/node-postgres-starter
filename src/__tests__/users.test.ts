@@ -1,5 +1,8 @@
+import { Response } from 'got';
 import { head, identity, isString } from 'lodash';
 import validate from 'validator';
+import db from '@db';
+import { hash } from '@helpers/user';
 import { startServer, Server } from '@server';
 import * as generate from '@test/utils/generate';
 import { closeOpenHandles, resetDb } from '@test/utils/integration';
@@ -10,7 +13,10 @@ jest.mock('uuid', () => ({
     v4: () => 'test_uuid',
 }));
 
+const getCookies = (res: Response) => res.headers['set-cookie'];
+
 describe('/users', () => {
+    let loginUrl: string;
     let usersUrl: string;
     let server: Server;
 
@@ -18,6 +24,7 @@ describe('/users', () => {
         server = await startServer();
         const address = server.address();
         const port = isString(address) ? '0' : address?.port;
+        loginUrl = `http://localhost:${port}/login/`;
         usersUrl = `http://localhost:${port}/users/`;
     });
 
@@ -46,6 +53,25 @@ describe('/users', () => {
     });
 
     test('POST /users', async () => {
+        const adminEmail = generate.email();
+        const adminPassword = generate.password();
+        const adminCreateData = {
+            id: generate.id(),
+            email: validate.normalizeEmail(adminEmail) || generate.email(),
+            username: generate.username(),
+            password: hash(adminPassword),
+            role: 'admin',
+        };
+
+        await db.users.create(adminCreateData);
+
+        const loginRes = await request.post(loginUrl, {
+            json: {
+                email: adminCreateData.email,
+                password: adminPassword,
+            },
+        });
+
         const testUserCreateData = {
             email: generate.email(),
             username: generate.username(),
@@ -54,6 +80,9 @@ describe('/users', () => {
 
         const response: User = await request
             .post(usersUrl, {
+                headers: {
+                    cookie: head(getCookies(loginRes)),
+                },
                 json: testUserCreateData,
             })
             .json();

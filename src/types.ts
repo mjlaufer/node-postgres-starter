@@ -19,12 +19,16 @@ export interface SignupResponse {
 
 export interface UserCreateRequest extends SignupRequest {
     id: string;
+    role: string;
 }
+
+export type Role = 'admin' | 'user';
 
 export interface User {
     id: string;
     email: string;
     username: string;
+    role: Role;
     createdAt: Date;
 }
 
@@ -33,6 +37,7 @@ export interface UserEntity {
     email: string;
     username: string;
     password: string;
+    role: Role;
     createdAt: Date;
     modifiedAt: Date;
 }

@@ -1,17 +1,8 @@
-import bcrypt from 'bcryptjs';
-import { pick } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import db from '@db';
+import { hash, makeUser } from '@helpers/user';
 import { HttpError } from '@utils/errors';
 import { SignupRequest, User, UserEntity, UserUpdateRequest, PaginationOptions } from '@types';
-
-export function hash(password: string): string {
-    return bcrypt.hashSync(password, 10);
-}
-
-export function makeUser(data: UserEntity): User {
-    return pick(data, ['id', 'email', 'username', 'createdAt']);
-}
 
 export async function fetchUsers(paginationOptions: PaginationOptions): Promise<User[]> {
     try {
@@ -39,6 +30,7 @@ export async function createUser(signupRequestData: SignupRequest): Promise<User
             id: uuidv4(),
             ...signupRequestData,
             password: hashedPassword,
+            role: 'user',
         });
 
         return makeUser(userEntity);

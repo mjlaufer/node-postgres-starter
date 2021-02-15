@@ -3,6 +3,10 @@ import { HttpError, HttpErrorMessages } from '@utils/errors';
 import { notFoundHandler, errorHandler } from './errorHandlers';
 
 describe('notFoundHandler', () => {
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
+
     test('calls next with a `Not Found` error', () => {
         const req = generate.req();
         const res = generate.res();
