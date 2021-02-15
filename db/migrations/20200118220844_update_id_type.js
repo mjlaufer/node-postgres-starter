@@ -25,7 +25,7 @@ exports.down = function (knex) {
         CREATE SEQUENCE posts_serial AS INTEGER START 1 OWNED BY posts.id;
 
         ALTER TABLE posts
-            ALTER COLUMN id SET DEFAULT nextval('posts_serial');;
+            ALTER COLUMN id SET DEFAULT nextval('posts_serial');
 
         ALTER TABLE posts
             DROP CONSTRAINT posts_user_id_fkey;
@@ -33,7 +33,7 @@ exports.down = function (knex) {
         CREATE SEQUENCE users_serial AS INTEGER START 1 OWNED BY users.id;
 
         ALTER TABLE users
-            ALTER COLUMN id SET DEFAULT nextval('users_serial');;
+            ALTER COLUMN id SET DEFAULT nextval('users_serial');
 
         ALTER TABLE posts
             ADD CONSTRAINT posts_user_id_fkey

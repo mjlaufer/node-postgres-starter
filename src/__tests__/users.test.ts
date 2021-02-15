@@ -1,9 +1,8 @@
-import { head, identity, isString } from 'lodash';
+import { has, head, identity, isObject } from 'lodash';
 import validate from 'validator';
 import { startServer, Server } from '@server';
 import * as generate from '@test/utils/generate';
-import { closeOpenHandles, resetDb } from '@test/utils/integration';
-import { request } from '@test/utils/request';
+import { request, getAdminCookie, closeOpenHandles, resetDb } from '@test/utils/integration';
 import { User } from '@types';
 
 jest.mock('uuid', () => ({
@@ -11,13 +10,14 @@ jest.mock('uuid', () => ({
 }));
 
 describe('/users', () => {
-    let usersUrl: string;
     let server: Server;
+    let port = '0';
+    let usersUrl: string;
 
     beforeAll(async () => {
         server = await startServer();
         const address = server.address();
-        const port = isString(address) ? '0' : address?.port;
+        port = isObject(address) && has(address, 'port') ? String(address.port) : port;
         usersUrl = `http://localhost:${port}/users/`;
     });
 
@@ -54,6 +54,9 @@ describe('/users', () => {
 
         const response: User = await request
             .post(usersUrl, {
+                headers: {
+                    cookie: await getAdminCookie(port),
+                },
                 json: testUserCreateData,
             })
             .json();
@@ -62,6 +65,7 @@ describe('/users', () => {
             id: 'test_uuid',
             email: validate.normalizeEmail(testUserCreateData.email),
             username: testUserCreateData.username,
+            role: 'user',
         });
     });
 
@@ -73,6 +77,9 @@ describe('/users', () => {
 
         const response: User = await request
             .put(`${usersUrl}${firstUser.id}`, {
+                headers: {
+                    cookie: await getAdminCookie(port),
+                },
                 json: testUserUpdateData,
             })
             .json();
@@ -81,6 +88,7 @@ describe('/users', () => {
             id: firstUser.id,
             email: validate.normalizeEmail(testUserUpdateData.email),
             username: testUserUpdateData.username,
+            role: 'user',
         });
     });
 
@@ -88,7 +96,13 @@ describe('/users', () => {
         const { users }: { users: User[] } = await request(usersUrl).json();
         const firstUser = head(users) as User;
 
-        const response = await request.delete(`${usersUrl}${firstUser.id}`).json();
+        const response = await request
+            .delete(`${usersUrl}${firstUser.id}`, {
+                headers: {
+                    cookie: await getAdminCookie(port),
+                },
+            })
+            .json();
 
         expect(response).toBe('');
 
@@ -101,7 +115,7 @@ describe('/users', () => {
                 code: queryResultErrorCode.noData
                 message: \\"No data returned from the query.\\"
                 received: 0
-                query: \\"SELECT * FROM users WHERE id = 'GENERATED_USER_ID'\\"
+                query: \\"SELECT u.id, u.email, u.username, u.password, u.created_at, u.updated_at, r.name as role FROM users u INNER JOIN roles r ON r.id = u.role_id WHERE u.id = 'GENERATED_USER_ID'\\"
             }"
         `);
     });

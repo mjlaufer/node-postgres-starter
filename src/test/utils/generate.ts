@@ -43,6 +43,7 @@ export function user(overrides?: Partial<User>): User {
         id: id(),
         email: email(),
         username: username(),
+        role: 'user',
         createdAt: new Date(),
         ...overrides,
     };

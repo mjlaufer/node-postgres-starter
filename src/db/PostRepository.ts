@@ -10,7 +10,9 @@ export default class PostRepository {
 
     async findAll(paginationOptions: PaginationOptions): Promise<PostEntity[]> {
         const posts = await this.db.any<PostEntity>(
-            'SELECT p.id, p.body, p.title, p.created_at, u.username FROM posts p INNER JOIN users u ON u.id = p.user_id WHERE p.created_at < ${lastCreatedAt} ORDER BY p.created_at ${order:raw} LIMIT ${limit}',
+            'SELECT p.id, p.body, p.title, p.created_at, u.username FROM posts p ' +
+                'INNER JOIN users u ON u.id = p.user_id ' +
+                'WHERE p.created_at < ${lastCreatedAt} ORDER BY p.created_at ${order:raw} LIMIT ${limit}',
             paginationOptions,
         );
         return posts;
@@ -18,7 +20,9 @@ export default class PostRepository {
 
     async findById(id: string): Promise<PostEntity> {
         const post = await this.db.one<PostEntity>(
-            'SELECT p.id, p.body, p.title, p.created_at, u.username FROM posts p INNER JOIN users u ON u.id = p.user_id WHERE p.id = $1',
+            'SELECT p.id, p.body, p.title, p.created_at, u.username FROM posts p ' +
+                'INNER JOIN users u ON u.id = p.user_id ' +
+                'WHERE p.id = $1',
             id,
         );
         return post;
@@ -26,7 +30,9 @@ export default class PostRepository {
 
     async create(postRequestData: PostCreateRequestWithId): Promise<PostEntity> {
         const { id } = await this.db.one<{ id: string }>(
-            'INSERT INTO posts(id, title, body, user_id) VALUES(${id}, ${title}, ${body}, ${userId}) RETURNING id',
+            'INSERT INTO posts (id, title, body, user_id) ' +
+                'VALUES (${id}, ${title}, ${body}, ${userId}) ' +
+                'RETURNING id',
             postRequestData,
         );
         const result = await this.findById(id);

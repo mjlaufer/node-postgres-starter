@@ -19,12 +19,16 @@ export interface SignupResponse {
 
 export interface UserCreateRequest extends SignupRequest {
     id: string;
+    role: Role;
 }
+
+export type Role = 'admin' | 'user';
 
 export interface User {
     id: string;
     email: string;
     username: string;
+    role: Role;
     createdAt: Date;
 }
 
@@ -33,8 +37,9 @@ export interface UserEntity {
     email: string;
     username: string;
     password: string;
+    role: Role;
     createdAt: Date;
-    modifiedAt: Date;
+    updatedAt: Date;
 }
 
 export type UserUpdateRequest = Partial<UserEntity> & { id: string };
@@ -53,7 +58,7 @@ export interface PostEntity {
     body: string;
     username: string;
     createdAt: Date;
-    modifiedAt: Date;
+    updatedAt: Date;
 }
 
 type HasTitleAndBody = Pick<PostEntity, 'title' | 'body'>;

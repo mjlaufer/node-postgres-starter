@@ -3,8 +3,7 @@ import { head, identity, isString, pick } from 'lodash';
 import validate from 'validator';
 import { startServer, Server } from '@server';
 import * as generate from '@test/utils/generate';
-import { closeOpenHandles, resetDb } from '@test/utils/integration';
-import { request } from '@test/utils/request';
+import { request, closeOpenHandles, resetDb } from '@test/utils/integration';
 import { User } from '@types';
 
 jest.mock('uuid', () => ({

@@ -1,6 +1,7 @@
 import { identity, pick } from 'lodash';
 import pgPromise from 'pg-promise';
 import db from '@db';
+import { makePost } from '@helpers/post';
 import * as generate from '@test/utils/generate';
 import { HttpError } from '@utils/errors';
 import { Post, PostCreateRequest, PostUpdateRequest, PostEntity, PaginationOptions } from '@types';
@@ -32,10 +33,10 @@ describe('postService', () => {
         body: mockPostRequest.body,
         username: generate.username(),
         createdAt: new Date(),
-        modifiedAt: new Date(),
+        updatedAt: new Date(),
     };
 
-    const mockPost: Post = postService.makePost(mockPostEntity);
+    const mockPost: Post = makePost(mockPostEntity);
 
     beforeEach(() => {
         jest.resetAllMocks();
@@ -134,7 +135,7 @@ describe('postService', () => {
             expect.objectContaining(pick(updatedPostEntity, ['id', 'title', 'body', 'author'])),
         );
         expect(db.posts.update).toHaveBeenCalledTimes(1);
-        expect(post).toEqual(postService.makePost(updatedPostEntity));
+        expect(post).toEqual(makePost(updatedPostEntity));
     });
 
     test('updatePost: fail', async () => {

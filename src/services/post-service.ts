@@ -1,15 +1,8 @@
-import { pick } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import db from '@db';
+import { makePost } from '@helpers/post';
 import { HttpError } from '@utils/errors';
 import { Post, PostCreateRequest, PostUpdateRequest, PostEntity, PaginationOptions } from '@types';
-
-export function makePost(data: PostEntity): Post {
-    return {
-        ...pick(data, ['id', 'title', 'body', 'createdAt', 'modifiedAt']),
-        author: data.username,
-    };
-}
 
 export async function fetchPosts(paginationOptions: PaginationOptions): Promise<Post[]> {
     try {

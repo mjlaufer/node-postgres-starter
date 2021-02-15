@@ -1,8 +1,7 @@
-import { head, identity, isString } from 'lodash';
+import { has, head, identity, isObject } from 'lodash';
 import { startServer, Server } from '@server';
 import * as generate from '@test/utils/generate';
-import { closeOpenHandles, resetDb } from '@test/utils/integration';
-import { request } from '@test/utils/request';
+import { request, getUserCookie, closeOpenHandles, resetDb } from '@test/utils/integration';
 
 import { Post, User } from '@types';
 
@@ -11,14 +10,15 @@ jest.mock('uuid', () => ({
 }));
 
 describe('/posts', () => {
+    let server: Server;
+    let port = '0';
     let postsUrl: string;
     let usersUrl: string;
-    let server: Server;
 
     beforeAll(async () => {
         server = await startServer();
         const address = server.address();
-        const port = isString(address) ? '0' : address?.port;
+        port = isObject(address) && has(address, 'port') ? String(address.port) : port;
         postsUrl = `http://localhost:${port}/posts/`;
         usersUrl = `http://localhost:${port}/users/`;
     });
@@ -60,6 +60,9 @@ describe('/posts', () => {
 
         const response: Post = await request
             .post(postsUrl, {
+                headers: {
+                    cookie: await getUserCookie(port),
+                },
                 json: testPostCreateData,
             })
             .json();
@@ -83,6 +86,9 @@ describe('/posts', () => {
 
         const response: Post = await request
             .put(`${postsUrl}${firstPost.id}`, {
+                headers: {
+                    cookie: await getUserCookie(port),
+                },
                 json: testPostUpdateData,
             })
             .json();
@@ -99,7 +105,13 @@ describe('/posts', () => {
         const { posts }: { posts: Post[] } = await request(postsUrl).json();
         const firstPost = head(posts) as Post;
 
-        const response = await request.delete(`${postsUrl}${firstPost.id}`).json();
+        const response = await request
+            .delete(`${postsUrl}${firstPost.id}`, {
+                headers: {
+                    cookie: await getUserCookie(port),
+                },
+            })
+            .json();
 
         expect(response).toBe('');
 

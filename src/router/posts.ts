@@ -1,6 +1,7 @@
 import express from 'express';
 import * as postController from '@controllers/post-controller';
 import asyncWrapper from '@middleware/asyncWrapper';
+import requireAuth from '@middleware/requireAuth';
 import { sanitizeText, sanitizePaginationOptions } from '@middleware/sanitizers';
 import {
     validateIdParam,
@@ -17,17 +18,22 @@ router
         validatePaginationQuery,
         asyncWrapper(postController.fetchPosts),
     )
-    .post(sanitizeText(['title', 'body']), asyncWrapper(postController.createPost));
+    .post(
+        requireAuth('user'),
+        sanitizeText(['title', 'body']),
+        asyncWrapper(postController.createPost),
+    );
 
 router
     .route('/:id')
     .get(asyncWrapper(postController.fetchPost))
     .put(
+        requireAuth('user'),
         sanitizeText(['title', 'body']),
         validateIdParam,
         validatePostUpdate,
         asyncWrapper(postController.updatePost),
     )
-    .delete(validateIdParam, asyncWrapper(postController.deletePost));
+    .delete(requireAuth('user'), validateIdParam, asyncWrapper(postController.deletePost));
 
 export default router;

@@ -2,6 +2,7 @@ import express from 'express';
 import * as userController from '@controllers/user-controller';
 import asyncWrapper from '@middleware/asyncWrapper';
 import { sanitizeEmail, sanitizeText, sanitizePaginationOptions } from '@middleware/sanitizers';
+import requireAuth from '@middleware/requireAuth';
 import {
     validateIdParam,
     validatePaginationQuery,
@@ -19,6 +20,7 @@ router
         asyncWrapper(userController.fetchUsers),
     )
     .post(
+        requireAuth('admin'),
         sanitizeEmail,
         sanitizeText('username'),
         validateSignupCredentials,
@@ -29,12 +31,13 @@ router
     .route('/:id')
     .get(validateIdParam, asyncWrapper(userController.fetchUser))
     .put(
+        requireAuth('admin'),
         sanitizeEmail,
         sanitizeText('username'),
         validateIdParam,
         validateUserUpdate,
         asyncWrapper(userController.updateUser),
     )
-    .delete(validateIdParam, asyncWrapper(userController.deleteUser));
+    .delete(requireAuth('admin'), validateIdParam, asyncWrapper(userController.deleteUser));
 
 export default router;

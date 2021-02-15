@@ -1,6 +1,7 @@
 import { identity, pick } from 'lodash';
 import pgPromise from 'pg-promise';
 import db from '@db';
+import { hash, makeUser } from '@helpers/user';
 import * as generate from '@test/utils/generate';
 import { HttpError } from '@utils/errors';
 import { SignupRequest, User, UserUpdateRequest, UserEntity, PaginationOptions } from '@types';
@@ -30,12 +31,13 @@ describe('userService', () => {
         id: mockUserId,
         email: mockSignupRequest.email,
         username: mockSignupRequest.username,
-        password: userService.hash(mockSignupRequest.password),
+        password: hash(mockSignupRequest.password),
+        role: 'user',
         createdAt: new Date(),
-        modifiedAt: new Date(),
+        updatedAt: new Date(),
     };
 
-    const mockUser: User = userService.makeUser(mockUserEntity);
+    const mockUser: User = makeUser(mockUserEntity);
 
     beforeEach(() => {
         jest.resetAllMocks();
@@ -134,7 +136,7 @@ describe('userService', () => {
             expect.objectContaining(pick(updatedUserEntity, 'id, email, username')), // Omit password because it is hashed in the db.
         );
         expect(db.users.update).toHaveBeenCalledTimes(1);
-        expect(user).toEqual(userService.makeUser(updatedUserEntity));
+        expect(user).toEqual(makeUser(updatedUserEntity));
     });
 
     test('updateUser: fail', async () => {
