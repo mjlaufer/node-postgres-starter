@@ -31,13 +31,13 @@ router
     .route('/:id')
     .get(validateIdParam, asyncWrapper(userController.fetchUser))
     .put(
-        requireAuth('admin'),
+        requireAuth('user'),
         sanitizeEmail,
         sanitizeText('username'),
         validateIdParam,
         validateUserUpdate,
         asyncWrapper(userController.updateUser),
     )
-    .delete(requireAuth('admin'), validateIdParam, asyncWrapper(userController.deleteUser));
+    .delete(requireAuth('user'), validateIdParam, asyncWrapper(userController.deleteUser));
 
 export default router;

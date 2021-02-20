@@ -4,7 +4,7 @@ import db from '@db';
 import { makePost } from '@helpers/post';
 import * as generate from '@test/utils/generate';
 import { HttpError } from '@utils/errors';
-import { Post, PostCreateRequest, PostUpdateRequest, PostEntity, PaginationOptions } from '@types';
+import { PostCreateRequest, PostEntity, PaginationOptions } from '@types';
 import * as postService from './post-service';
 
 jest.mock('@db', () => ({
@@ -13,7 +13,7 @@ jest.mock('@db', () => ({
 }));
 
 describe('postService', () => {
-    const mockPostId = generate.id();
+    const mockUser = generate.user();
 
     const paginationOptions: PaginationOptions = {
         lastCreatedAt: new Date(),
@@ -24,19 +24,20 @@ describe('postService', () => {
     const mockPostRequest: PostCreateRequest = {
         title: generate.postTitle(),
         body: generate.postBody(),
-        userId: generate.id(),
+        userId: mockUser.id,
     };
 
     const mockPostEntity: PostEntity = {
-        id: mockPostId,
+        id: generate.id(),
         title: mockPostRequest.title,
         body: mockPostRequest.body,
-        username: generate.username(),
+        authorId: mockUser.id,
+        authorUsername: mockUser.username,
         createdAt: new Date(),
         updatedAt: new Date(),
     };
 
-    const mockPost: Post = makePost(mockPostEntity);
+    const mockPost = makePost(mockPostEntity);
 
     beforeEach(() => {
         jest.resetAllMocks();
@@ -111,13 +112,13 @@ describe('postService', () => {
     });
 
     test('updatePost', async () => {
-        const updatedPostData: PostUpdateRequest = {
-            id: mockPostId,
+        const updatedPostData = {
+            id: mockPostEntity.id,
             title: 'updated_title',
             body: 'updated_body',
         };
 
-        const updatedPostEntity: PostEntity = {
+        const updatedPostEntity = {
             ...mockPostEntity,
             ...updatedPostData,
         };
@@ -127,7 +128,10 @@ describe('postService', () => {
 
         expect.assertions(5);
 
-        const post = await postService.updatePost(updatedPostData);
+        const post = await postService.updatePost({
+            requestor: mockUser,
+            data: updatedPostData,
+        });
 
         expect(db.posts.findById).toHaveBeenCalledWith(mockPostEntity.id);
         expect(db.posts.findById).toHaveBeenCalledTimes(1);
@@ -139,32 +143,50 @@ describe('postService', () => {
     });
 
     test('updatePost: fail', async () => {
+        db.posts.findById = jest.fn().mockResolvedValue(mockPostEntity);
         db.posts.update = jest.fn().mockRejectedValue('mock error message');
 
         expect.assertions(2);
 
-        const err = await postService.updatePost(mockPostEntity).catch(identity);
+        const err = await postService
+            .updatePost({
+                requestor: mockUser,
+                data: mockPostEntity,
+            })
+            .catch(identity);
+
         expect(err).toEqual(new HttpError('mock error message'));
         expect(db.posts.update).toHaveBeenCalledTimes(1);
     });
 
     test('deletePost', async () => {
+        db.posts.findById = jest.fn().mockResolvedValue(mockPostEntity);
         db.posts.destroy = jest.fn();
 
         expect.assertions(2);
 
-        await postService.deletePost(mockPostEntity.id);
+        await postService.deletePost({
+            requestor: mockUser,
+            data: { id: mockPostEntity.id },
+        });
 
         expect(db.posts.destroy).toHaveBeenCalledWith(mockPostEntity.id);
         expect(db.posts.destroy).toHaveBeenCalledTimes(1);
     });
 
     test('deletePost: fail', async () => {
+        db.posts.findById = jest.fn().mockResolvedValue(mockPostEntity);
         db.posts.destroy = jest.fn().mockRejectedValue('mock error message');
 
         expect.assertions(2);
 
-        const err = await postService.deletePost(mockPostEntity.id).catch(identity);
+        const err = await postService
+            .deletePost({
+                requestor: mockUser,
+                data: { id: mockPostEntity.id },
+            })
+            .catch(identity);
+
         expect(err).toEqual(new HttpError('mock error message'));
         expect(db.posts.destroy).toHaveBeenCalledTimes(1);
     });

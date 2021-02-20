@@ -4,7 +4,7 @@ import db from '@db';
 import { hash, makeUser } from '@helpers/user';
 import * as generate from '@test/utils/generate';
 import { HttpError } from '@utils/errors';
-import { SignupRequest, User, UserUpdateRequest, UserEntity, PaginationOptions } from '@types';
+import { SignupRequest, UserEntity, PaginationOptions } from '@types';
 import * as userService from './user-service';
 
 jest.mock('@db', () => ({
@@ -37,7 +37,7 @@ describe('userService', () => {
         updatedAt: new Date(),
     };
 
-    const mockUser: User = makeUser(mockUserEntity);
+    const mockUser = makeUser(mockUserEntity);
 
     beforeEach(() => {
         jest.resetAllMocks();
@@ -112,13 +112,13 @@ describe('userService', () => {
     });
 
     test('updateUser', async () => {
-        const updatedUserData: UserUpdateRequest = {
+        const updatedUserData = {
             id: mockUserId,
             username: generate.username(),
             password: generate.password(),
         };
 
-        const updatedUserEntity: UserEntity = {
+        const updatedUserEntity = {
             ...mockUserEntity,
             ...updatedUserData,
         };
@@ -128,7 +128,10 @@ describe('userService', () => {
 
         expect.assertions(5);
 
-        const user = await userService.updateUser(updatedUserData);
+        const user = await userService.updateUser({
+            requestor: mockUser,
+            data: updatedUserData,
+        });
 
         expect(db.users.findById).toHaveBeenCalledWith(mockUserId);
         expect(db.users.findById).toHaveBeenCalledTimes(1);
@@ -140,32 +143,50 @@ describe('userService', () => {
     });
 
     test('updateUser: fail', async () => {
+        db.users.findById = jest.fn().mockResolvedValue(mockUserEntity);
         db.users.update = jest.fn().mockRejectedValue('mock error message');
 
         expect.assertions(2);
 
-        const err = await userService.updateUser(mockUserEntity).catch(identity);
+        const err = await userService
+            .updateUser({
+                requestor: mockUser,
+                data: mockUserEntity,
+            })
+            .catch(identity);
+
         expect(err).toEqual(new HttpError('mock error message'));
         expect(db.users.update).toHaveBeenCalledTimes(1);
     });
 
     test('deleteUser', async () => {
+        db.users.findById = jest.fn().mockResolvedValue(mockUserEntity);
         db.users.destroy = jest.fn();
 
         expect.assertions(2);
 
-        await userService.deleteUser(mockUserEntity.id);
+        await userService.deleteUser({
+            requestor: mockUser,
+            data: { id: mockUserEntity.id },
+        });
 
         expect(db.users.destroy).toHaveBeenCalledWith(mockUserEntity.id);
         expect(db.users.destroy).toHaveBeenCalledTimes(1);
     });
 
     test('deleteUser: fail', async () => {
+        db.users.findById = jest.fn().mockResolvedValue(mockUserEntity);
         db.users.destroy = jest.fn().mockRejectedValue('mock error message');
 
         expect.assertions(2);
 
-        const err = await userService.deleteUser(mockUserEntity.id).catch(identity);
+        const err = await userService
+            .deleteUser({
+                requestor: mockUser,
+                data: { id: mockUserEntity.id },
+            })
+            .catch(identity);
+
         expect(err).toEqual(new HttpError('mock error message'));
         expect(db.users.destroy).toHaveBeenCalledTimes(1);
     });

@@ -30,6 +30,7 @@ export interface User {
     username: string;
     role: Role;
     createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface UserEntity {
@@ -42,30 +43,29 @@ export interface UserEntity {
     updatedAt: Date;
 }
 
-export type UserUpdateRequest = Partial<UserEntity> & { id: string };
-
 export interface Post {
     id: string;
     title: string;
     body: string;
-    author: string;
+    author: {
+        id: string;
+        username: string;
+    };
     createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface PostEntity {
     id: string;
     title: string;
     body: string;
-    username: string;
+    authorId: string;
+    authorUsername: string;
     createdAt: Date;
     updatedAt: Date;
 }
 
-type HasTitleAndBody = Pick<PostEntity, 'title' | 'body'>;
-
-export type PostCreateRequest = HasTitleAndBody & { userId: string };
-
-export type PostUpdateRequest = Partial<HasTitleAndBody> & { id: string };
+export type PostCreateRequest = Pick<PostEntity, 'title' | 'body'> & { userId: string };
 
 export interface PaginationOptions {
     limit: number;

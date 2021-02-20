@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import faker from 'faker';
 import { merge } from 'lodash';
+import validate from 'validator';
 import { Post, User } from '@types';
 
 export function req(overrides: Partial<Request> = {}): Request {
@@ -41,10 +42,11 @@ export function password(...args: any) {
 export function user(overrides?: Partial<User>): User {
     return {
         id: id(),
-        email: email(),
+        email: validate.normalizeEmail(email()) || email(),
         username: username(),
         role: 'user',
         createdAt: new Date(),
+        updatedAt: new Date(),
         ...overrides,
     };
 }
@@ -66,8 +68,12 @@ export function post(overrides?: Partial<Post>): Post {
         id: id(),
         title: postTitle(),
         body: postBody(),
-        author: username(),
+        author: {
+            id: id(),
+            username: username(),
+        },
         createdAt: new Date(),
+        updatedAt: new Date(),
         ...overrides,
     };
 }

@@ -3,7 +3,13 @@ import * as generate from '@test/utils/generate';
 import * as postController from './post-controller';
 
 describe('postController', () => {
-    const mockPost = generate.post();
+    const mockUser = generate.user();
+    const mockPost = generate.post({
+        author: {
+            id: mockUser.id,
+            username: mockUser.username,
+        },
+    });
 
     afterEach(() => {
         jest.resetAllMocks();
@@ -61,26 +67,33 @@ describe('postController', () => {
     });
 
     test('updatePost', async () => {
-        const data = {
+        const postUpdateData = {
             title: generate.postTitle(),
             body: generate.postBody(),
         };
         const updatePost = jest
             .spyOn(postService, 'updatePost')
-            .mockResolvedValue({ ...mockPost, ...data });
+            .mockResolvedValue({ ...mockPost, ...postUpdateData });
 
         expect.assertions(4);
 
-        const req = generate.req({ params: { id: mockPost.id }, body: data });
+        const req = generate.req({
+            user: mockUser,
+            params: { id: mockPost.id },
+            body: postUpdateData,
+        });
         const res = generate.res();
         await postController.updatePost(req, res);
 
         expect(updatePost).toHaveBeenCalledWith({
-            id: mockPost.id,
-            ...data,
+            requestor: mockUser,
+            data: {
+                id: mockPost.id,
+                ...postUpdateData,
+            },
         });
         expect(updatePost).toHaveBeenCalledTimes(1);
-        expect(res.json).toHaveBeenCalledWith({ ...mockPost, ...data });
+        expect(res.json).toHaveBeenCalledWith({ ...mockPost, ...postUpdateData });
         expect(res.json).toHaveBeenCalledTimes(1);
     });
 
@@ -89,11 +102,16 @@ describe('postController', () => {
 
         expect.assertions(3);
 
-        const req = generate.req({ params: { id: mockPost.id } });
+        const req = generate.req({ user: mockUser, params: { id: mockPost.id } });
         const res = generate.res();
         await postController.deletePost(req, res);
 
-        expect(deletePost).toHaveBeenCalledWith(mockPost.id);
+        expect(deletePost).toHaveBeenCalledWith({
+            requestor: mockUser,
+            data: {
+                id: mockPost.id,
+            },
+        });
         expect(deletePost).toHaveBeenCalledTimes(1);
         expect(res.end).toHaveBeenCalledTimes(1);
     });

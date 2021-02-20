@@ -7,5 +7,5 @@ export function hash(password: string): string {
 }
 
 export function makeUser(data: UserEntity): User {
-    return pick(data, ['id', 'email', 'username', 'role', 'createdAt']);
+    return pick(data, ['id', 'email', 'username', 'role', 'createdAt', 'updatedAt']);
 }

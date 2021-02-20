@@ -10,7 +10,7 @@ export default class PostRepository {
 
     async findAll(paginationOptions: PaginationOptions): Promise<PostEntity[]> {
         const posts = await this.db.any<PostEntity>(
-            'SELECT p.id, p.body, p.title, p.created_at, u.username FROM posts p ' +
+            'SELECT p.id, p.body, p.title, p.created_at, u.id as author_id, u.username as author_username FROM posts p ' +
                 'INNER JOIN users u ON u.id = p.user_id ' +
                 'WHERE p.created_at < ${lastCreatedAt} ORDER BY p.created_at ${order:raw} LIMIT ${limit}',
             paginationOptions,
@@ -20,7 +20,7 @@ export default class PostRepository {
 
     async findById(id: string): Promise<PostEntity> {
         const post = await this.db.one<PostEntity>(
-            'SELECT p.id, p.body, p.title, p.created_at, u.username FROM posts p ' +
+            'SELECT p.id, p.body, p.title, p.created_at, u.id as author_id, u.username as author_username FROM posts p ' +
                 'INNER JOIN users u ON u.id = p.user_id ' +
                 'WHERE p.id = $1',
             id,
@@ -40,11 +40,15 @@ export default class PostRepository {
     }
 
     async update(PostEntity: PostEntity): Promise<PostEntity> {
-        const updatedPost = await this.db.one<PostEntity>(
-            'UPDATE posts SET title = ${title}, body = ${body} WHERE id = ${id} RETURNING *',
+        const result = await this.db.one<PostEntity>(
+            'UPDATE posts SET title = ${title}, body = ${body} FROM ' +
+                '(SELECT id, title, body, user_id, created_at, updated_at FROM posts WHERE id = ${id} FOR UPDATE) p ' +
+                'INNER JOIN users u ON u.id = p.user_id ' +
+                'WHERE posts.id = p.id ' +
+                'RETURNING posts.id, posts.title, posts.body, posts.created_at, posts.updated_at, u.id as author_id, u.username as author_username',
             PostEntity,
         );
-        return updatedPost;
+        return result;
     }
 
     async destroy(id: string): Promise<void> {

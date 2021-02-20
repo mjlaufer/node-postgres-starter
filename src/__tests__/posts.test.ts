@@ -1,9 +1,9 @@
 import { has, head, identity, isObject } from 'lodash';
 import { startServer, Server } from '@server';
 import * as generate from '@test/utils/generate';
-import { request, getUserCookie, closeOpenHandles, resetDb } from '@test/utils/integration';
+import { request, authenticate, closeOpenHandles, resetDb } from '@test/utils/integration';
 
-import { Post, User } from '@types';
+import { Post } from '@types';
 
 jest.mock('uuid', () => ({
     v4: () => 'test_uuid',
@@ -13,14 +13,12 @@ describe('/posts', () => {
     let server: Server;
     let port = '0';
     let postsUrl: string;
-    let usersUrl: string;
 
     beforeAll(async () => {
         server = await startServer();
         const address = server.address();
         port = isObject(address) && has(address, 'port') ? String(address.port) : port;
         postsUrl = `http://localhost:${port}/posts/`;
-        usersUrl = `http://localhost:${port}/users/`;
     });
 
     beforeEach(() => resetDb());
@@ -49,37 +47,40 @@ describe('/posts', () => {
     });
 
     test('POST /posts', async () => {
-        const { users }: { users: User[] } = await request(usersUrl).json();
-        const firstUser = head(users) as User;
+        const [user, cookie] = await authenticate(port);
 
-        const testPostCreateData = {
+        const postCreateData = {
             title: generate.postTitle(),
             body: generate.postBody(),
-            userId: firstUser.id,
+            userId: user.id,
         };
 
         const response: Post = await request
             .post(postsUrl, {
                 headers: {
-                    cookie: await getUserCookie(port),
+                    cookie,
                 },
-                json: testPostCreateData,
+                json: postCreateData,
             })
             .json();
 
         expect(response).toMatchObject({
             id: 'test_uuid',
-            title: testPostCreateData.title,
-            body: testPostCreateData.body,
-            author: firstUser.username,
+            title: postCreateData.title,
+            body: postCreateData.body,
+            author: {
+                id: user.id,
+                username: user.username,
+            },
         });
     });
 
     test('PUT /posts/:id', async () => {
         const { posts }: { posts: Post[] } = await request(postsUrl).json();
         const firstPost = head(posts) as Post;
+        const [user, cookie] = await authenticate(port, { id: firstPost.author.id });
 
-        const testPostUpdateData = {
+        const postUpdateData = {
             title: generate.postTitle(),
             body: generate.postBody(),
         };
@@ -87,28 +88,32 @@ describe('/posts', () => {
         const response: Post = await request
             .put(`${postsUrl}${firstPost.id}`, {
                 headers: {
-                    cookie: await getUserCookie(port),
+                    cookie,
                 },
-                json: testPostUpdateData,
+                json: postUpdateData,
             })
             .json();
 
         expect(response).toMatchObject({
             id: firstPost.id,
-            title: testPostUpdateData.title,
-            body: testPostUpdateData.body,
-            author: firstPost.author,
+            title: postUpdateData.title,
+            body: postUpdateData.body,
+            author: {
+                id: user.id,
+                username: user.username,
+            },
         });
     });
 
     test('DELETE /posts/:id', async () => {
         const { posts }: { posts: Post[] } = await request(postsUrl).json();
         const firstPost = head(posts) as Post;
+        const [, cookie] = await authenticate(port, { id: firstPost.author.id });
 
         const response = await request
             .delete(`${postsUrl}${firstPost.id}`, {
                 headers: {
-                    cookie: await getUserCookie(port),
+                    cookie,
                 },
             })
             .json();
@@ -124,7 +129,7 @@ describe('/posts', () => {
                 code: queryResultErrorCode.noData
                 message: \\"No data returned from the query.\\"
                 received: 0
-                query: \\"SELECT p.id, p.body, p.title, p.created_at, u.username FROM posts p INNER JOIN users u ON u.id = p.user_id WHERE p.id = 'GENERATED_POST_ID'\\"
+                query: \\"SELECT p.id, p.body, p.title, p.created_at, u.id as author_id, u.username as author_username FROM posts p INNER JOIN users u ON u.id = p.user_id WHERE p.id = 'GENERATED_POST_ID'\\"
             }"
         `);
     });

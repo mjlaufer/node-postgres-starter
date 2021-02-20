@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { pick } from 'lodash';
 import * as userService from '@services/user-service';
-import { SignupRequest, UserUpdateRequest } from '@types';
+import { User } from '@types';
 
 export async function fetchUsers(req: Request, res: Response): Promise<void> {
     const lastCreatedAt =
@@ -20,7 +20,7 @@ export async function fetchUser(req: Request, res: Response): Promise<void> {
 }
 
 export async function createUser(req: Request, res: Response): Promise<void> {
-    const signupRequestData: SignupRequest = pick(req.body, ['email', 'username', 'password']);
+    const signupRequestData = pick(req.body, ['email', 'username', 'password']);
 
     const user = await userService.createUser(signupRequestData);
 
@@ -28,17 +28,25 @@ export async function createUser(req: Request, res: Response): Promise<void> {
 }
 
 export async function updateUser(req: Request, res: Response): Promise<void> {
-    const updatedUserData: UserUpdateRequest = {
+    const updatedUserData = {
         id: req.params.id,
-        ...pick(req.body, ['email', 'username']),
+        ...pick(req.body, ['email', 'username', 'password']),
     };
 
-    const updatedUser = await userService.updateUser(updatedUserData);
+    const updatedUser = await userService.updateUser({
+        requestor: req.user as User,
+        data: updatedUserData,
+    });
 
     res.json(updatedUser);
 }
 
 export async function deleteUser(req: Request, res: Response): Promise<void> {
-    await userService.deleteUser(req.params.id);
+    await userService.deleteUser({
+        requestor: req.user as User,
+        data: {
+            id: req.params.id,
+        },
+    });
     res.status(204).end();
 }

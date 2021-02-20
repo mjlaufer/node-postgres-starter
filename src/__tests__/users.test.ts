@@ -2,7 +2,7 @@ import { has, head, identity, isObject } from 'lodash';
 import validate from 'validator';
 import { startServer, Server } from '@server';
 import * as generate from '@test/utils/generate';
-import { request, getAdminCookie, closeOpenHandles, resetDb } from '@test/utils/integration';
+import { request, authenticate, closeOpenHandles, resetDb } from '@test/utils/integration';
 import { User } from '@types';
 
 jest.mock('uuid', () => ({
@@ -46,70 +46,69 @@ describe('/users', () => {
     });
 
     test('POST /users', async () => {
-        const testUserCreateData = {
+        const userCreateData = {
             email: generate.email(),
             username: generate.username(),
             password: generate.password(),
         };
 
+        const [, cookie] = await authenticate(port, { role: 'admin' });
+
         const response: User = await request
             .post(usersUrl, {
                 headers: {
-                    cookie: await getAdminCookie(port),
+                    cookie,
                 },
-                json: testUserCreateData,
+                json: userCreateData,
             })
             .json();
 
         expect(response).toMatchObject({
             id: 'test_uuid',
-            email: validate.normalizeEmail(testUserCreateData.email),
-            username: testUserCreateData.username,
+            email: validate.normalizeEmail(userCreateData.email),
+            username: userCreateData.username,
             role: 'user',
         });
     });
 
     test('PUT /users/:id', async () => {
-        const { users }: { users: User[] } = await request(usersUrl).json();
-        const firstUser = head(users) as User;
-
-        const testUserUpdateData = { email: generate.email(), username: generate.username() };
+        const [user, cookie] = await authenticate(port);
+        const userUpdateData = { email: generate.email(), username: generate.username() };
 
         const response: User = await request
-            .put(`${usersUrl}${firstUser.id}`, {
+            .put(`${usersUrl}${user.id}`, {
                 headers: {
-                    cookie: await getAdminCookie(port),
+                    cookie,
                 },
-                json: testUserUpdateData,
+                json: userUpdateData,
             })
             .json();
 
         expect(response).toMatchObject({
-            id: firstUser.id,
-            email: validate.normalizeEmail(testUserUpdateData.email),
-            username: testUserUpdateData.username,
+            id: user.id,
+            email: validate.normalizeEmail(userUpdateData.email),
+            username: userUpdateData.username,
             role: 'user',
         });
     });
 
     test('DELETE /users/:id', async () => {
-        const { users }: { users: User[] } = await request(usersUrl).json();
-        const firstUser = head(users) as User;
+        const [user, cookie] = await authenticate(port);
 
         const response = await request
-            .delete(`${usersUrl}${firstUser.id}`, {
+            .delete(`${usersUrl}${user.id}`, {
                 headers: {
-                    cookie: await getAdminCookie(port),
+                    cookie,
                 },
             })
             .json();
 
         expect(response).toBe('');
 
-        const err = (await request(`${usersUrl}${firstUser.id}`).json().catch(identity)) as Error;
+        const err = (await request(`${usersUrl}${user.id}`).json().catch(identity)) as Error;
 
-        // Because `firstUser.id` is dynamic, we need to replace it with a constant, so our snapshot remains consistent.
-        const testErr = err.message.replace(firstUser.id, 'GENERATED_USER_ID');
+        // Because `user.id` is dynamic, we need to replace it with a constant, so our snapshot remains consistent.
+        const testErr = err.message.replace(user.id, 'GENERATED_USER_ID');
         expect(testErr).toMatchInlineSnapshot(`
             "(404) QueryResultError {
                 code: queryResultErrorCode.noData

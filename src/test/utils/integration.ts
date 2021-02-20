@@ -6,7 +6,7 @@ import db from '@db';
 import * as knexConfig from '@db/knexfile';
 import { hash } from '@helpers/user';
 import { redisClient } from '@middleware/session';
-import { Role } from '@types';
+import { User, UserEntity } from '@types';
 import * as generate from './generate';
 
 const knex = Knex(knexConfig);
@@ -46,54 +46,41 @@ export async function closeOpenHandles(): Promise<void> {
     }
 }
 
-export async function getAdminCookie(port: string) {
+export async function authenticate(
+    port: string,
+    userOverrides?: Partial<UserEntity>,
+): Promise<[User, string]> {
     const loginUrl = `http://localhost:${port}/login/`;
 
     const email = generate.email();
     const password = generate.password();
-    const adminCreateData = {
+    const userData: UserEntity = {
         id: generate.id(),
-        email: validate.normalizeEmail(email) || generate.email(),
+        email: validate.normalizeEmail(email) || email,
         username: generate.username(),
         password: hash(password),
-        role: 'admin' as Role,
+        role: 'user',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        ...userOverrides,
     };
 
-    await db.users.create(adminCreateData);
+    let user: User;
+    if (userOverrides?.id) {
+        user = await db.users.update(userData);
+    } else {
+        user = await db.users.create(userData);
+    }
 
     const res = await request.post(loginUrl, {
         json: {
-            email: adminCreateData.email,
+            email: userData.email,
             password,
         },
     });
 
     const cookies = res.headers['set-cookie'];
-    return head(cookies);
-}
+    const authCookie = head(cookies) ?? '';
 
-export async function getUserCookie(port: string) {
-    const loginUrl = `http://localhost:${port}/login/`;
-
-    const email = generate.email();
-    const password = generate.password();
-    const userCreateData = {
-        id: generate.id(),
-        email: validate.normalizeEmail(email) || generate.email(),
-        username: generate.username(),
-        password: hash(password),
-        role: 'user' as Role,
-    };
-
-    await db.users.create(userCreateData);
-
-    const res = await request.post(loginUrl, {
-        json: {
-            email: userCreateData.email,
-            password,
-        },
-    });
-
-    const cookies = res.headers['set-cookie'];
-    return head(cookies);
+    return [user, authCookie];
 }

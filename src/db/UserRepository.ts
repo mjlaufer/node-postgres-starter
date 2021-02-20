@@ -58,15 +58,15 @@ export default class UserRepository {
     }
 
     async update(userEntity: UserEntity): Promise<UserEntity> {
-        const updatedUser = await this.db.one<UserEntity>(
-            'UPDATE users SET email = ${email}, username = ${username} FROM ' +
+        const result = await this.db.one<UserEntity>(
+            'UPDATE users SET email = ${email}, username = ${username}, password = ${password} FROM ' +
                 '(SELECT id, email, username, password, created_at, updated_at, role_id FROM users WHERE id = ${id} FOR UPDATE) u ' +
                 'INNER JOIN roles r ON r.id = u.role_id ' +
                 'WHERE users.id = u.id ' +
                 'RETURNING users.id, users.email, users.username, users.password, users.created_at, users.updated_at, r.name as role',
             userEntity,
         );
-        return updatedUser;
+        return result;
     }
 
     async destroy(id: string): Promise<void> {

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { pick } from 'lodash';
 import * as postService from '@services/post-service';
-import { PostCreateRequest, PostUpdateRequest } from '@types';
+import { User } from '@types';
 
 export async function fetchPosts(req: Request, res: Response): Promise<void> {
     const lastCreatedAt =
@@ -20,7 +20,7 @@ export async function fetchPost(req: Request, res: Response): Promise<void> {
 }
 
 export async function createPost(req: Request, res: Response): Promise<void> {
-    const postRequestData: PostCreateRequest = pick(req.body, ['title', 'body', 'userId']);
+    const postRequestData = pick(req.body, ['title', 'body', 'userId']);
 
     const post = await postService.createPost(postRequestData);
 
@@ -28,17 +28,26 @@ export async function createPost(req: Request, res: Response): Promise<void> {
 }
 
 export async function updatePost(req: Request, res: Response): Promise<void> {
-    const updatedPostData: PostUpdateRequest = {
+    const data = {
         id: req.params.id,
         ...pick(req.body, ['title', 'body']),
     };
 
-    const updatedPost = await postService.updatePost(updatedPostData);
+    const updatedPost = await postService.updatePost({
+        requestor: req.user as User,
+        data,
+    });
 
     res.json(updatedPost);
 }
 
 export async function deletePost(req: Request, res: Response): Promise<void> {
-    await postService.deletePost(req.params.id);
+    await postService.deletePost({
+        requestor: req.user as User,
+        data: {
+            id: req.params.id,
+        },
+    });
+
     res.status(204).end();
 }

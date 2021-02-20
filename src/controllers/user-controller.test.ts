@@ -61,25 +61,32 @@ describe('userController', () => {
     });
 
     test('updateUser', async () => {
-        const data = {
+        const userUpdateData = {
             username: generate.username(),
         };
         const updateUser = jest
             .spyOn(userService, 'updateUser')
-            .mockResolvedValue({ ...mockUser, ...data });
+            .mockResolvedValue({ ...mockUser, ...userUpdateData });
 
         expect.assertions(4);
 
-        const req = generate.req({ params: { id: mockUser.id }, body: data });
+        const req = generate.req({
+            user: mockUser,
+            params: { id: mockUser.id },
+            body: userUpdateData,
+        });
         const res = generate.res();
         await userController.updateUser(req, res);
 
         expect(updateUser).toHaveBeenCalledWith({
-            id: mockUser.id,
-            ...data,
+            requestor: mockUser,
+            data: {
+                id: mockUser.id,
+                ...userUpdateData,
+            },
         });
         expect(updateUser).toHaveBeenCalledTimes(1);
-        expect(res.json).toHaveBeenCalledWith({ ...mockUser, ...data });
+        expect(res.json).toHaveBeenCalledWith({ ...mockUser, ...userUpdateData });
         expect(res.json).toHaveBeenCalledTimes(1);
     });
 
@@ -88,11 +95,16 @@ describe('userController', () => {
 
         expect.assertions(3);
 
-        const req = generate.req({ params: { id: mockUser.id } });
+        const req = generate.req({ user: mockUser, params: { id: mockUser.id } });
         const res = generate.res();
         await userController.deleteUser(req, res);
 
-        expect(deleteUser).toHaveBeenCalledWith(mockUser.id);
+        expect(deleteUser).toHaveBeenCalledWith({
+            requestor: mockUser,
+            data: {
+                id: mockUser.id,
+            },
+        });
         expect(deleteUser).toHaveBeenCalledTimes(1);
         expect(res.end).toHaveBeenCalledTimes(1);
     });
