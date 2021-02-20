@@ -17,6 +17,6 @@ module.exports = {
     setupFilesAfterEnv: ['./src/test/setup-env.ts'],
     testPathIgnorePatterns: ['node_modules', 'dist', '__tests__'],
     collectCoverageFrom: ['./src/**/*.ts'],
-    coveragePathIgnorePatterns: ['__tests__'],
+    coveragePathIgnorePatterns: ['__tests__', 'test', 'router', 'configurePassport'],
     watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
 };
