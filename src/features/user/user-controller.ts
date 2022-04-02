@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { pick } from 'lodash';
-import * as userService from '@services/user-service';
+import * as userService from '@features/user/user-service';
 import { User } from '@types';
 
 export async function fetchUsers(req: Request, res: Response): Promise<void> {

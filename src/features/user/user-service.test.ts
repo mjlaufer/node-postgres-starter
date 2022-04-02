@@ -1,9 +1,9 @@
 import { identity, pick } from 'lodash';
 import pgPromise from 'pg-promise';
 import db from '@db';
-import { hash, makeUser } from '@helpers/user';
+import { hash, makeUser } from '@features/user/user-helpers';
 import * as generate from '@test/utils/generate';
-import { HttpError } from '@utils/errors';
+import { HttpError } from '@errors';
 import { SignupRequest, UserEntity, PaginationOptions } from '@types';
 import * as userService from './user-service';
 

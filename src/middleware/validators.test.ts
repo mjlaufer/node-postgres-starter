@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import * as generate from '@test/utils/generate';
-import { ValidationError } from '@utils/errors';
+import { ValidationError } from '@errors';
 import { validate } from './validators';
 
 describe('validate', () => {

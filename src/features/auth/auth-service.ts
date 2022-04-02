@@ -1,8 +1,8 @@
 import { toString } from 'lodash';
-import { HttpError } from '@utils/errors';
+import { HttpError } from '@errors';
 import db from '@db';
 import { SignupRequest, SignupResponse, User, UserEntity } from '@types';
-import * as userService from './user-service';
+import * as userService from '../user/user-service';
 
 export const USER_EXISTS_MESSAGE = 'An account for this email already exists';
 

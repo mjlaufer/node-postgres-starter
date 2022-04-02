@@ -1,5 +1,5 @@
 import * as generate from '@test/utils/generate';
-import { HttpError } from '@utils/errors';
+import { HttpError } from '@errors';
 import requireAuth from './requireAuth';
 
 describe('requireAuth', () => {

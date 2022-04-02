@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 import { toString } from 'lodash';
-import { ValidationError } from '@utils/errors';
+import { ValidationError } from '@errors';
 import { MiddlewareFunc } from '@types';
 
 const uuidValidator = Joi.string().guid({ version: 'uuidv4' });

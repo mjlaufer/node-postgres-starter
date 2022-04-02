@@ -1,5 +1,5 @@
 import * as generate from '@test/utils/generate';
-import { HttpError, HttpErrorMessages } from '@utils/errors';
+import { HttpError, HttpErrorMessages } from '@errors';
 import { notFoundHandler, errorHandler } from './errorHandlers';
 
 describe('notFoundHandler', () => {

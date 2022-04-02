@@ -6,7 +6,9 @@ import helmet from 'helmet';
 import { merge } from 'lodash';
 import morgan from 'morgan';
 import passport from 'passport';
-import * as router from '@router';
+import authRouter from '@features/auth/auth-router';
+import userRouter from '@features/user/user-router';
+import postRouter from '@features/post/post-router';
 import { errorHandler, notFoundHandler } from '@middleware/errorHandlers';
 import createSessionMiddleware from '@middleware/session';
 import configurePassport from './configurePassport';
@@ -29,10 +31,15 @@ export async function startServer({ port = process.env.PORT } = {}): Promise<Ser
     app.use(passport.initialize() as RequestHandler);
     app.use(passport.session());
 
-    app.use('/', router.root);
-    app.use('/', router.auth);
-    app.use('/users', router.users);
-    app.use('/posts', router.posts);
+    app.get('/', (req, res) => {
+        res.json({
+            version: '1.0.0',
+            copyright: 'Copyright 2022 Matthew Laufer.',
+        });
+    });
+    app.use('/', authRouter);
+    app.use('/users', userRouter);
+    app.use('/posts', postRouter);
 
     app.use(notFoundHandler);
     app.use(errorHandler);

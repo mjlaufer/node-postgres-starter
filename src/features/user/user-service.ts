@@ -1,8 +1,8 @@
 import { toString } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import db from '@db';
-import { hash, makeUser } from '@helpers/user';
-import { HttpError } from '@utils/errors';
+import { hash, makeUser } from '@features/user/user-helpers';
+import { HttpError } from '@errors';
 import { SignupRequest, User, UserEntity, PaginationOptions } from '@types';
 
 interface UserUpdateParams {

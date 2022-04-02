@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { castArray, get } from 'lodash';
 import { MiddlewareFunc, Role } from '@types';
-import { HttpError, HttpErrorMessages } from '@utils/errors';
+import { HttpError, HttpErrorMessages } from '@errors';
 
 export default function requireAuth(roles: Role[] | Role): MiddlewareFunc {
     return (req: Request, res: Response, next: NextFunction): void => {

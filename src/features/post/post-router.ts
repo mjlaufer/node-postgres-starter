@@ -1,5 +1,5 @@
 import express from 'express';
-import * as postController from '@controllers/post-controller';
+import * as postController from '@features/post/post-controller';
 import asyncWrapper from '@middleware/asyncWrapper';
 import requireAuth from '@middleware/requireAuth';
 import { sanitizeText, sanitizePaginationOptions } from '@middleware/sanitizers';

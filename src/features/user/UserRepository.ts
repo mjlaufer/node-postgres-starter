@@ -1,6 +1,6 @@
 import { IDatabase } from 'pg-promise';
 import { UserCreateRequest, UserEntity, PaginationOptions } from '@types';
-import { generateWhereClause } from './helpers';
+import { generateWhereClause } from '../../db/helpers';
 
 interface UserRecord extends Omit<UserEntity, 'role'> {
     roleId: number;

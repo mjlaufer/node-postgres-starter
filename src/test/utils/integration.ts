@@ -4,7 +4,7 @@ import { get, head } from 'lodash';
 import validate from 'validator';
 import db from '@db';
 import * as knexConfig from '@db/knexfile';
-import { hash } from '@helpers/user';
+import { hash } from '@features/user/user-helpers';
 import { redisClient } from '@middleware/session';
 import { User, UserEntity } from '@types';
 import * as generate from './generate';

@@ -1,8 +1,8 @@
 import { toString } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import db from '@db';
-import { makePost } from '@helpers/post';
-import { HttpError } from '@utils/errors';
+import { makePost } from '@features/post/post-helpers';
+import { HttpError } from '@errors';
 import { User, Post, PostCreateRequest, PostEntity, PaginationOptions } from '@types';
 
 interface PostUpdateParams {

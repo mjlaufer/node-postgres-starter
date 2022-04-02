@@ -1,4 +1,4 @@
-import { HttpError, HttpErrorMessages } from './errors';
+import { HttpError, HttpErrorMessages } from '.';
 
 describe('HttpError', () => {
     test('can create HttpError objects', () => {

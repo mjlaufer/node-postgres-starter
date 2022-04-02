@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { pick } from 'lodash';
-import { HttpError } from '@utils/errors';
-import * as authService from '@services/auth-service';
+import { HttpError } from '@errors';
+import * as authService from '@features/auth/auth-service';
 import { SignupRequest } from '@types';
 
 export async function signup(req: Request, res: Response): Promise<void> {

@@ -1,4 +1,4 @@
-import * as authService from '@services/auth-service';
+import * as authService from '@features/auth/auth-service';
 import * as generate from '@test/utils/generate';
 import { SignupRequest } from '@types';
 import * as authController from './auth-controller';

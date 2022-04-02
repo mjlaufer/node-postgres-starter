@@ -1,4 +1,4 @@
-import * as userService from '@services/user-service';
+import * as userService from '@features/user/user-service';
 import * as generate from '@test/utils/generate';
 import * as userController from './user-controller';
 

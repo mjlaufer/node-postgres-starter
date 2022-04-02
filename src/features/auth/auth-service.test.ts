@@ -1,11 +1,11 @@
 import { identity, pick } from 'lodash';
 import pgPromise from 'pg-promise';
 import db from '@db';
-import { hash } from '@helpers/user';
+import { hash } from '@features/user/user-helpers';
 import * as generate from '@test/utils/generate';
-import { HttpError } from '@utils/errors';
+import { HttpError } from '@errors';
 import { SignupRequest, UserEntity } from '@types';
-import * as userService from './user-service';
+import * as userService from '../user/user-service';
 import * as authService from './auth-service';
 
 jest.mock('@db', () => ({

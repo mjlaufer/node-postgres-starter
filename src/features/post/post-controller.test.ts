@@ -1,4 +1,4 @@
-import * as postService from '@services/post-service';
+import * as postService from '@features/post/post-service';
 import * as generate from '@test/utils/generate';
 import * as postController from './post-controller';
 

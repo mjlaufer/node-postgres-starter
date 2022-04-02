@@ -1,9 +1,9 @@
 import { identity, pick } from 'lodash';
 import pgPromise from 'pg-promise';
 import db from '@db';
-import { makePost } from '@helpers/post';
+import { makePost } from '@features/post/post-helpers';
 import * as generate from '@test/utils/generate';
-import { HttpError } from '@utils/errors';
+import { HttpError } from '@errors';
 import { PostCreateRequest, PostEntity, PaginationOptions } from '@types';
 import * as postService from './post-service';
 

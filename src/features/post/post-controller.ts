@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { pick } from 'lodash';
-import * as postService from '@services/post-service';
+import * as postService from '@features/post/post-service';
 import { User } from '@types';
 
 export async function fetchPosts(req: Request, res: Response): Promise<void> {
