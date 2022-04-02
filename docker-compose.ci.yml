@@ -1,5 +1,9 @@
-version: '3.7'
+version: '3.8'
 
 services:
-  api:
+  app:
     command: ['yarn', 'run', 'ci:check']
+    restart: 'no'
+
+  pg:
+    restart: 'no'

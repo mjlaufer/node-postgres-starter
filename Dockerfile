@@ -1,13 +1,12 @@
-FROM node:12-alpine as builder-dev
+FROM node:16.14-alpine3.14 as builder-dev
 
 WORKDIR /usr/src/app
-COPY package.json .
-COPY yarn.lock .
+COPY package.json yarn.lock .
 RUN yarn install
 COPY . .
 
 FROM builder-dev
 RUN yarn build
 
-EXPOSE 5000
-CMD [ "yarn", "start" ]
+USER node
+CMD ["yarn", "start"]

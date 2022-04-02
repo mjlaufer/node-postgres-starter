@@ -1,27 +1,36 @@
-version: '3.7'
+version: '3.8'
 
 services:
-  api:
+  app:
     build:
       context: .
       target: builder-dev
     links:
-      - db
+      - pg
+      - redis
     volumes:
       - /usr/src/app/node_modules
       - .:/usr/src/app
     depends_on:
-      - db
+      - pg
+      - redis
     env_file:
       - .env
     environment:
-      PG_HOST: db
+      PG_HOST: pg
+      REDIS_HOST: redis
     restart: always
 
-  db:
-    image: 'postgres:11-alpine'
+  pg:
+    image: 'postgres:14-alpine'
     env_file:
       - .env
     volumes:
       - ./pg-init:/docker-entrypoint-initdb.d
+    restart: always
+
+  redis:
+    image: 'redis:6.2.6-alpine'
+    env_file:
+      - .env
     restart: always
