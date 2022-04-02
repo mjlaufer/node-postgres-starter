@@ -2,13 +2,13 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:12.5.0
+      - image: cimg/node:16.13.1
         environment:
           SESSION_SECRET: secret
           POSTGRES_USER: postgres
           POSTGRES_DB: circle_test
-      - image: circleci/postgres:12.0-alpine-ram
-      - image: circleci/redis:5.0.6-alpine
+      - image: cimg/postgres:14.2
+      - image: cimg/redis:6.2.6
 
     working_directory: ~/repo
 

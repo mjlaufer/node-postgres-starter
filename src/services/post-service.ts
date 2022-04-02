@@ -1,3 +1,4 @@
+import { toString } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import db from '@db';
 import { makePost } from '@helpers/post';
@@ -21,7 +22,8 @@ export async function fetchPosts(paginationOptions: PaginationOptions): Promise<
         const postEntities = await db.posts.findAll(paginationOptions);
         return postEntities.map(makePost);
     } catch (err) {
-        throw new HttpError(err);
+        const message = err instanceof Error ? err.message : toString(err);
+        throw new HttpError(message);
     }
 }
 
@@ -30,7 +32,8 @@ export async function fetchPost(id: string): Promise<Post> {
         const postEntity = await db.posts.findById(id);
         return makePost(postEntity);
     } catch (err) {
-        throw new HttpError(err, 404);
+        const message = err instanceof Error ? err.message : toString(err);
+        throw new HttpError(message, 404);
     }
 }
 
@@ -42,7 +45,8 @@ export async function createPost(postRequestData: PostCreateRequest): Promise<Po
         });
         return makePost(postEntity);
     } catch (err) {
-        throw new HttpError(err);
+        const message = err instanceof Error ? err.message : toString(err);
+        throw new HttpError(message);
     }
 }
 
@@ -59,10 +63,8 @@ export async function updatePost({ requestor, data }: PostUpdateParams): Promise
 
         return makePost(updatedPostEntity);
     } catch (err) {
-        if (err instanceof HttpError) {
-            throw err;
-        }
-        throw new HttpError(err, 404);
+        const message = err instanceof Error ? err.message : toString(err);
+        throw new HttpError(message, 404);
     }
 }
 
@@ -81,9 +83,7 @@ export async function deletePost({
 
         await db.posts.destroy(postId);
     } catch (err) {
-        if (err instanceof HttpError) {
-            throw err;
-        }
-        throw new HttpError(err);
+        const message = err instanceof Error ? err.message : toString(err);
+        throw new HttpError(message);
     }
 }

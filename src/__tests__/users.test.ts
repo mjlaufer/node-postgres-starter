@@ -109,13 +109,6 @@ describe('/users', () => {
 
         // Because `user.id` is dynamic, we need to replace it with a constant, so our snapshot remains consistent.
         const testErr = err.message.replace(user.id, 'GENERATED_USER_ID');
-        expect(testErr).toMatchInlineSnapshot(`
-            "(404) QueryResultError {
-                code: queryResultErrorCode.noData
-                message: \\"No data returned from the query.\\"
-                received: 0
-                query: \\"SELECT u.id, u.email, u.username, u.password, u.created_at, u.updated_at, r.name as role FROM users u INNER JOIN roles r ON r.id = u.role_id WHERE u.id = 'GENERATED_USER_ID'\\"
-            }"
-        `);
+        expect(testErr).toMatchInlineSnapshot(`"(404) No data returned from the query."`);
     });
 });

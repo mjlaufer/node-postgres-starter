@@ -1,3 +1,4 @@
+import { toString } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import db from '@db';
 import { hash, makeUser } from '@helpers/user';
@@ -21,7 +22,8 @@ export async function fetchUsers(paginationOptions: PaginationOptions): Promise<
         const userEntities = await db.users.findAll(paginationOptions);
         return userEntities.map(makeUser);
     } catch (err) {
-        throw new HttpError(err);
+        const message = err instanceof Error ? err.message : toString(err);
+        throw new HttpError(message);
     }
 }
 
@@ -30,7 +32,8 @@ export async function fetchUser(id: string): Promise<User> {
         const userEntity = await db.users.findById(id);
         return makeUser(userEntity);
     } catch (err) {
-        throw new HttpError(err, 404);
+        const message = err instanceof Error ? err.message : toString(err);
+        throw new HttpError(message, 404);
     }
 }
 
@@ -47,7 +50,8 @@ export async function createUser(signupRequestData: SignupRequest): Promise<User
 
         return makeUser(userEntity);
     } catch (err) {
-        throw new HttpError(err);
+        const message = err instanceof Error ? err.message : toString(err);
+        throw new HttpError(message);
     }
 }
 
@@ -66,10 +70,8 @@ export async function updateUser({ requestor, data }: UserUpdateParams): Promise
 
         return makeUser(updatedUserEntity);
     } catch (err) {
-        if (err instanceof HttpError) {
-            throw err;
-        }
-        throw new HttpError(err, 404);
+        const message = err instanceof Error ? err.message : toString(err);
+        throw new HttpError(message, 404);
     }
 }
 
@@ -88,9 +90,7 @@ export async function deleteUser({
 
         await db.users.destroy(userId);
     } catch (err) {
-        if (err instanceof HttpError) {
-            throw err;
-        }
-        throw new HttpError(err);
+        const message = err instanceof Error ? err.message : toString(err);
+        throw new HttpError(message);
     }
 }

@@ -1,9 +1,9 @@
 import { Server as HttpServer } from 'http';
 import util from 'util';
-import express from 'express';
+import express, { RequestHandler } from 'express';
+import { json } from 'body-parser';
 import helmet from 'helmet';
 import { merge } from 'lodash';
-import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import passport from 'passport';
 import * as router from '@router';
@@ -17,17 +17,16 @@ export async function startServer({ port = process.env.PORT } = {}): Promise<Ser
     const app = express();
 
     app.use(helmet());
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(json());
 
     if (process.env.NODE_ENV !== 'test') {
         app.use(morgan(process.env.NODE_ENV !== 'production' ? 'dev' : 'common'));
     }
 
-    app.use(createSessionMiddleware());
+    app.use(createSessionMiddleware() as RequestHandler);
 
     configurePassport(passport);
-    app.use(passport.initialize());
+    app.use(passport.initialize() as RequestHandler);
     app.use(passport.session());
 
     app.use('/', router.root);

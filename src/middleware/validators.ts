@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
+import { toString } from 'lodash';
 import { ValidationError } from '@utils/errors';
 import { MiddlewareFunc } from '@types';
 
@@ -50,7 +51,8 @@ export function validate(
             await schema.validateAsync(req[userInput]);
             next();
         } catch (err) {
-            next(new ValidationError(err.message));
+            const message = err instanceof Error ? err.message : toString(err);
+            next(new ValidationError(message));
         }
     };
 }

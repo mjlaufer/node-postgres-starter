@@ -1,3 +1,4 @@
+import { toString } from 'lodash';
 import { HttpError } from '@utils/errors';
 import db from '@db';
 import { SignupRequest, SignupResponse, User, UserEntity } from '@types';
@@ -16,7 +17,8 @@ export async function signup(signupRequestData: SignupRequest): Promise<SignupRe
         const user: User = await userService.createUser(signupRequestData);
         return { user };
     } catch (err) {
-        throw new HttpError(err);
+        const message = err instanceof Error ? err.message : toString(err);
+        throw new HttpError(message);
     }
 }
 

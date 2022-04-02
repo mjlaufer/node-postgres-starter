@@ -124,13 +124,6 @@ describe('/posts', () => {
 
         // Because `firstPost.id` is dynamic, we need to replace it with a constant, so our snapshot remains consistent.
         const testErr = err.message.replace(firstPost.id, 'GENERATED_POST_ID');
-        expect(testErr).toMatchInlineSnapshot(`
-            "(404) QueryResultError {
-                code: queryResultErrorCode.noData
-                message: \\"No data returned from the query.\\"
-                received: 0
-                query: \\"SELECT p.id, p.body, p.title, p.created_at, u.id as author_id, u.username as author_username FROM posts p INNER JOIN users u ON u.id = p.user_id WHERE p.id = 'GENERATED_POST_ID'\\"
-            }"
-        `);
+        expect(testErr).toMatchInlineSnapshot(`"(404) No data returned from the query."`);
     });
 });

@@ -2,24 +2,39 @@
 
 ## About
 
-This is an opinionated template for developing containerized web services with Node, TypeScript, and PostgreSQL. To that end, this project uses the following technologies and packages:
+This is an opinionated template for developing containerized web services with Node, TypeScript, and PostgreSQL.
 
--   Node.js v14
--   TypeScript v4.1
--   Express.js
--   PostgreSQL v12
--   pg-promise
--   Redis
+## Getting Started
+
+### Prerequisites
+
+-   Node.js v16
+-   PostgreSQL v14
+-   Redis v6
 -   Docker
 -   CircleCI
 
----
+Note: If you install PostgreSQL using homebrew, you may need to run the following command:
 
-## Useful Scripts
+```sh
+/usr/local/opt/postgres/bin/createuser -s postgres
+```
 
-`yarn install` : Install dependencies.
+### Local Development
 
-### Local Development:
+Clone this repository.
+
+Install dependencies.
+
+```sh
+yarn install
+```
+
+Create a .env file based on the .env.example file.
+
+Create PostgreSQL databases for `dev` and `test` environments.
+
+### Useful Scripts
 
 `yarn run dev` : Run the application in development mode.
 
@@ -29,7 +44,7 @@ This is an opinionated template for developing containerized web services with N
 
 `yarn run knex seed:run` : Run seed files.
 
-### Using Docker:
+### Using Docker
 
 `docker-compose up -d` : Run the application in development mode.
 

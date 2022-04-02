@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-import { RequestHandler } from 'express';
 import redis, { RedisClient } from 'redis';
 import createRedisStore from 'connect-redis';
 import session from 'express-session';
@@ -28,7 +27,7 @@ const cookieOptions = {
     maxAge: NODE_ENV === 'production' ? 30 * 24 * 60 * 60000 : 5 * 60000,
 };
 
-export default function createSessionMiddleware(): RequestHandler {
+export default function createSessionMiddleware() {
     return session({
         genid: () => uuidv4(),
         store: new RedisStore({ client: redisClient }),

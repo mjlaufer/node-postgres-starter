@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import faker from 'faker';
+import faker from '@faker-js/faker';
 import { merge } from 'lodash';
 import validate from 'validator';
 import { Post, User } from '@types';
@@ -22,7 +22,7 @@ export function next(fn?: () => void): NextFunction {
 }
 
 export function id(): string {
-    return faker.random.uuid();
+    return faker.datatype.uuid();
 }
 
 export function email(): string {

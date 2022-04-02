@@ -3,14 +3,8 @@ import path from 'path';
 
 dotenv.config({ path: '../../.env' });
 
-const {
-    PG_HOST,
-    POSTGRES_DB,
-    POSTGRES_DB_TEST,
-    NODE_ENV,
-    POSTGRES_USER,
-    POSTGRES_PASSWORD,
-} = process.env;
+const { PG_HOST, POSTGRES_DB, POSTGRES_DB_TEST, NODE_ENV, POSTGRES_USER, POSTGRES_PASSWORD } =
+    process.env;
 
 module.exports = {
     client: 'pg',
