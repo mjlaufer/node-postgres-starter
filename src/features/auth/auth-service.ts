@@ -1,10 +1,18 @@
 import { toString } from 'lodash';
-import { HttpError } from '@errors';
+import { HttpError, InternalServerError } from '@errors';
 import db from '@db';
 import { SignupRequest, SignupResponse, User, UserEntity } from '@types';
 import * as userService from '../user/user-service';
 
 export const USER_EXISTS_MESSAGE = 'An account for this email already exists';
+
+function handleError(err: unknown): never {
+    if (err instanceof HttpError) {
+        throw err;
+    }
+    const message = err instanceof Error ? err.message : toString(err);
+    throw new InternalServerError(message);
+}
 
 export async function signup(signupRequestData: SignupRequest): Promise<SignupResponse> {
     try {
@@ -17,8 +25,7 @@ export async function signup(signupRequestData: SignupRequest): Promise<SignupRe
         const user: User = await userService.createUser(signupRequestData);
         return { user };
     } catch (err) {
-        const message = err instanceof Error ? err.message : toString(err);
-        throw new HttpError(message);
+        handleError(err);
     }
 }
 

@@ -1,4 +1,4 @@
-import { pgp } from '.';
+import pgp from './pgp';
 
 export function generateWhereClause(params: { [key: string]: any }): string {
     const conditions: string[] = [];

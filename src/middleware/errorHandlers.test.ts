@@ -1,5 +1,5 @@
 import * as generate from '@test/utils/generate';
-import { HttpError, HttpErrorMessages } from '@errors';
+import { NotFoundError, InternalServerError } from '@errors';
 import { notFoundHandler, errorHandler } from './errorHandlers';
 
 describe('notFoundHandler', () => {
@@ -11,7 +11,7 @@ describe('notFoundHandler', () => {
         const req = generate.req();
         const res = generate.res();
         const next = generate.next();
-        const notFoundError = new HttpError(HttpErrorMessages.NOT_FOUND, 404);
+        const notFoundError = new NotFoundError();
 
         notFoundHandler(req, res, next);
 
@@ -30,7 +30,7 @@ describe('errorHandler', () => {
     });
 
     test('calls next if headersSent is true', () => {
-        const err = new HttpError('error');
+        const err = new InternalServerError();
         const req = generate.req();
         const res = generate.res({ headersSent: true });
         const next = generate.next();
@@ -42,7 +42,7 @@ describe('errorHandler', () => {
     });
 
     test('sends stack trace in non-production environments', () => {
-        const err = new HttpError('error');
+        const err = new InternalServerError();
         const req = generate.req();
         const res = generate.res();
         const next = generate.next();
@@ -61,7 +61,7 @@ describe('errorHandler', () => {
     test('does not send stack trace in production', () => {
         process.env.NODE_ENV = 'production';
 
-        const err = new HttpError('error');
+        const err = new InternalServerError();
         const req = generate.req();
         const res = generate.res();
         const next = generate.next();
@@ -70,7 +70,7 @@ describe('errorHandler', () => {
         expect(res.status).toHaveBeenCalledWith(err.status);
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.json).toHaveBeenCalledWith({
-            message: HttpErrorMessages.INTERNAL_SERVER_ERROR,
+            message: err.message,
         });
         expect(res.json).toHaveBeenCalledTimes(1);
         expect(res.json).not.toHaveBeenCalledWith(

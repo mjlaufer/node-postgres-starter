@@ -6,16 +6,46 @@ export enum HttpErrorMessages {
     UNAUTHORIZED = 'Unauthorized',
 }
 
-export class HttpError extends Error {
-    constructor(message: string = HttpErrorMessages.INTERNAL_SERVER_ERROR, public status = 500) {
+export abstract class HttpError extends Error {
+    abstract status: number;
+}
+
+export class BadRequestError extends HttpError {
+    status = 400;
+    constructor(message: string = HttpErrorMessages.BAD_REQUEST) {
         super(message);
-        this.name = 'HttpError';
+        this.name = 'BadRequestError';
     }
 }
 
-export class ValidationError extends HttpError {
-    constructor(message = 'Validation Error', public status = 400) {
-        super(message, status);
-        this.name = 'ValidationError';
+export class UnauthorizedError extends HttpError {
+    status = 401;
+    constructor(message: string = HttpErrorMessages.UNAUTHORIZED) {
+        super(message);
+        this.name = 'UnauthorizedError';
+    }
+}
+
+export class ForbiddenError extends HttpError {
+    status = 403;
+    constructor(message: string = HttpErrorMessages.FORBIDDEN) {
+        super(message);
+        this.name = 'ForbiddenError';
+    }
+}
+
+export class NotFoundError extends HttpError {
+    status = 404;
+    constructor(message: string = HttpErrorMessages.NOT_FOUND) {
+        super(message);
+        this.name = 'NotFoundError';
+    }
+}
+
+export class InternalServerError extends HttpError {
+    status = 500;
+    constructor(message: string = HttpErrorMessages.INTERNAL_SERVER_ERROR) {
+        super(message);
+        this.name = 'InternalServerError';
     }
 }

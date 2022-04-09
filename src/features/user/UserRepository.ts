@@ -19,8 +19,8 @@ export default class UserRepository {
         return users;
     }
 
-    async findById(id: string): Promise<UserEntity> {
-        const user = await this.db.one<UserEntity>(
+    async findById(id: string): Promise<UserEntity | null> {
+        const user = await this.db.oneOrNone<UserEntity>(
             'SELECT u.id, u.email, u.username, u.password, u.created_at, u.updated_at, r.name as role FROM users u ' +
                 'INNER JOIN roles r ON r.id = u.role_id ' +
                 'WHERE u.id = $1',

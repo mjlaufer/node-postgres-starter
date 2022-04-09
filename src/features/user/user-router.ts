@@ -1,6 +1,5 @@
 import express from 'express';
 import * as userController from '@features/user/user-controller';
-import asyncWrapper from '@middleware/asyncWrapper';
 import { sanitizeEmail, sanitizeText, sanitizePaginationOptions } from '@middleware/sanitizers';
 import requireAuth from '@middleware/requireAuth';
 import {
@@ -14,30 +13,26 @@ const router = express.Router();
 
 router
     .route('/')
-    .get(
-        sanitizePaginationOptions,
-        validatePaginationQuery,
-        asyncWrapper(userController.fetchUsers),
-    )
+    .get(sanitizePaginationOptions, validatePaginationQuery, userController.fetchUsers)
     .post(
         requireAuth('admin'),
         sanitizeEmail,
         sanitizeText('username'),
         validateSignupCredentials,
-        asyncWrapper(userController.createUser),
+        userController.createUser,
     );
 
 router
     .route('/:id')
-    .get(validateIdParam, asyncWrapper(userController.fetchUser))
+    .get(validateIdParam, userController.fetchUser)
     .put(
         requireAuth('user'),
         sanitizeEmail,
         sanitizeText('username'),
         validateIdParam,
         validateUserUpdate,
-        asyncWrapper(userController.updateUser),
+        userController.updateUser,
     )
-    .delete(requireAuth('user'), validateIdParam, asyncWrapper(userController.deleteUser));
+    .delete(requireAuth('user'), validateIdParam, userController.deleteUser);
 
 export default router;

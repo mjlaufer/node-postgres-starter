@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
 import { pick } from 'lodash';
-import { HttpError } from '@errors';
+import { InternalServerError } from '@errors';
 import * as authService from '@features/auth/auth-service';
+import asyncWrapper from '@middleware/asyncWrapper';
 import { SignupRequest } from '@types';
 
-export async function signup(req: Request, res: Response): Promise<void> {
+export const signup = asyncWrapper(async (req: Request, res: Response): Promise<void> => {
     const signupRequestData: SignupRequest = pick(req.body, ['email', 'username', 'password']);
 
     const { message, user } = await authService.signup(signupRequestData);
@@ -12,7 +13,7 @@ export async function signup(req: Request, res: Response): Promise<void> {
     if (user) {
         return req.login(user, (err) => {
             if (err) {
-                throw new HttpError(err);
+                throw new InternalServerError(err.message);
             }
 
             return res.json({ isAuthenticated: true });
@@ -20,4 +21,4 @@ export async function signup(req: Request, res: Response): Promise<void> {
     }
 
     res.json({ isAuthenticated: false, message });
-}
+});

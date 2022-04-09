@@ -124,6 +124,8 @@ describe('/posts', () => {
 
         // Because `firstPost.id` is dynamic, we need to replace it with a constant, so our snapshot remains consistent.
         const testErr = err.message.replace(firstPost.id, 'GENERATED_POST_ID');
-        expect(testErr).toMatchInlineSnapshot(`"(404) No data returned from the query."`);
+        expect(testErr).toMatchInlineSnapshot(
+            `"(404) Could not find post with ID GENERATED_POST_ID"`,
+        );
     });
 });

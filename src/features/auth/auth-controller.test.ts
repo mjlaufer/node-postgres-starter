@@ -17,12 +17,12 @@ describe('authController', () => {
 
     test('signup', async () => {
         const signup = jest.spyOn(authService, 'signup').mockResolvedValue({ user: mockUser });
-
-        expect.assertions(2);
-
         const req = generate.req({ body: signupRequestData, login: jest.fn().mockName('login') });
         const res = generate.res();
-        await authController.signup(req, res);
+        const next = generate.next();
+
+        expect.assertions(2);
+        await authController.signup(req, res, next);
 
         expect(signup).toHaveBeenCalledWith(signupRequestData);
         expect(req.login).toHaveBeenCalled();
@@ -30,12 +30,12 @@ describe('authController', () => {
 
     test('signup: fail', async () => {
         const signup = jest.spyOn(authService, 'signup').mockResolvedValue({ message: 'message' });
-
         const req = generate.req({ body: signupRequestData, login: jest.fn().mockName('login') });
         const res = generate.res();
-        expect.assertions(3);
+        const next = generate.next();
 
-        await authController.signup(req, res);
+        expect.assertions(3);
+        await authController.signup(req, res, next);
 
         expect(signup).toHaveBeenCalledWith(signupRequestData);
         expect(req.login).not.toHaveBeenCalled();

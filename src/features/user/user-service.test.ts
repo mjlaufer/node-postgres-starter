@@ -3,7 +3,7 @@ import pgPromise from 'pg-promise';
 import db from '@db';
 import { hash, makeUser } from '@features/user/user-helpers';
 import * as generate from '@test/utils/generate';
-import { HttpError } from '@errors';
+import { InternalServerError } from '@errors';
 import { SignupRequest, UserEntity, PaginationOptions } from '@types';
 import * as userService from './user-service';
 
@@ -61,7 +61,7 @@ describe('userService', () => {
         expect.assertions(2);
 
         const err = await userService.fetchUsers(paginationOptions).catch(identity);
-        expect(err).toEqual(new HttpError('mock error message'));
+        expect(err).toEqual(new InternalServerError('mock error message'));
         expect(db.users.findAll).toHaveBeenCalledTimes(1);
     });
 
@@ -83,7 +83,7 @@ describe('userService', () => {
         expect.assertions(2);
 
         const err = await userService.fetchUser(mockUserEntity.id).catch(identity);
-        expect(err).toEqual(new HttpError('mock error message'));
+        expect(err).toEqual(new InternalServerError('mock error message'));
         expect(db.users.findById).toHaveBeenCalledTimes(1);
     });
 
@@ -107,7 +107,7 @@ describe('userService', () => {
         expect.assertions(2);
 
         const err = await userService.createUser(mockSignupRequest).catch(identity);
-        expect(err).toEqual(new HttpError('mock error message'));
+        expect(err).toEqual(new InternalServerError('mock error message'));
         expect(db.users.create).toHaveBeenCalledTimes(1);
     });
 
@@ -155,7 +155,7 @@ describe('userService', () => {
             })
             .catch(identity);
 
-        expect(err).toEqual(new HttpError('mock error message'));
+        expect(err).toEqual(new InternalServerError('mock error message'));
         expect(db.users.update).toHaveBeenCalledTimes(1);
     });
 
@@ -187,7 +187,7 @@ describe('userService', () => {
             })
             .catch(identity);
 
-        expect(err).toEqual(new HttpError('mock error message'));
+        expect(err).toEqual(new InternalServerError('mock error message'));
         expect(db.users.destroy).toHaveBeenCalledTimes(1);
     });
 });

@@ -3,7 +3,7 @@ import pgPromise from 'pg-promise';
 import db from '@db';
 import { hash } from '@features/user/user-helpers';
 import * as generate from '@test/utils/generate';
-import { HttpError } from '@errors';
+import { InternalServerError } from '@errors';
 import { SignupRequest, UserEntity } from '@types';
 import * as userService from '../user/user-service';
 import * as authService from './auth-service';
@@ -69,7 +69,7 @@ describe('#authService', () => {
         expect.assertions(5);
 
         const err = await authService.signup(mockSignupRequest).catch(identity);
-        expect(err).toEqual(new HttpError(MOCK_ERROR_MESSAGE));
+        expect(err).toEqual(new InternalServerError(MOCK_ERROR_MESSAGE));
         expect(db.users.findOne).toHaveBeenCalledWith(pick(mockSignupRequest, 'email'));
         expect(db.users.findOne).toHaveBeenCalledTimes(1);
         expect(userService.createUser).toHaveBeenCalledWith(mockSignupRequest);

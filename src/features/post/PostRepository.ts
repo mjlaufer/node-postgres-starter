@@ -18,8 +18,8 @@ export default class PostRepository {
         return posts;
     }
 
-    async findById(id: string): Promise<PostEntity> {
-        const post = await this.db.one<PostEntity>(
+    async findById(id: string): Promise<PostEntity | null> {
+        const post = await this.db.oneOrNone<PostEntity>(
             'SELECT p.id, p.body, p.title, p.created_at, u.id as author_id, u.username as author_username FROM posts p ' +
                 'INNER JOIN users u ON u.id = p.user_id ' +
                 'WHERE p.id = $1',
@@ -36,7 +36,7 @@ export default class PostRepository {
             postRequestData,
         );
         const result = await this.findById(id);
-        return result;
+        return result!;
     }
 
     async update(PostEntity: PostEntity): Promise<PostEntity> {

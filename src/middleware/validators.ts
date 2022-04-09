@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 import { toString } from 'lodash';
-import { ValidationError } from '@errors';
+import { BadRequestError } from '@errors';
+import asyncWrapper from '@middleware/asyncWrapper';
 import { MiddlewareFunc } from '@types';
 
 const uuidValidator = Joi.string().guid({ version: 'uuidv4' });
@@ -52,14 +53,14 @@ export function validate(
             next();
         } catch (err) {
             const message = err instanceof Error ? err.message : toString(err);
-            next(new ValidationError(message));
+            throw new BadRequestError(message);
         }
     };
 }
 
-export const validateIdParam = validate('params', idSchema);
-export const validateLoginCredentials = validate('body', loginSchema);
-export const validateSignupCredentials = validate('body', signupSchema);
-export const validatePaginationQuery = validate('query', paginationSchema);
-export const validatePostUpdate = validate('body', postUpdateSchema);
-export const validateUserUpdate = validate('body', userUpdateSchema);
+export const validateIdParam = asyncWrapper(validate('params', idSchema));
+export const validateLoginCredentials = asyncWrapper(validate('body', loginSchema));
+export const validateSignupCredentials = asyncWrapper(validate('body', signupSchema));
+export const validatePaginationQuery = asyncWrapper(validate('query', paginationSchema));
+export const validatePostUpdate = asyncWrapper(validate('body', postUpdateSchema));
+export const validateUserUpdate = asyncWrapper(validate('body', userUpdateSchema));

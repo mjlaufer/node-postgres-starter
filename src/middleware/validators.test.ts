@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import * as generate from '@test/utils/generate';
-import { ValidationError } from '@errors';
+import { BadRequestError } from '@errors';
+import asyncWrapper from '@middleware/asyncWrapper';
 import { validate } from './validators';
 
 describe('validate', () => {
@@ -11,7 +12,7 @@ describe('validate', () => {
     });
 
     test('can validate req.params; calls next() on success', async () => {
-        const middleware = validate('params', mockSchema);
+        const middleware = asyncWrapper(validate('params', mockSchema));
 
         expect.assertions(2);
 
@@ -24,8 +25,8 @@ describe('validate', () => {
         expect(next).toHaveBeenCalledTimes(1);
     });
 
-    test('passes Bad Request error to next() if validation fails', async () => {
-        const middleware = validate('params', mockSchema);
+    test('passes BadRequestError to next() if validation fails', async () => {
+        const middleware = asyncWrapper(validate('params', mockSchema));
 
         expect.assertions(2);
 
@@ -35,13 +36,13 @@ describe('validate', () => {
         await middleware(req, res, next);
 
         expect(next).toHaveBeenCalledWith(
-            new ValidationError('"mockField" length must be at least 3 characters long', 400),
+            new BadRequestError('"mockField" length must be at least 3 characters long'),
         );
         expect(next).toHaveBeenCalledTimes(1);
     });
 
     test('can validate req.body; calls next() on success', async () => {
-        const middleware = validate('body', mockSchema);
+        const middleware = asyncWrapper(validate('body', mockSchema));
 
         expect.assertions(2);
 
@@ -55,7 +56,7 @@ describe('validate', () => {
     });
 
     test('passes Bad Request error to next() if validation fails', async () => {
-        const middleware = validate('body', mockSchema);
+        const middleware = asyncWrapper(validate('body', mockSchema));
 
         expect.assertions(2);
 
@@ -65,7 +66,7 @@ describe('validate', () => {
         await middleware(req, res, next);
 
         expect(next).toHaveBeenCalledWith(
-            new ValidationError('"mockField" length must be at least 3 characters long', 400),
+            new BadRequestError('"mockField" length must be at least 3 characters long'),
         );
         expect(next).toHaveBeenCalledTimes(1);
     });

@@ -3,7 +3,8 @@ import { Strategy } from 'passport-local';
 import bcrypt from 'bcryptjs';
 import db from '@db';
 import { makeUser } from '@features/user/user-helpers';
-import { User, UserEntity } from '@types';
+import { User } from '@types';
+import { NotFoundError } from '@errors';
 
 export default function configurePassport(passport: PassportStatic): void {
     passport.use(
@@ -37,7 +38,10 @@ export default function configurePassport(passport: PassportStatic): void {
 
     passport.deserializeUser(async (id: string, done) => {
         try {
-            const userEntity: UserEntity = await db.users.findById(id);
+            const userEntity = await db.users.findById(id);
+            if (!userEntity) {
+                throw new NotFoundError(`Could not find user with ID ${id}`);
+            }
             const user: User = makeUser(userEntity);
             return done(null, user);
         } catch {

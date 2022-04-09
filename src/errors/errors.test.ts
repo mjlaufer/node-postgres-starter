@@ -1,11 +1,13 @@
-import { HttpError, HttpErrorMessages } from '.';
+import { InternalServerError, HttpError, HttpErrorMessages } from '.';
 
-describe('HttpError', () => {
-    test('can create HttpError objects', () => {
-        const error = new HttpError(HttpErrorMessages.NOT_FOUND, 404);
+describe('InternalServerError', () => {
+    test('can create InternalServerError objects', () => {
+        const error = new InternalServerError();
 
+        expect(error instanceof Error).toBe(true);
         expect(error instanceof HttpError).toBe(true);
-        expect(error.message).toBe(HttpErrorMessages.NOT_FOUND);
-        expect(error.status).toBe(404);
+        expect(error instanceof InternalServerError).toBe(true);
+        expect(error.message).toBe(HttpErrorMessages.INTERNAL_SERVER_ERROR);
+        expect(error.status).toBe(500);
     });
 });

@@ -1,5 +1,5 @@
 import * as generate from '@test/utils/generate';
-import { HttpError } from '@errors';
+import { UnauthorizedError, ForbiddenError } from '@errors';
 import requireAuth from './requireAuth';
 
 describe('requireAuth', () => {
@@ -11,8 +11,7 @@ describe('requireAuth', () => {
         const req = generate.req();
         const res = generate.res();
         const next = generate.next();
-        const err = new HttpError('Authentication required', 401);
-
+        const err = new UnauthorizedError();
         void requireAuth('user')(req, res, next);
 
         expect(next).toHaveBeenCalledWith(err);
@@ -25,8 +24,7 @@ describe('requireAuth', () => {
         });
         const res = generate.res();
         const next = generate.next();
-        const err = new HttpError('Forbidden', 403);
-
+        const err = new ForbiddenError();
         void requireAuth('admin')(req, res, next);
 
         expect(next).toHaveBeenCalledWith(err);
@@ -39,7 +37,6 @@ describe('requireAuth', () => {
         });
         const res = generate.res();
         const next = generate.next();
-
         void requireAuth('admin')(req, res, next);
 
         expect(next).toHaveBeenCalledWith();

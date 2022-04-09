@@ -109,6 +109,8 @@ describe('/users', () => {
 
         // Because `user.id` is dynamic, we need to replace it with a constant, so our snapshot remains consistent.
         const testErr = err.message.replace(user.id, 'GENERATED_USER_ID');
-        expect(testErr).toMatchInlineSnapshot(`"(404) No data returned from the query."`);
+        expect(testErr).toMatchInlineSnapshot(
+            `"(404) Could not find user with ID GENERATED_USER_ID"`,
+        );
     });
 });

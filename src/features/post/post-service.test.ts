@@ -3,7 +3,7 @@ import pgPromise from 'pg-promise';
 import db from '@db';
 import { makePost } from '@features/post/post-helpers';
 import * as generate from '@test/utils/generate';
-import { HttpError } from '@errors';
+import { InternalServerError } from '@errors';
 import { PostCreateRequest, PostEntity, PaginationOptions } from '@types';
 import * as postService from './post-service';
 
@@ -61,7 +61,7 @@ describe('postService', () => {
         expect.assertions(2);
 
         const err = await postService.fetchPosts(paginationOptions).catch(identity);
-        expect(err).toEqual(new HttpError('mock error message'));
+        expect(err).toEqual(new InternalServerError('mock error message'));
         expect(db.posts.findAll).toHaveBeenCalledTimes(1);
     });
 
@@ -83,7 +83,7 @@ describe('postService', () => {
         expect.assertions(2);
 
         const err = await postService.fetchPost(mockPostEntity.id).catch(identity);
-        expect(err).toEqual(new HttpError('mock error message'));
+        expect(err).toEqual(new InternalServerError('mock error message'));
         expect(db.posts.findById).toHaveBeenCalledTimes(1);
     });
 
@@ -107,7 +107,7 @@ describe('postService', () => {
         expect.assertions(2);
 
         const err = await postService.createPost(mockPostRequest).catch(identity);
-        expect(err).toEqual(new HttpError('mock error message'));
+        expect(err).toEqual(new InternalServerError('mock error message'));
         expect(db.posts.create).toHaveBeenCalledTimes(1);
     });
 
@@ -155,7 +155,7 @@ describe('postService', () => {
             })
             .catch(identity);
 
-        expect(err).toEqual(new HttpError('mock error message'));
+        expect(err).toEqual(new InternalServerError('mock error message'));
         expect(db.posts.update).toHaveBeenCalledTimes(1);
     });
 
@@ -187,7 +187,7 @@ describe('postService', () => {
             })
             .catch(identity);
 
-        expect(err).toEqual(new HttpError('mock error message'));
+        expect(err).toEqual(new InternalServerError('mock error message'));
         expect(db.posts.destroy).toHaveBeenCalledTimes(1);
     });
 });

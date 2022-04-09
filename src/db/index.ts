@@ -1,41 +1,7 @@
 import dotenv from 'dotenv';
-import pgPromise, { IInitOptions, IDatabase, IMain } from 'pg-promise';
-import UserRepository from '../features/user/UserRepository';
-import PostRepository from '../features/post/PostRepository';
+import pgp, { ExtendedProtocol } from './pgp';
 
 dotenv.config();
-
-interface Extensions {
-    users: UserRepository;
-    posts: PostRepository;
-}
-
-type ExtendedProtocol = IDatabase<Extensions> & Extensions;
-
-const initOptions: IInitOptions<Extensions> = {
-    extend(protocolObj: ExtendedProtocol) {
-        protocolObj.users = new UserRepository(protocolObj);
-        protocolObj.posts = new PostRepository(protocolObj);
-    },
-    receive(data) {
-        camelCaseColumns(data);
-    },
-};
-
-export const pgp: IMain = pgPromise(initOptions);
-
-function camelCaseColumns(data: { [key: string]: string }[]): void {
-    const tmp = data[0];
-    for (const prop in tmp) {
-        const camel = pgp.utils.camelize(prop);
-        if (!(camel in tmp)) {
-            for (const d of data) {
-                d[camel] = d[prop];
-                delete d[prop];
-            }
-        }
-    }
-}
 
 interface ConnectionConfig {
     host: string;

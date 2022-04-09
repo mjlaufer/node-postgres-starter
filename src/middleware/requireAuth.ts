@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { castArray, get } from 'lodash';
 import { MiddlewareFunc, Role } from '@types';
-import { HttpError, HttpErrorMessages } from '@errors';
+import { UnauthorizedError, ForbiddenError } from '@errors';
 
 export default function requireAuth(roles: Role[] | Role): MiddlewareFunc {
     return (req: Request, res: Response, next: NextFunction): void => {
         if (!req.user) {
-            const err = new HttpError('Authentication required', 401);
+            const err = new UnauthorizedError();
             return next(err);
         }
 
@@ -14,7 +14,7 @@ export default function requireAuth(roles: Role[] | Role): MiddlewareFunc {
         const userRole = get(req.user, 'role');
 
         if (!allowedRoles.includes(userRole)) {
-            const err = new HttpError(HttpErrorMessages.FORBIDDEN, 403);
+            const err = new ForbiddenError();
             return next(err);
         }
 
